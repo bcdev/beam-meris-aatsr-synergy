@@ -121,7 +121,10 @@ public class RetrieveAerosolLandOp extends Operator{
 
     @Override
     public void initialize() throws OperatorException {
-       
+
+
+        // blabla
+
         synergyProduct = sourceProduct;
 
         deactivateComputeTileMethod();
