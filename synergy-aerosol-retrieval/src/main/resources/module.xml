@@ -1,0 +1,158 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>synergy-aerosol-retrieval</symbolicName>
+    <version>1.0-SNAPSHOT</version>
+    <name>Synergy Aerosol Retrieval</name>
+    <description>Synergy Aerosol Retrieval</description>
+
+    <vendor>Brockmann Consult GmbH</vendor>
+    <contactAddress>
+        Max Planck Str.2, 21502 Geesthacht (Germany)
+    </contactAddress>
+    <copyright>(C) 2007 by Brockmann Consult GmbH</copyright>
+    <url>http://envisat.esa.int/beam</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <changelog/>
+    
+    <dependency>
+        <module>beam-core</module>
+    </dependency>
+	<dependency>
+        <module>beam-gpf</module>
+    </dependency>
+	 <dependency>
+        <module>beam-visat</module>
+        <optional>true</optional>
+    </dependency>
+	<dependency>
+        <module>beam-envisat-reader</module>
+    </dependency>	
+	<dependency>
+        <module>beam-meris-brr</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-l2auxdata</module>
+    </dependency>
+    <!--
+    <dependency>
+        <module>beam-meris-sdr</module>
+    </dependency>
+    -->
+    <dependency>
+        <module>beam-collocation</module>
+    </dependency>
+    <dependency>
+        <module>synergy-cloud-screening</module>
+    </dependency>
+    <dependency>
+        <module>lib-netcdf</module>
+    </dependency>
+
+    <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
+
+    <extension point="beam-ui:actions">
+        <action>
+            <id>synergyAerosolRetrieval</id>
+            <class>org.esa.beam.visat.actions.ActionGroup</class>
+            <text>Aerosol Retrieval (MERIS/(A)ATSR Synergy) </text>
+            <mnemonic/>
+            <placeAfter>synergyCloudScreening</placeAfter>
+        </action>
+        <action>
+            <id>createSynergy</id>
+            <class>org.esa.beam.synergy.ui.CreateSynergyAction</class>
+            <text>Create Synergy Product ...</text>
+            <shortDescr>
+                Create Synergy Product
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergyCreateSynergy</helpID>
+        </action>
+        <!--
+        <action>
+            <id>aerosolOcean</id>
+            <class>org.esa.beam.synergy.ui.RetrieveAerosolOceanAction</class>
+            <text>Retrieve Aerosol over Ocean ...</text>
+            <shortDescr>
+                Retrieve Aerosol over Ocean
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergyAerosolOcean</helpID>
+            <placeAfter>createSynergy</placeAfter>
+        </action>
+        <action>
+            <id>aerosolLand</id>
+            <class>org.esa.beam.synergy.ui.RetrieveAerosolLandAction</class>
+            <text>Retrieve Aerosol over Land ...</text>
+            <shortDescr>
+                Retrieve Aerosol over Land
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergyAerosolLand</helpID>
+            <placeAfter>aerosolOcean</placeAfter>
+        </action>
+        -->
+        <action>
+            <id>aerosolOverall</id>
+            <class>org.esa.beam.synergy.ui.RetrieveAerosolAction</class>
+            <text>Retrieve Aerosol and SDR...</text>
+            <shortDescr>
+                Retrieve aerosol (land/ocean) and SDR (land) 
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergyAerosolOverall</helpID>
+            <placeAfter>createSynergy</placeAfter>
+        </action>
+        <!--
+        <action>
+            <id>performLaplaceIntp</id>
+            <class>org.esa.beam.synergy.ui.LaplaceInterpolationAction</class>
+            <text>Perform Laplace Interpolation ...</text>
+            <shortDescr>
+                Perform interpolation to fill gaps
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergyPerformLaplaceIntp</helpID>
+            <placeAfter>aerosolLand</placeAfter>
+        </action>
+        <action>
+            <id>performAotBoxcarIntp</id>
+            <class>org.esa.beam.synergy.ui.AotBoxcarInterpolationAction</class>
+            <text>Perform Boxcar Interpolation on AOTs ...</text>
+            <shortDescr>
+                Perform interpolation to fill gaps
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergyPerformBoxcarIntp</helpID>
+            <placeAfter>aerosolOverall</placeAfter>
+        </action>
+
+        <action>
+            <id>surfaceReflLand</id>
+            <class>org.esa.beam.synergy.ui.RetrieveSurfaceReflAction</class>
+            <text>Retrieve Surface Reflectance over Land ...</text>
+            <shortDescr>
+                Retrieve Surface Reflectance over Land
+            </shortDescr>
+            <mnemonic/>
+            <parent>synergyAerosolRetrieval</parent>
+            <helpID>synergySurfaceReflLand</helpID>
+            <placeAfter>performAotBoxcarIntp</placeAfter>
+        </action>
+         -->
+    </extension>
+
+    <extension point="beam-ui:helpSets">
+        <helpSet>
+            <parent>beam-help</parent>
+            <path>doc/help/aerosolretrieval.hs</path>
+        </helpSet>
+    </extension>
+</module>

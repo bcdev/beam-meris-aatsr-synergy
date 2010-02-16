@@ -1,0 +1,11 @@
+org.esa.beam.synergy.operators.RecalibrateAATSRReflectancesOp$Spi
+org.esa.beam.synergy.operators.LandWaterReclassificationOp$Spi
+org.esa.beam.synergy.operators.ComputeToaReflectancesOp$Spi
+org.esa.beam.synergy.operators.ExtractFeaturesOp$Spi
+org.esa.beam.synergy.operators.CreateElevationBandOp$Spi
+org.esa.beam.synergy.operators.CreateMerisOp$Spi
+org.esa.beam.synergy.operators.CreateAatsrOp$Spi
+org.esa.beam.synergy.operators.CreateSynergyOp$Spi
+org.esa.beam.synergy.operators.ClassifyFeaturesOp$Spi
+org.esa.beam.synergy.operators.ClassifyFeaturesNNOp$Spi
+org.esa.beam.synergy.operators.SynergyCloudScreeningOp$Spi
