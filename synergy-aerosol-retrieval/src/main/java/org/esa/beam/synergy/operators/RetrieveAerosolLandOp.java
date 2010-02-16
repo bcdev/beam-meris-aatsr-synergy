@@ -125,7 +125,7 @@ public class RetrieveAerosolLandOp extends Operator{
         synergyProduct = sourceProduct;
 
         deactivateComputeTileMethod();
-          // bla
+          
         readAerosolModelNumbers();
 
         // todo: add some validations of the other GUI input...
