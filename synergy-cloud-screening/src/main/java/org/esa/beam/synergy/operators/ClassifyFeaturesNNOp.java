@@ -122,9 +122,15 @@ public class ClassifyFeaturesNNOp extends Operator {
         tbNNcloudmask = targetProduct.addBand(SynergyConstants.B_CLOUDMASK, ProductData.TYPE_INT8);
         tbNNsnowmask = targetProduct.addBand(SynergyConstants.B_SNOWMASK, ProductData.TYPE_INT8);
         tbNNcloud = targetProduct.addBand(SynergyConstants.B_CLOUD_COMB, ProductData.TYPE_FLOAT32);
+        tbNNcloud.setNoDataValue(SynergyConstants.NODATAVALUE);
+        tbNNcloud.setNoDataValueUsed(true);
         tbNNsnow = targetProduct.addBand(SynergyConstants.B_SNOW_COMB, ProductData.TYPE_FLOAT32);
+        tbNNsnow.setNoDataValue(SynergyConstants.NODATAVALUE);
+        tbNNsnow.setNoDataValueUsed(true);
         if (computeCOT) {
         	tbNNabun = targetProduct.addBand(SynergyConstants.B_CLOUDINDEX, ProductData.TYPE_FLOAT32);
+        	tbNNabun.setNoDataValue(SynergyConstants.NODATAVALUE);
+        	tbNNabun.setNoDataValueUsed(true);
         }
         
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
@@ -246,6 +252,9 @@ public class ClassifyFeaturesNNOp extends Operator {
             final Tile l1Tile = getSourceTile(l1Flags, targetRectangle, pm);
             final Tile confid_flags_nadir_tile = getSourceTile(confid_flags_nadir, targetRectangle, pm);
             final Tile confid_flags_fward_tile = getSourceTile(confid_flags_fward, targetRectangle, pm);
+            
+            // SZA tile
+            final Tile szaTile = getSourceTile(sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME), targetRectangle, pm);
 
             // Source tiles map
             // (in NN inputs order, but caution, the HashMap DOES NOT store them in this order)
@@ -274,137 +283,145 @@ public class ClassifyFeaturesNNOp extends Operator {
                     
                     checkForCancelation(pm);
                     
-                    final boolean isLand =
-                        ((l1Tile.getSampleInt(x, y) & flagLandMask) == flagLandMask) ? true : false;
-                    final boolean isMerisInvalid =
-                        ((l1Tile.getSampleInt(x, y) & flagMerisInvalid) != 0) ? true : false;
-                    final boolean isNadirInvalid =
-                        ((confid_flags_nadir_tile.getSampleInt(x, y) & flagNadirInvalid) != 0) ? true : false;
-                    final boolean isFwardInvalid =
-                        ((confid_flags_fward_tile.getSampleInt(x, y) & flagFwardInvalid) != 0) ? true : false;
+                    // Compute neural network only if:
+                    // 1. Solar zenith angle is less than 80º (day only)
+                    // 2. Both meris and aatsr bands have data values
+                    if (szaTile.getSampleFloat(x, y) < 80.0 &&
+                            bMeris[0].isPixelValid(x, y) && bAatsrFward[0].isPixelValid(x, y)) {
                     
-                    // Synergy neural networks
-                    for(String nnName : SynergyConstants.nn_synergy) {
-                        // Skip either land or ocean
-                        if (!isLand && nnName.contains("land")) continue;
-                        if (isLand && nnName.contains("ocean")) continue;
-                        if (!computeCOT && nnName.startsWith("index")) continue;
-                        // Process NN 
-                    	final double out = nnProcess(nnName, x, y,
-                    	                             srcMeris, srcAatsrNadir, srcAatsrFward, tileMap);
-                    	// Change 'land' and 'ocean' by 'local
-                    	if (nnName.contains("land")) nnName = nnName.replace("land", "local");
-                    	if (nnName.contains("ocean")) nnName = nnName.replace("ocean", "local");
-                        targetTiles.get(tgtBandMap.get(nnName)).setSample(x, y, out);
-                    }
-                    
-                    // Single instrument neural networks
-                    for(String nnName : SynergyConstants.nn_single) {
-                        // Skip either land or ocean
-                        if (!isLand && nnName.contains("land")) continue;
-                        if (isLand && nnName.contains("ocean")) continue;
-                        // Process NN 
-                        final double out = nnSIProcess(nnName, x, y,
-                                                       srcMeris, srcAatsrNadir, srcAatsrFward, tileMap);
-                    	// Change 'land' and 'ocean' by 'local
-                    	if (nnName.contains("land")) nnName = nnName.replace("land", "local");
-                    	if (nnName.contains("ocean")) nnName = nnName.replace("ocean", "local");
-                        targetTiles.get(tgtBandMap.get(nnName)).setSample(x, y, out);
-                    }
-                    
-                    // NN combinations
-                    double nnCloud;
-                    double nnSnow;
-                    if (isNadirInvalid) {
-                        // use only meris
-                        nnCloud = 0.5 * (
-                          targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_meris_nadir)).getSampleDouble(x,y) +
-                          targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_meris_nadir)).getSampleDouble(x,y)
-                        ); 
-                        nnSnow =
-                          targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_meris_nadir)).getSampleDouble(x,y);
-                    }
-                    else {
-                        if (isFwardInvalid || !useForwardView) {
-                            if (isMerisInvalid) {
-                                // meris and fwaard invalid: no synergy, use nadir
-                                nnCloud = 0.5 * (
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_aatsr_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_aatsr_nadir)).getSampleDouble(x,y)
-                                ); 
-                                nnSnow =
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_aatsr_nadir)).getSampleDouble(x,y);
-                            }
-                            else {
-                                // use meris/nadir synergy
-                                nnCloud = 0.5 * (
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_synergy_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_synergy_nadir)).getSampleDouble(x,y)
-                                );
-                                nnSnow =
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_synergy_nadir)).getSampleDouble(x,y);
-                            }
+                        final boolean isLand =
+                            ((l1Tile.getSampleInt(x, y) & flagLandMask) == flagLandMask) ? true : false;
+                        final boolean isMerisInvalid =
+                            ((l1Tile.getSampleInt(x, y) & flagMerisInvalid) != 0) ? true : false;
+                        final boolean isNadirInvalid =
+                            ((confid_flags_nadir_tile.getSampleInt(x, y) & flagNadirInvalid) != 0) ? true : false;
+                        final boolean isFwardInvalid =
+                            ((confid_flags_fward_tile.getSampleInt(x, y) & flagFwardInvalid) != 0) ? true : false;
+                        
+                        // Synergy neural networks
+                        for(String nnName : SynergyConstants.nn_synergy) {
+                            // Skip either land or ocean
+                            if (!isLand && nnName.contains("land")) continue;
+                            if (isLand && nnName.contains("ocean")) continue;
+                            if (!computeCOT && nnName.startsWith("index")) continue;
+                            // Process NN 
+                        	final double out = nnProcess(nnName, x, y,
+                        	                             srcMeris, srcAatsrNadir, srcAatsrFward, tileMap);
+                        	// Change 'land' and 'ocean' by 'local
+                        	if (nnName.contains("land")) nnName = nnName.replace("land", "local");
+                        	if (nnName.contains("ocean")) nnName = nnName.replace("ocean", "local");
+                            targetTiles.get(tgtBandMap.get(nnName)).setSample(x, y, out);
+                        }
+                        
+                        // Single instrument neural networks
+                        for(String nnName : SynergyConstants.nn_single) {
+                            // Skip either land or ocean
+                            if (!isLand && nnName.contains("land")) continue;
+                            if (isLand && nnName.contains("ocean")) continue;
+                            // Process NN 
+                            final double out = nnSIProcess(nnName, x, y,
+                                                           srcMeris, srcAatsrNadir, srcAatsrFward, tileMap);
+                        	// Change 'land' and 'ocean' by 'local
+                        	if (nnName.contains("land")) nnName = nnName.replace("land", "local");
+                        	if (nnName.contains("ocean")) nnName = nnName.replace("ocean", "local");
+                            targetTiles.get(tgtBandMap.get(nnName)).setSample(x, y, out);
+                        }
+                        
+                        // NN combinations
+                        double nnCloud;
+                        double nnSnow;
+                        if (isNadirInvalid) {
+                            // use only meris
+                            nnCloud = 0.5 * (
+                              targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_meris_nadir)).getSampleDouble(x,y) +
+                              targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_meris_nadir)).getSampleDouble(x,y)
+                            ); 
+                            nnSnow =
+                              targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_meris_nadir)).getSampleDouble(x,y);
                         }
                         else {
-                            if (isMerisInvalid) {
-                                // no meris, but we have dualview
-                                nnCloud = 0.25 * (
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_aatsr_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_aatsr_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_aatsr_dual)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_aatsr_dual)).getSampleDouble(x,y)
-                                );
-                                nnSnow = 0.5 * (
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_aatsr_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_aatsr_dual)).getSampleDouble(x,y)
-                                );
+                            if (isFwardInvalid || !useForwardView) {
+                                if (isMerisInvalid) {
+                                    // meris and fward invalid: no synergy, use nadir
+                                    nnCloud = 0.5 * (
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_aatsr_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_aatsr_nadir)).getSampleDouble(x,y)
+                                    ); 
+                                    nnSnow =
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_aatsr_nadir)).getSampleDouble(x,y);
+                                }
+                                else {
+                                    // use meris/nadir synergy
+                                    nnCloud = 0.5 * (
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_synergy_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_synergy_nadir)).getSampleDouble(x,y)
+                                    );
+                                    nnSnow =
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_synergy_nadir)).getSampleDouble(x,y);
+                                }
                             }
                             else {
-                                // All ok: synergy
-                                nnCloud = 0.25 * (
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_synergy_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_synergy_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_synergy_dual)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_synergy_dual)).getSampleDouble(x,y)
-                                ); 
-                                nnSnow = 0.5 * (
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_synergy_nadir)).getSampleDouble(x,y) +
-                                  targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_synergy_dual)).getSampleDouble(x,y)
-                               );
+                                if (isMerisInvalid) {
+                                    // no meris, but we have dualview
+                                    nnCloud = 0.25 * (
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_aatsr_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_aatsr_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_aatsr_dual)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_aatsr_dual)).getSampleDouble(x,y)
+                                    );
+                                    nnSnow = 0.5 * (
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_aatsr_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_aatsr_dual)).getSampleDouble(x,y)
+                                    );
+                                }
+                                else {
+                                    // All ok: synergy
+                                    nnCloud = 0.25 * (
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_synergy_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_synergy_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_global_synergy_dual)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_local_synergy_dual)).getSampleDouble(x,y)
+                                    ); 
+                                    nnSnow = 0.5 * (
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_synergy_nadir)).getSampleDouble(x,y) +
+                                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_snow_synergy_dual)).getSampleDouble(x,y)
+                                   );
+                                }
                             }
                         }
-                    }
+                                            
+                        // NN outputs
+                        tgtNNcloud.setSample(x, y, nnCloud);
+                        tgtNNsnow.setSample(x, y, nnSnow);
+                        // Masks
+                        tgtCloudmask.setSample(x, y, (nnCloud > 0.5) ? 1 : 0);
+                        tgtSnowmask.setSample(x, y, (nnSnow > 0.5) ? 1 : 0);
+    
+                        if (computeCOT) {
+    	                    double nnAbundance = 0.5 * (
+    	                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_index_synergy_nadir)).getSampleDouble(x,y) +
+    	                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_index_synergy_dual)).getSampleDouble(x,y)
+    	                    );
+    	                    tgtNNabun.setSample(x, y, nnAbundance);
+                        }
                                         
-                    // NN outputs
-                    tgtNNcloud.setSample(x, y, nnCloud);
-                    tgtNNsnow.setSample(x, y, nnSnow);
-                    // Masks
-                    tgtCloudmask.setSample(x, y, (nnCloud > 0.5) ? 1 : 0);
-                    tgtSnowmask.setSample(x, y, (nnSnow > 0.5) ? 1 : 0);
-
-                    if (computeCOT) {
-	                    double nnAbundance = 0.5 * (
-	                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_index_synergy_nadir)).getSampleDouble(x,y) +
-	                      targetTiles.get(tgtBandMap.get(SynergyConstants.nn_index_synergy_dual)).getSampleDouble(x,y)
-	                    );
-	                    tgtNNabun.setSample(x, y, nnAbundance);
                     }
                     
-                    /*
-                    // Final NN cloud mask
-                    double nnComb = java.lang.Math.max(nn_threshold, nnOutSynergy[0]) * nn_weigths[0] +
-                                    java.lang.Math.max(nn_threshold, nnOutSynergy[1]) * nn_weigths[1] +
-                                    java.lang.Math.max(nn_threshold, nnOutSynergy[2]) * nn_weigths[2] +
-                                    java.lang.Math.max(nn_threshold, nnOutSynergy[3]) * nn_weigths[3];
-                    
-                    tgtNNcloudmask.setSample(x, y, (nnComb > 0.5) ? 1 : 0);
+                    else {
+                        
+                        // Either the solar zenith angle is to high (night) or there is no data values
+                        
+                        // NN outputs
+                        tgtNNcloud.setSample(x, y, tbNNcloud.getNoDataValue());
+                        tgtNNsnow.setSample(x, y, tbNNsnow.getNoDataValue());
+                        // Masks
+                        tgtCloudmask.setSample(x, y, 0);
+                        tgtSnowmask.setSample(x, y, 0);
+                        // Cloud optical thickness
+                        if (computeCOT) tgtNNabun.setSample(x, y, tbNNabun.getNoDataValue());
+                        
+                    }
 
-                    // Final Nadir cloud mask
-                    nnComb = java.lang.Math.max(nn_threshold, nnOutSynergy[0]) * nn_weigths_nadir[0] +
-                             java.lang.Math.max(nn_threshold, nnOutSynergy[2]) * nn_weigths_nadir[1];
-
-                    tgtCloudmaskNadir.setSample(x, y, (nnComb > 0.5) ? 1 : 0);
-                    */
                 }
                 
                 pm.worked(1);

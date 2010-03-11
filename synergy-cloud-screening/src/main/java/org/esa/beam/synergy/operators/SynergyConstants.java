@@ -6,12 +6,13 @@ package org.esa.beam.synergy.operators;
 public class SynergyConstants {
 
     // Constants
-    public static double TAU_ATM = 0.222029504023959;
+    public static double TAU_ATM = 0.222029504023959d;
+    public static double NODATAVALUE = -10.0d;
     
     // Synergy product types
-    public static final String SYNERGY_RR_PRODUCT_TYPE_NAME = "SYNERGY_RR_";    
-    public static final String SYNERGY_FR_PRODUCT_TYPE_NAME = "SYNERGY_FR_";    
-    public static final String SYNERGY_FS_PRODUCT_TYPE_NAME = "SYNERGY_FS_";    
+    public static final String SYNERGY_RR_PRODUCT_TYPE_NAME = "SYN_RR__1P";
+    public static final String SYNERGY_FR_PRODUCT_TYPE_NAME = "SYN_FR__1P";
+    public static final String SYNERGY_FS_PRODUCT_TYPE_NAME = "SYN_FS__1P";
 
     // Meris bands
     public static final int[] MERIS_VIS_BANDS = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -31,7 +32,7 @@ public class SynergyConstants {
     public static final String FLAGNAME_CLOUD        = "CLOUD";
 
     // Strings to detect reduced or full resolution products
-    public static final String RR_STR  = "_RR_";
+    public static final String RR_STR  = "_RR";
     public static final String FR_STR  = "_FR";
     public static final String FS_STR  = "_FS";
     public static final String FSG_STR = "_FSG";

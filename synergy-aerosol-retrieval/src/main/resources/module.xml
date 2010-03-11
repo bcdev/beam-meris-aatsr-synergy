@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>synergy-aerosol-retrieval</symbolicName>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <name>Synergy Aerosol Retrieval</name>
     <description>Synergy Aerosol Retrieval</description>
 

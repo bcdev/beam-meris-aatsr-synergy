@@ -12,8 +12,8 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.operators.common.BandArithmeticOp;
 import org.esa.beam.util.ProductUtils;
+import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 import java.awt.Rectangle;
 
@@ -161,8 +161,8 @@ public class GlintAveOp extends Operator {
         ProductUtils.copyGeoCoding(synergyProduct, targetProduct);
         ProductUtils.copyMetadata(synergyProduct, targetProduct);
 
-        BandArithmeticOp bandArithmeticOp =
-                BandArithmeticOp.createBooleanExpressionBand(INVALID_EXPRESSION, synergyProduct);
+        BandMathsOp bandArithmeticOp =
+                BandMathsOp.createBooleanExpressionBand(INVALID_EXPRESSION, synergyProduct);
         invalidBand = bandArithmeticOp.getTargetProduct().getBandAt(0);
 
         setTargetBands();

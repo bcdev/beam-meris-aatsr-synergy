@@ -32,8 +32,8 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.operators.common.SubsetOp;
 import org.esa.beam.util.ProductUtils;
+import org.esa.beam.gpf.operators.standard.SubsetOp;
 
 import com.bc.ceres.core.ProgressMonitor;
 

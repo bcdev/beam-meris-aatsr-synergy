@@ -64,7 +64,7 @@ import java.util.Map;
  *      implementing in one operator the whole classification process.
  *
  * @author Ralf Quast, Olaf Danne, Jordi Munyoz-Mari, Luis Gomez-Chova
- * @version $Revision: 7988 $ $Date: 2010-01-14 12:51:28 +0100 (Do, 14 Jan 2010) $
+ * @version $Revision: 8155 $ $Date: 2010-01-29 17:30:33 +0100 (vie, 29 ene 2010) $
  */
 @OperatorMetadata(alias = "synergy.ClassifyFeatures",
                   version = "1.0-SNAPSHOT",
@@ -136,7 +136,7 @@ public class ClassifyFeaturesOp extends Operator {
     public void initialize() throws OperatorException {
     	
     	// Extract features
-        Map<String, Object> featParams = new HashMap<String, Object>(13);
+        Map<String, Object> featParams = new HashMap<String, Object>(12);
         featParams.put("extractVis", true);
         featParams.put("extractWv", true);
         featParams.put("extract_761_754_865_ratio", true);
@@ -149,7 +149,7 @@ public class ClassifyFeaturesOp extends Operator {
         featParams.put("extract_sprd", false);
         featParams.put("extract_coastline", true);
         featParams.put("straylightCorr", true);
-        featParams.put("tropicalAtmosphere", true);
+        //featParams.put("tropicalAtmosphere", true);
         final Product featProduct =
             GPF.createProduct(OperatorSpi.getOperatorAlias(ExtractFeaturesOp.class), featParams, sourceProduct);
     	
@@ -208,7 +208,12 @@ public class ClassifyFeaturesOp extends Operator {
             else {
             	// Create it
             	final String productType = sourceProduct.getProductType();
-            	sourceProduct.setProductType("MER_RR__1P");
+            	if (SynergyUtils.isFR(sourceProduct)) {
+            	    sourceProduct.setProductType(EnvisatConstants.MERIS_FR_L1B_PRODUCT_TYPE_NAME);
+            	}
+            	else {
+            	    sourceProduct.setProductType(EnvisatConstants.MERIS_RR_L1B_PRODUCT_TYPE_NAME);
+            	}            	
             	final Product demProduct = GPF.createProduct("synergy.CreateElevationBand", GPF.NO_PARAMS, sourceProduct);
             	sourceProduct.setProductType(productType);
             	altitudeRDN = demProduct.getBand(SynergyConstants.DEM_ELEVATION);
@@ -291,6 +296,8 @@ public class ClassifyFeaturesOp extends Operator {
 	        tBand_abun = targetProduct.addBand(SynergyConstants.B_CLOUDINDEX, ProductData.TYPE_FLOAT32);
 	        tBand_abun.setUnit("dl");
 	        tBand_abun.setDescription("MERIS/AATSR synergy cloud index (0: cloud free, 1: cloudy)");
+	        tBand_abun.setNoDataValue(SynergyConstants.NODATAVALUE);
+	        tBand_abun.setNoDataValueUsed(true);
         }
         
         if (outputNN) {
@@ -356,8 +363,9 @@ public class ClassifyFeaturesOp extends Operator {
                     
                     checkForCancelation(pm);
                     
-                    // Flags
                     int flags = 0;
+                    
+                    // Flags
                     if (sTiles[0].getSampleBoolean(x, y)) flags |= SynergyConstants.FLAGMASK_CLOUD;
                     if (sTiles[0].getSampleBoolean(x, y) ||
                         sTile_filled[0].getSampleBoolean(x, y)) flags |= SynergyConstants.FLAGMASK_CLOUD_FILLED;
@@ -369,8 +377,8 @@ public class ClassifyFeaturesOp extends Operator {
                     if (computeSH) {
                         if (sTiles[0].getSampleBoolean(x, y)) {
                             final float sza = szaTile.getSampleFloat(x, y) * MathUtils.DTOR_F;
-                            final float saa = saaTile.getSampleFloat(x, y) * MathUtils.DTOR_F;
                             final float vza = vzaTile.getSampleFloat(x, y) * MathUtils.DTOR_F;
+                            final float saa = saaTile.getSampleFloat(x, y) * MathUtils.DTOR_F;
                             final float vaa = vaaTile.getSampleFloat(x, y) * MathUtils.DTOR_F;
 
                             PixelPos pixelPos = new PixelPos(x, y);
@@ -394,11 +402,14 @@ public class ClassifyFeaturesOp extends Operator {
                     }
                     
                     tTile_flags.setSample(x, y, flags);
-                    
+
                     if (computeCOT) {
-	                    tTile_abun.setSample(x, y,
-	                                         sTile_abun.getSampleFloat(x, y) *
-	                                         sTile_filled[0].getSampleFloat(x, y));
+                        if (sBand_abun.isPixelValid(x, y)) {
+                            tTile_abun.setSample(x, y,
+                                                 sTile_abun.getSampleFloat(x, y) *
+                                                 sTile_filled[0].getSampleFloat(x, y));
+                        }
+                        else tTile_abun.setSample(x, y, sBand_abun.getNoDataValue());
                     }
                 }
                 pm.worked(1);

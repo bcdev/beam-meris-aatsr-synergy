@@ -38,6 +38,7 @@ import org.esa.beam.meris.brr.CloudClassificationOp;
 import org.esa.beam.meris.brr.GaseousCorrectionOp;
 import org.esa.beam.meris.brr.LandClassificationOp;
 import org.esa.beam.meris.brr.Rad2ReflOp;
+import org.esa.beam.meris.cloud.CloudProbabilityOp;
 import org.esa.beam.util.ProductUtils;
 
 import com.bc.ceres.core.ProgressMonitor;
@@ -103,8 +104,8 @@ public class CreateMerisOp extends Operator {
         if (copyCloudProbability) {
             Map<String, Product> pInput = new HashMap<String, Product>(1);
             pInput.put("input", sourceProduct);
-            cloudProbabilityProduct =
-            	GPF.createProduct("Meris.CloudProbability", GPF.NO_PARAMS, pInput);
+            cloudProbabilityProduct = GPF.createProduct("Meris.CloudProbability", GPF.NO_PARAMS, pInput);
+//            cloudProbabilityProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(CloudProbabilityOp.class), GPF.NO_PARAMS, pInput);
         }
         
         // Radiance to Reflectance

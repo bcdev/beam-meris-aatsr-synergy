@@ -13,11 +13,11 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.operators.common.BandArithmeticOp;
 import org.esa.beam.synergy.util.AerosolHelpers;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.math.LookupTable;
 import org.esa.beam.util.math.MathUtils;
+import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 import java.awt.Rectangle;
 import java.io.IOException;
@@ -218,8 +218,8 @@ public class RetrieveAerosolOceanOp extends Operator {
         AerosolHelpers.copyDownscaledTiePointGrids(synergyProduct, targetProduct, scalingFactor);
         AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, scalingFactor);
 
-        BandArithmeticOp bandArithmeticOp =
-                BandArithmeticOp.createBooleanExpressionBand(INVALID_EXPRESSION, synergyProduct);
+        BandMathsOp bandArithmeticOp =
+                BandMathsOp.createBooleanExpressionBand(INVALID_EXPRESSION, synergyProduct);
         invalidBand = bandArithmeticOp.getTargetProduct().getBandAt(0);
 
         setTargetBands();

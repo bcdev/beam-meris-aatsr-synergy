@@ -12,9 +12,9 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.framework.gpf.annotations.Parameter;
-import org.esa.beam.framework.gpf.operators.common.BandArithmeticOp;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.synergy.util.AerosolHelpers;
+import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 import java.awt.Rectangle;
 
@@ -73,8 +73,8 @@ public class LandOceanMergeOp extends Operator {
         AerosolHelpers.copyDownscaledTiePointGrids(synergyProduct, targetProduct, aveBlock);
         AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, aveBlock);
 
-        BandArithmeticOp bandArithmeticOp =
-                BandArithmeticOp.createBooleanExpressionBand(LAND_EXPRESSION, oceanProduct);
+        BandMathsOp bandArithmeticOp =
+                BandMathsOp.createBooleanExpressionBand(LAND_EXPRESSION, oceanProduct);
         isLandBand = bandArithmeticOp.getTargetProduct().getBandAt(0);
 
         createTargetProductBands();

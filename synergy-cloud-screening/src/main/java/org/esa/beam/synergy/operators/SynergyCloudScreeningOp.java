@@ -92,7 +92,7 @@ public class SynergyCloudScreeningOp extends Operator {
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct);
-        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
+//        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
         
         for (Band sourceBand : sourceProduct.getBands()) {
             Band targetBand;

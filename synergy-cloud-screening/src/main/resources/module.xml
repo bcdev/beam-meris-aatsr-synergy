@@ -72,7 +72,7 @@
             <helpID/>
             <placeAfter>synergyRecalibrateAATSRReflectances</placeAfter>
         </action>
-        -->
+         -->
         <action>
             <id>synergyCreateSynergy</id>
             <class>org.esa.beam.synergy.ui.CreateSynergyAction</class>
@@ -84,11 +84,10 @@
             <parent>synergy</parent>
             <placeAfter/>
             <helpID>synergyCreateSynergy</helpID>
-            <!--
             <placeAfter>synergyLandWaterReclassification</placeAfter>
             <separatorBefore>true</separatorBefore>
-            -->
         </action>
+        <!--
         <action>
             <id>synergyExtractFeatures</id>
             <class>org.esa.beam.synergy.ui.ExtractFeaturesAction</class>
@@ -101,6 +100,7 @@
             <helpID>synergyFeatureExtraction</helpID>
             <placeAfter>synergyCreateSynergy</placeAfter>
         </action>
+
         <action>
             <id>synergyClassifyFeatures</id>
             <class>org.esa.beam.synergy.ui.ClassifyFeaturesAction</class>
@@ -113,6 +113,7 @@
             <helpID>synergyFeatureClassification</helpID>
             <placeAfter>synergyExtractFeatures</placeAfter>
         </action>
+         -->
         <action>
             <id>synergyCloudScreening</id>
             <class>org.esa.beam.synergy.ui.SynergyCloudScreeningAction</class>
@@ -123,7 +124,7 @@
             <mnemonic/>
             <parent>synergy</parent>
             <helpID>synergyCloudScreening</helpID>
-            <placeAfter>synergyClassifyFeatures</placeAfter>
+            <placeAfter>synergyCreateSynergy</placeAfter>
         </action>
 
     </extension>
