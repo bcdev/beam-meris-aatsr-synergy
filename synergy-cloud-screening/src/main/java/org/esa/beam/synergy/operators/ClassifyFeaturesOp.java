@@ -334,13 +334,14 @@ public class ClassifyFeaturesOp extends Operator {
             // Source tiles
             final Tile[] sTiles = SynergyUtils.getSourceTiles(sBand, targetRectangle, pm, this);
             final Tile[] sTile_filled = SynergyUtils.getSourceTiles(sBand_cmcr_med3x3, targetRectangle, pm, this);
-            final Tile sTile_abun = getSourceTile(sBand_abun, targetRectangle, pm);
+            Tile sTile_abun = null;
             // Target tiles
             final Tile tTile_flags = targetTiles.get(tBand_flags);
             Tile tTile_abun = null;
-            if (computeCOT) tTile_abun = targetTiles.get(tBand_abun);
-            
-            final Rectangle sourceRectangle = rectCalculator.extend(targetRectangle);
+            if (computeCOT) {
+                sTile_abun = getSourceTile(sBand_abun, targetRectangle, pm);
+                tTile_abun = targetTiles.get(tBand_abun);
+            }
             
             // Shadow risk stuff
             Tile szaTile = null;
@@ -350,6 +351,7 @@ public class ClassifyFeaturesOp extends Operator {
             Tile altTile = null;
             Tile ctpTile = null;
             if (computeSH) {
+                final Rectangle sourceRectangle = rectCalculator.extend(targetRectangle);
                 szaTile = getSourceTile(sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME), sourceRectangle, pm);
                 saaTile = getSourceTile(sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_AZIMUTH_DS_NAME), sourceRectangle, pm);
                 vzaTile = getSourceTile(sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_ZENITH_DS_NAME), sourceRectangle, pm);

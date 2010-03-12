@@ -1,0 +1,96 @@
+<chapter id="sum.installation">
+    <title>Software Installation</title>
+
+    <sect1 id="sum.installation.plugin">
+        <title>Aerosol and SDR Retrieval as BEAM plugin</title>
+        <para>
+            As a BEAM plugin, the Aerosol and SDR Retrieval processor needs the following software to be installed
+            in advance:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    BEAM, version 4.7
+                </listitem>
+            </itemizedlist>
+            The BEAM software can be obtained from the BEAM download page
+            (www.brockmann-consult.de/beam).
+        </para>
+
+        <para>
+            The MERIS/(A)ATSR Synergy Toolbox software delivery consists of four jar files, the modules for
+            aerosol and SDR retrieval, cloud screening
+            and adjusted BRR (Bottom of Rayleigh Reflectance) and SDR (Surface Directional
+            Reflectance) modules, which provide additional Java classes used by the toolbox:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    synergy-aerosol-retrieval-1.1-SNAPSHOT.jar
+                </listitem>
+                <listitem>
+                    synergy-cloud-screening-1.1-SNAPSHOT.jar
+                </listitem>
+                <listitem>
+                    beam-meris-brr-2.1-SNAPSHOT.jar
+                </listitem>
+                <listitem>
+                    beam-meris-sdr-2.3-SNAPSHOT.jar
+                </listitem>
+            </itemizedlist>
+            These files need to be copied into the 'modules' folder of the BEAM
+            installation (<xref linkend="figure.installation.beammodules" xrefstyle="select: label"/>).
+            Note that existing versions of these jar files need to be replaced/overwritten.
+            There should not be more than one jar file for each of these modules in the
+                'modules' folder!
+            
+        </para>
+
+        <figure id="figure.installation.beammodules">
+            <title>Installation of MERIS/(A)ATSR Synergy Toolbox jar files in BEAM modules folder (shown for Windows XP)</title>
+            <graphic scale="60" fileref="figures/beammodules.png"/>
+        </figure>
+
+    </sect1>
+
+    <sect1 id="sum.installation.luts">
+        <title>Lookup Tables</title>
+        <para>
+            To be able to process all options properly, the MERIS/(A)ATSR Synergy Toolbox processor needs the following
+            lookup tables:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    Ocean aerosol LUTs (provided by FUB)
+                </listitem>
+                <listitem>
+                    Land aerosol LUTs (provided by USwansea)
+                </listitem>
+            </itemizedlist>
+            Currently, these LUTs are provided by FUB and USwansea on request.
+            Automatic access is in preparation. The LUTs can be deployed anywhere on disk, the path needs
+            to be specified in the User Interface when running the processor. 
+        </para>
+    </sect1>
+
+    <sect1 id="sum.installation.addons">
+        <title>Additional Requirements</title>
+        <para>
+            To be able to process all options properly, the MERIS/(A)ATSR Synergy Toolbox processor needs the following
+            add-ons to be installed in BEAM (if not already done):
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    MERIS L2 Auxdata module
+                </listitem>
+                <listitem>
+                    GETASSE30 DEM
+                </listitem>
+                <listitem>
+                    GETASSE30 DEM reader
+                </listitem>
+            </itemizedlist>
+            The MERIS L2 Auxdata and the GETASSE30 DEM reader can be installed with the
+            BEAM module manager. See BEAM help documentation for details
+            (http://www.brockmann-consult.de/beam/doc/help/visat/ModuleManager.html).
+            The GETASSE30 DEM can be downloaded from the BEAM download page. See also
+            BEAM help documentation
+            (http://www.brockmann-consult.de/beam/ doc/help/visat/GETASSE30ElevationModel.html).
+        </para>
+    </sect1>
+
+</chapter>

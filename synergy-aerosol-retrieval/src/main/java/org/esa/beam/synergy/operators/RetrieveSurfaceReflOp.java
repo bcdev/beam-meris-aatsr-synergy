@@ -172,6 +172,8 @@ public class RetrieveSurfaceReflOp extends Operator {
 
         ProductUtils.copyGeoCoding(synergyProduct, targetProduct);
         ProductUtils.copyMetadata(synergyProduct, targetProduct);
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyTiePointGrids(aerosolProduct, targetProduct);
         AerosolHelpers.copySynergyFlagBands(synergyProduct, targetProduct);
 

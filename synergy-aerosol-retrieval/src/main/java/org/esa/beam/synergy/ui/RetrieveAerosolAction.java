@@ -22,7 +22,7 @@ public class RetrieveAerosolAction extends AbstractVisatAction {
                 new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(RetrieveAerosolOp.class),
                         getAppContext(),
                         "Synergy Aerosol and SDR Retrieval",
-                        "synergyAerosolOverall");
+                        "synergyhelp");
         dialog.setTargetProductNameSuffix("_AERO");
         dialog.show();
     }

@@ -4,8 +4,12 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
 
-    <tocitem text="Synergy Aerosol Retrieval">
-        <tocitem text="Synergy Aerosol Retrieval over Land" target="synergyAerosolLand"/>
-		<tocitem text="Synergy Aerosol Retrieval over Ocean" target="synergyAerosolOcean"/>
+    <tocitem text="MERIS/(A)ATSR Synergy Toolbox" target="synergyhelp">
+        <tocitem text="Introduction" target="synergyhelpIntro"/>
+        <tocitem text="Software Installation" target="synergyhelpInstall"/>
+        <tocitem text="Product Description" target="synergyhelpProducts"/>
+        <tocitem text="Creating a Synergy Product" target="synergyhelpCreateSynergy"/>
+        <tocitem text="Aerosol Retrieval" target="synergyhelpAerosolretrieval"/>
+        <tocitem text="Cloudscreening" target="synergyhelpCloudscreening"/>
     </tocitem>
 </toc>

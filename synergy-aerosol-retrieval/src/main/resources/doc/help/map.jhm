@@ -5,7 +5,13 @@
 
 <map version="2.0">
 
-    <mapID target="synergyAerosolLand" url="aerosolretrieval/RetrieveAerosolLand.html"/>
-	<mapID target="synergyAerosolOcean" url="aerosolretrieval/RetrieveAerosolOcean.html"/>
+    <mapID target="synergyhelp" url="synergyhelp/synergyhelp.html"/>
+    <mapID target="synergyhelpIndex" url="synergyhelp/index.html"/>
+    <mapID target="synergyhelpIntro" url="synergyhelp/ch01.html"/>
+    <mapID target="synergyhelpInstall" url="synergyhelp/ch02.html"/>
+    <mapID target="synergyhelpProducts" url="synergyhelp/ch03.html"/>
+    <mapID target="synergyhelpCreateSynergy" url="synergyhelp/ch04.html"/>
+    <mapID target="synergyhelpAerosolretrieval" url="synergyhelp/ch05.html"/>
+    <mapID target="synergyhelpCloudscreening" url="synergyhelp/ch06.html"/>
 
 </map>

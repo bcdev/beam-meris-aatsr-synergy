@@ -16,7 +16,7 @@ public class SynergyCloudScreeningAction extends AbstractVisatAction {
                 		OperatorSpi.getOperatorAlias(SynergyCloudScreeningOp.class),
                         getAppContext(),
                         "Generates a synergy product with cloud flags and cloud index",
-                        "synergyCloudScreening");
+                        "synergyhelp");
         dialog.setTargetProductNameSuffix("_CS");
         dialog.show();
     }

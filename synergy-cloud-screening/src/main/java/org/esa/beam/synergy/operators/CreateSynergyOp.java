@@ -67,25 +67,30 @@ public class CreateSynergyOp extends Operator {
                label = "Copy MERIS TOA radiance bands")
     boolean copyToaRadiances;
 
-    @Parameter(defaultValue = "true",
-               description = "Adds a band with MERIS cloud probability",
-               label = "Copy MERIS Cloud Probability (BEAM-FUB)")
-    boolean copyCloudProbability;
-    
-    @Parameter(defaultValue = "false",
-               description = "Add two bands containing MERIS top preassure and cloud mask",
-               label = "Copy MERIS Cloud Top Pressure and Mask (GLOBCOVER)")
-    boolean copyCloudTopPreassureAndMask;
+    // options 2-5 removed for final version, 2010/03/12
+//    @Parameter(defaultValue = "true",
+//               description = "Adds a band with MERIS cloud probability",
+//               label = "Copy MERIS Cloud Probability (BEAM-FUB)")
+//    boolean copyCloudProbability;
+    boolean copyCloudProbability = true;
 
-    @Parameter(defaultValue = "false",
-               description = "Adds a band with Land Water Reclassification",
-               label = "Copy Land Water Reclassification")
-    boolean copyLandWaterReclass;
-    
-    @Parameter(defaultValue = "false",
-               description = "Create DEM elevation and orthorectify",
-               label = "Create DEM elevation and orthorectify")
-    boolean createDEMelevation;
+//    @Parameter(defaultValue = "false",
+//               description = "Add two bands containing MERIS top preassure and cloud mask",
+//               label = "Copy MERIS Cloud Top Pressure and Mask (GLOBCOVER)")
+//    boolean copyCloudTopPreassureAndMask;
+    boolean copyCloudTopPreassureAndMask = false;
+
+//    @Parameter(defaultValue = "false",
+//               description = "Adds a band with Land Water Reclassification",
+//               label = "Copy Land Water Reclassification")
+//    boolean copyLandWaterReclass;
+    boolean copyLandWaterReclass = false;
+
+//    @Parameter(defaultValue = "false",
+//               description = "Create DEM elevation and orthorectify",
+//               label = "Create DEM elevation and orthorectify")
+//    boolean createDEMelevation;
+    boolean createDEMelevation = false;
 
     @Parameter(defaultValue = "true",
                description = "Subset MERIS and AATSR overlapped areas",

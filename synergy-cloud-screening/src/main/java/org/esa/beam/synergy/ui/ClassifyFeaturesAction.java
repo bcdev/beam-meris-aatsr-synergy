@@ -12,7 +12,7 @@ import org.esa.beam.visat.actions.AbstractVisatAction;
  * Action for classifying features.
  *
  * @author Ralf Quast
- * @version $Revision: 5655 $ $Date: 2009-06-16 19:53:48 +0200 (Di, 16 Jun 2009) $
+ * @version $Revision: 5655 $ $Date: 2009-06-16 19:53:48 +0200 (mar, 16 jun 2009) $
  */
 public class ClassifyFeaturesAction extends AbstractVisatAction {
     @Override
@@ -20,7 +20,7 @@ public class ClassifyFeaturesAction extends AbstractVisatAction {
         final DefaultSingleTargetProductDialog dialog =
                 new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(ClassifyFeaturesOp.class),
                         getAppContext(),
-                        "Feature Classification",
+                        "Synergy Product Classification",
                         "synergyFeatureClassification");
         dialog.setTargetProductNameSuffix("_CLASS");
         dialog.show();

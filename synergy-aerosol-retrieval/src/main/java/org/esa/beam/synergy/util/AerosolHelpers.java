@@ -298,6 +298,9 @@ public class AerosolHelpers {
 
         addTpg(targetProduct, szaDownscaledBand, "sun_zenith");
         addTpg(targetProduct, saaDownscaledBand, "sun_azimuth");
+        // unscaled latitude/longitude TPGs were added by 'copyGeoCoding', we have to remove them before downscaling
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         addTpg(targetProduct, latitudeDownscaledBand, "latitude");
         addTpg(targetProduct, longitudeDownscaledBand, "longitude");
         addTpg(targetProduct, altitudeDownscaledBand, "altitude");
@@ -393,7 +396,10 @@ public class AerosolHelpers {
                 tpgIndex++;
             }
         }
-        TiePointGrid tpg = new TiePointGrid(band.getName(),
+        int bandSuffixLength = RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR.length() + 1;
+        int bandNameLength = band.getName().length();
+        String tpgName = band.getName().substring(0,bandNameLength-bandSuffixLength);
+        TiePointGrid tpg = new TiePointGrid(tpgName,
                                             rescaledWidth,
                                             rescaledHeight,
                                             0.0f, 0.0f, 1.0f, 1.0f, tpgData);

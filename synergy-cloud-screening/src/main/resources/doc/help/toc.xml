@@ -4,10 +4,12 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
 
-    <tocitem text="Synergy Cloud Screening">
-		<tocitem text="Create Synergy" target="synergyCreateSynergy"/>		
-        <tocitem text="Feature Extraction" target="synergyFeatureExtraction"/>
-		<tocitem text="Feature Classification" target="synergyFeatureClassification"/>
-		<tocitem text="Cloud Screening" target="synergyCloudScreening"/>
+    <tocitem text="MEPIX - MERIS Pixel Identification Tool" target="mepixChain">
+        <tocitem text="MEPIX - User Manual" target="mepixIndex">
+            <tocitem text="Introduction" target="mepixIntro"/>
+            <tocitem text="Software Installation" target="mepixInstall"/>
+            <tocitem text="Product Description" target="mepixProducts"/>
+            <tocitem text="User Interface" target="mepixGui"/>
+        </tocitem>
     </tocitem>
 </toc>

@@ -60,7 +60,6 @@
 			<artifactId>synergy-cloud-screening</artifactId>
 			<version>1.1-SNAPSHOT</version>
 		</dependency>
-
         <dependency>
             <groupId>ucar.netcdf</groupId>
             <artifactId>lib-netcdf</artifactId>

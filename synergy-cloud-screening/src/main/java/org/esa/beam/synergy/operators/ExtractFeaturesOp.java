@@ -36,7 +36,7 @@ import static java.lang.Math.*;
  * Operator for extracting cloud features from TOA reflectances.
  *
  * @author Ralf Quast, Jordi Munyoz
- * @version $Revision: 7612 $ $Date: 2009-12-18 19:21:00 +0100 (Fr, 18 Dez 2009) $
+ * @version $Revision: 8155 $ $Date: 2010-01-29 17:30:33 +0100 (vie, 29 ene 2010) $
  */
 @OperatorMetadata(alias = "synergy.ExtractFeatures",
                   version = "1.0-SNAPSHOT",
@@ -48,15 +48,15 @@ public class ExtractFeaturesOp extends Operator {
 	private static final double INVERSE_SCALING_FACTOR = 10000.0;
 	
     @SourceProduct(alias = "source",
-                   label = "Name (Synergy TOA reflectance product)",
-                   description = "Select a Synergy TOA reflectance product")
+                   label = "Name (Synergy product)",
+                   description = "Select a Synergy product")
     private Product sourceProduct;
     
 	@TargetProduct(description = "The target product. Contains all extracted features.")
     private Product targetProduct;
 
     @Parameter(defaultValue = "true",
-               label = "Extract visual brightness and whiteness")
+               label = "Extract VIS brightness and whiteness")
     boolean extractVis;
 
     @Parameter(defaultValue = "false",
@@ -95,17 +95,19 @@ public class ExtractFeaturesOp extends Operator {
                label = "Extract surface pressure")
     boolean extract_spr;
 
-    @Parameter(defaultValue="true",
+    @Parameter(defaultValue = "true",
                label = "Apply strayligth correction to surface pressure extraction",
                description="If 'true' the algorithm will apply straylight correction.")
     public boolean straylightCorr;
     
-    @Parameter(defaultValue="true",
+    /*
+    @Parameter(defaultValue = "true",
                label = "Use a tropical or a USS atmosphere model to surface pressure extraction",
                description="If 'true' the algorithm will apply Tropical instead of USS atmosphere model.")
-    public boolean tropicalAtmosphere;
+               */
+    public boolean tropicalAtmosphere = true;
 
-    @Parameter(defaultValue = "true",
+    @Parameter(defaultValue = "false",
                label = "Extract surface pressure difference")
     boolean extract_sprd;
     

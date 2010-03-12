@@ -36,7 +36,7 @@ public class CreateSynergyAction extends AbstractVisatAction {
                 new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(CreateSynergyOp.class),
                         getAppContext(),
                         "Create Synergy Product",
-                        "synergyCreateSynergy");
+                        "synergyhelp");
         dialog.setTargetProductNameSuffix("_synergy");
         dialog.show();
     }

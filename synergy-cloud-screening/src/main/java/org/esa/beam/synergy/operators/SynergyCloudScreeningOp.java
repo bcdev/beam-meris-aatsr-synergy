@@ -23,7 +23,7 @@ import org.esa.beam.util.ProductUtils;
                   version = "1.0",
                   authors = "Jordi Munyoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2009 IPL-UV",
-                  description = "Create a synergy product with cloud flags and index.")
+                  description = "Add cloud flags and index to synergy product.")
 
 public class SynergyCloudScreeningOp extends Operator {
     
@@ -41,7 +41,7 @@ public class SynergyCloudScreeningOp extends Operator {
     private boolean useForwardView;
     
     @Parameter(defaultValue = "true",
-            label = "Compute cloud abundance",
+            label = "Compute cloud index",
             description = "Compute cloud index.")
     private boolean computeCOT;
     
@@ -80,19 +80,23 @@ public class SynergyCloudScreeningOp extends Operator {
         // Copy cloudProduct bands to targetProduct
         
         ProductUtils.copyFlagBands(cloudProduct, targetProduct);
-        targetProduct.addBand(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX));
+        if (computeCOT) {
+            targetProduct.addBand(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX));
+            targetProduct.getBand(SynergyConstants.B_CLOUDINDEX).
+            setSourceImage(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX).getSourceImage());
+        }
         // Copy contents
         targetProduct.getBand(SynergyConstants.B_CLOUDFLAGS).
             setSourceImage(cloudProduct.getBand(SynergyConstants.B_CLOUDFLAGS).getSourceImage());
-        targetProduct.getBand(SynergyConstants.B_CLOUDINDEX).
-            setSourceImage(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX).getSourceImage());
         
         // And copy the sourceProduct to targetProduct
         
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct);
-//        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
+        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
         
         for (Band sourceBand : sourceProduct.getBands()) {
             Band targetBand;
