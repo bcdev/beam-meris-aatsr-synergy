@@ -5,37 +5,41 @@
   <mapID target="sum.introduction" url="ch01.html"/>
   <mapID target="sum.introduction.scope" url="ch01.html#sum.introduction.scope"/>
   <mapID target="sum.introduction.objectives" url="ch01s02.html"/>
+  <mapID target="sum.introduction.readerLevel" url="ch01s03.html"/>
+  <mapID target="sum.introduction.acronymsAndNomenclature" url="ch01s04.html"/>
+  <mapID target="sum.introduction.acronyms" url="ch01s04.html#sum.introduction.acronyms"/>
+  <mapID target="sum.introduction.nomenclature" url="ch01s04.html#sum.introduction.nomenclature"/>
+  <mapID target="sum.introduction.referenceDocuments" url="ch01s05.html"/>
   <mapID target="sum.installation" url="ch02.html"/>
   <mapID target="sum.installation.plugin" url="ch02.html#sum.installation.plugin"/>
   <mapID target="figure.installation.beammodules" url="ch02.html#figure.installation.beammodules"/>
   <mapID target="sum.installation.luts" url="ch02s02.html"/>
   <mapID target="sum.installation.addons" url="ch02s03.html"/>
   <mapID target="sum.products" url="ch03.html"/>
-  <mapID target="sum.processor" url="ch04.html"/>
-  <mapID target="sum.processor.io" url="ch04.html#sum.processor.io"/>
-  <mapID target="figure.processor.iotab" url="ch04.html#figure.processor.iotab"/>
-  <mapID target="sum.processor.processing" url="ch04s02.html"/>
-  <mapID target="figure.processor.processingtab" url="ch04s02.html#figure.processor.processingtab"/>
-  <mapID target="sum.processor.control" url="ch04s03.html"/>
-  <mapID target="figure.processor.controlbuttons" url="ch04s03.html#figure.processor.controlbuttons"/>
-  <mapID target="sum.processor.gpt" url="ch04s04.html"/>
-  <mapID target="figure.processor.gpt" url="ch04s04.html#figure.processor.gpt"/>
-  <mapID target="sum.processor" url="ch05.html"/>
-  <mapID target="sum.processor.io" url="ch05.html#sum.processor.io"/>
-  <mapID target="figure.processor.iotab" url="ch05.html#figure.processor.iotab"/>
-  <mapID target="sum.processor.processing" url="ch05s02.html"/>
-  <mapID target="figure.processor.processingtab" url="ch05s02.html#figure.processor.processingtab"/>
-  <mapID target="sum.processor.control" url="ch05s03.html"/>
-  <mapID target="figure.processor.controlbuttons" url="ch05s03.html#figure.processor.controlbuttons"/>
-  <mapID target="sum.processor.gpt" url="ch05s04.html"/>
-  <mapID target="figure.processor.gpt" url="ch05s04.html#figure.processor.gpt"/>
-  <mapID target="sum.processor" url="ch06.html"/>
-  <mapID target="sum.processor.io" url="ch06.html#sum.processor.io"/>
-  <mapID target="figure.processor.iotab" url="ch06.html#figure.processor.iotab"/>
-  <mapID target="sum.processor.processing" url="ch06s02.html"/>
-  <mapID target="figure.processor.processingtab" url="ch06s02.html#figure.processor.processingtab"/>
-  <mapID target="sum.processor.control" url="ch06s03.html"/>
-  <mapID target="figure.processor.controlbuttons" url="ch06s03.html#figure.processor.controlbuttons"/>
-  <mapID target="sum.processor.gpt" url="ch06s04.html"/>
-  <mapID target="figure.processor.gpt" url="ch06s04.html#figure.processor.gpt"/>
+  <mapID target="sum.processor.preprocessor" url="ch04.html"/>
+  <mapID target="figure.visat.synergy" url="ch04.html#figure.visat.synergy"/>
+  <mapID target="sum.processor.preprocessor.io" url="ch04.html#sum.processor.preprocessor.io"/>
+  <mapID target="figure.processor.preprocessor.iotab" url="ch04.html#figure.processor.preprocessor.iotab"/>
+  <mapID target="sum.processor.preprocessor.control" url="ch04s02.html"/>
+  <mapID target="figure.processor.preprocessor.controlbuttons" url="ch04s02.html#figure.processor.preprocessor.controlbuttons"/>
+  <mapID target="sum.processor.preprocessor.gpt" url="ch04s03.html"/>
+  <mapID target="figure.processor.gpt" url="ch04s03.html#figure.processor.gpt"/>
+  <mapID target="sum.processor.cloudscreening" url="ch05.html"/>
+  <mapID target="sum.processor.cloudscreening.io" url="ch05.html#sum.processor.cloudscreening.io"/>
+  <mapID target="figure.processor.cloudscreening.iotab" url="ch05.html#figure.processor.cloudscreening.iotab"/>
+  <mapID target="sum.processor.cloudscreening.processing" url="ch05s02.html"/>
+  <mapID target="figure.processor.cloudscreening.processingtab" url="ch05s02.html#figure.processor.cloudscreening.processingtab"/>
+  <mapID target="sum.processor.cloudscreening.control" url="ch05s03.html"/>
+  <mapID target="figure.processor.cloudscreening.controlbuttons" url="ch05s03.html#figure.processor.cloudscreening.controlbuttons"/>
+  <mapID target="sum.processor.cloudscreening.gpt" url="ch05s04.html"/>
+  <mapID target="figure.processor.cloudscreening.gpt" url="ch05s04.html#figure.processor.cloudscreening.gpt"/>
+  <mapID target="sum.processor.aerosolretrieval" url="ch06.html"/>
+  <mapID target="sum.processor.aerosolretrieval.io" url="ch06.html#sum.processor.aerosolretrieval.io"/>
+  <mapID target="figure.processor.aerosolretrieval.iotab" url="ch06.html#figure.processor.aerosolretrieval.iotab"/>
+  <mapID target="sum.processor.aerosolretrieval" url="ch06s02.html"/>
+  <mapID target="figure.processor.aerosolretrieval" url="ch06s02.html#figure.processor.aerosolretrieval"/>
+  <mapID target="sum.processor.aerosolretrieval.control" url="ch06s03.html"/>
+  <mapID target="figure.processor.aerosolretrieval.controlbuttons" url="ch06s03.html#figure.processor.aerosolretrieval.controlbuttons"/>
+  <mapID target="sum.processor.aerosolretrieval.gpt" url="ch06s04.html"/>
+  <mapID target="figure.processor.aerosolretrieval.gpt" url="ch06s04.html#figure.processor.aerosolretrieval.gpt"/>
 </map>

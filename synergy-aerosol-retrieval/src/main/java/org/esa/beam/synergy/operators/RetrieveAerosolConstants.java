@@ -25,7 +25,7 @@ public class RetrieveAerosolConstants {
     public static final String VEG_SPEC_PARAM_DESCRIPTION = "File containing vegetation surface reflectance spectrum";
     
     public static final String LUT_PATH_PARAM_NAME    = "lutpath";
-    public static final String LUT_PATH_PARAM_LABEL = "Path to LUTs for ocean aerosol algorithm";
+    public static final String LUT_PATH_PARAM_LABEL = "Path to LUTs for land and ocean aerosol algorithms";
     public static final String LUT_PATH_PARAM_DESCRIPTION = "File path to LookUpTables root directory";
     public static final String LUT_PATH_PARAM_DEFAULT = "C:/synergy/aerosolLUTs";
     

@@ -29,7 +29,7 @@ public class SynergyCloudScreeningOp extends Operator {
     
     @SourceProduct(alias = "source",
                    label ="Name (Preprocessed product)",
-                   description = "Select a Synergy product")
+                   description = "Select a collocated MERIS AATSR product obtained from preprocessing.")
     private Product sourceProduct;
     
     @TargetProduct(description = "The target product. Contains a synergy product with cloud screening masks.")
@@ -57,7 +57,9 @@ public class SynergyCloudScreeningOp extends Operator {
 	    
     @Override
     public void initialize() throws OperatorException {
-    	
+
+        SynergyUtils.validatePreprocessedProduct(sourceProduct);
+
     	// Classify features params
         Map<String, Object> cloudParams = new HashMap<String, Object>(4);
         cloudParams.put("useForwardView", useForwardView);

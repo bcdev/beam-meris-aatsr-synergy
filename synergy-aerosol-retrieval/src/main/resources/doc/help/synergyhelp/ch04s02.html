@@ -1,43 +1,10 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4.2. 'Processing Parameters' Tab Pane</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch04.html" title="Chapter 4. The Processor for Creating a Synergy Project"><link rel="prev" href="ch04.html" title="Chapter 4. The Processor for Creating a Synergy Project"><link rel="next" href="ch04s03.html" title="4.3. Control Buttons"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.processing"></a>4.2. 'Processing Parameters' Tab Pane</h2></div></div></div><div class="figure"><a name="figure.processor.processingtab"></a><div class="figure-contents"><div><img src="figures/processingtab.png" alt="'Processing Parameters' Tab Pane"></div></div><p class="title"><b>Figure 4.2. 'Processing Parameters' Tab Pane</b></p></div><br class="figure-break">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4.2. Control Buttons</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch04.html" title="Chapter 4. The Synergy Preprocessor"><link rel="prev" href="ch04.html" title="Chapter 4. The Synergy Preprocessor"><link rel="next" href="ch04s03.html" title="4.3. Processing from command line"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.preprocessor.control"></a>4.2. Control Buttons</h2></div></div></div>
 
-        This tab pane consists of the following components:
+        From the 'I/O Parameters' tab pane, the following control buttons can be accessed:
         <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                 'Retrieve AODs over ocean': If this checkbox is selected, the aerosol optical depths will
-                be retrieved over ocean.
+                 'Run': If this button is clicked, the processor will start the computations.
             </li><li style="list-style-type: disc">
-                'Path to LUTs for ocean aerosol algorithm': Text field to set the path to the
-                lookup tables required for the ocean aerosol retrieval. See [2] for more details.
+                 'Close': If this button is clicked, the 'Synergy Aerosol and SDR Retrieval' dialog is closed.
             </li><li style="list-style-type: disc">
-                 'Retrieve AODs over land': If this checkbox is selected, the aerosol optical depths will
-                be retrieved over land.
-            </li><li style="list-style-type: disc">
-                'Path to LUTs for land aerosol algorithm': Text field to set the path to the
-                lookup tables required for the land aerosol retrieval. See [3] for more details.
-            </li><li style="list-style-type: disc">
-                'Soil surface reflectance spectrum': Text field to set the filename containing
-                the soil surface reflectance spectrum. The default is 'spec_soil.dat' and is included
-                in the software package.
-            </li><li style="list-style-type: disc">
-                'Vegetation surface reflectance spectrum': Text field to set the filename containing
-                the vegetation surface reflectance spectrum. The default is 'spec_veg.dat' and is included
-                in the software package.
-            </li><li style="list-style-type: disc">
-                 'List of land aerosol models': Text field to set a comma separated list of the indices of
-                the aerosol models to be used for the land aerosol retrieval. The default is '8,2'.
-                See [3] for more details.
-            </li><li style="list-style-type: disc">
-                 'Pixels to average (n x n, with n odd number) for AOD retrieval': Text field to set
-                the number of pixels to average over in the aerosol retrieval. The default number is '11',
-                which corresponds to a square with 5 pixels to each side of a center pixel.
-            </li><li style="list-style-type: disc">
-                 'Interpolate AOD gaps': If this checkbox is selected, gaps in the retrieved AODs will
-                be interpolated by a Boxcar interpolation.
-            </li><li style="list-style-type: disc">
-                'Rescale to original resolution after interpolation of AOD gaps': If this checkbox is selected,
-                the retrieved AODs retrieved on the coarse n x n grid will
-                be rescaled to the original resolution by a bicubic interpolation.
-            </li><li style="list-style-type: disc">
-                'Retrieve SDRs from rescaled AODs (over land only)': If this checkbox is selected,
-                SDRs will be retrieved from rescaled AODs. This computation is performed over land only and
-                requires AOD rescaling (previous checkbox).
-            </li></ul></div></div></body></html>
+                 'Help': If this button is clicked, this manual is displayed as online help.
+            </li></ul></div><div class="figure"><a name="figure.processor.preprocessor.controlbuttons"></a><div class="figure-contents"><div><img src="figures/controlbuttons.png" alt="Synergy Preprocessor: control buttons"></div></div><p class="title"><b>Figure 4.3. Synergy Preprocessor: control buttons</b></p></div><br class="figure-break"></div></body></html>

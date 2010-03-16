@@ -6,8 +6,8 @@
                 <!ENTITY ch02     SYSTEM "ch02-installation.xml">
                 <!ENTITY ch03     SYSTEM "ch03-products.xml">
 				<!ENTITY ch04     SYSTEM "ch04-createsynergy.xml">
-				<!ENTITY ch05     SYSTEM "ch05-aerosolretrieval.xml">
-				<!ENTITY ch06     SYSTEM "ch06-cloudscreening.xml">
+				<!ENTITY ch05     SYSTEM "ch05-cloudscreening.xml">
+                <!ENTITY ch06     SYSTEM "ch06-aerosolretrieval.xml">
                 ]>
 
 <book id="sum">

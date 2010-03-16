@@ -28,8 +28,8 @@ import java.io.File;
 public class RetrieveAerosolOp extends Operator {
 
     @SourceProduct(alias = "source",
-                   label = "Name (Synergy product with cloud flags)",
-                   description = "Select a collocated MERIS AATSR product.")
+                   label = "Name (Preprocessed product with cloud flags)",
+                   description = "Select a collocated MERIS AATSR product obtained from preprocessing AND cloudscreening.")
     private Product synergyProduct;
 
 
@@ -41,15 +41,15 @@ public class RetrieveAerosolOp extends Operator {
                label = "Retrieve AODs over ocean")
     boolean computeOcean;
 
-    @Parameter(defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
-               description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
-    private String lutPath;
-
     @Parameter(defaultValue = "true",
                description = "Compute land AODs",
                label = "Retrieve AODs over land")
     boolean computeLand;
+
+    @Parameter(defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
+               description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
+               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
+    private String lutPath;
 
 //    @Parameter(defaultValue = RetrieveAerosolConstants.LUT_LAND_PATH_PARAM_DEFAULT,
 //               description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
@@ -111,6 +111,8 @@ public class RetrieveAerosolOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
+
+        SynergyUtils.validateCloudScreeningProduct(synergyProduct);
 
         // make sure aveBlock is a odd number
         if ((aveBlock % 2) == 0) {

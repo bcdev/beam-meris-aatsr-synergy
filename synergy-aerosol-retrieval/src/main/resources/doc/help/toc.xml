@@ -7,9 +7,9 @@
     <tocitem text="MERIS/(A)ATSR Synergy Toolbox" target="synergyhelp">
         <tocitem text="Introduction" target="synergyhelpIntro"/>
         <tocitem text="Software Installation" target="synergyhelpInstall"/>
-        <tocitem text="Product Description" target="synergyhelpProducts"/>
-        <tocitem text="Creating a Synergy Product" target="synergyhelpCreateSynergy"/>
-        <tocitem text="Aerosol Retrieval" target="synergyhelpAerosolretrieval"/>
-        <tocitem text="Cloudscreening" target="synergyhelpCloudscreening"/>
+        <tocitem text="MERIS/(A)ATSR Synergy Toolbox Products" target="synergyhelpProducts"/>
+        <tocitem text="Preprocessing" target="synergyhelpCreateSynergy"/>
+        <tocitem text="Cloud Screening" target="synergyhelpCloudscreening"/>
+        <tocitem text="Aerosol Retrieval and Atmospheric Correction" target="synergyhelpAerosolretrieval"/>
     </tocitem>
 </toc>

@@ -97,17 +97,43 @@ public class SynergyUtils {
     	System.out.println(msg);
     }
 
+    public static void validateCloudScreeningProduct(final Product cloudScreeningProduct) {
+        validatePreprocessedProduct(cloudScreeningProduct);
+        List<String> sourceBandNameList = Arrays.asList(cloudScreeningProduct.getBandNames());
+        if (!sourceBandNameList.contains(SynergyConstants.B_CLOUDFLAGS)) {
+            String message = MessageFormat.format("Missing required flag band in input product: {0} . Not a preprocessed product with cloud flags?",
+                                                  SynergyConstants.B_CLOUDFLAGS);
+            throw new OperatorException(message);
+        }
+    }
+
+    public static void validatePreprocessedProduct(final Product preprocessedProduct) {
+        final String missedBand = validatePreprocessedProductBands(preprocessedProduct);
+        if (!missedBand.isEmpty()) {
+            String message = MessageFormat.format("Missing required band in input product: {0} . Not a preprocessed product?",
+                                                  missedBand + "_MERIS");
+            throw new OperatorException(message);
+        }
+        final String missedTPG = validateMerisProductTpgs(preprocessedProduct);
+        if (!missedTPG.isEmpty()) {
+            String message = MessageFormat.format("Missing required tie-point grid in input product: {0} . Not a preprocessed product?",
+                                                  missedTPG);
+            throw new OperatorException(message);
+        }
+    }
+
+
     public static void validateMerisProduct(final Product merisProduct) {
         final String missedBand = validateMerisProductBands(merisProduct);
         if (!missedBand.isEmpty()) {
-            String message = MessageFormat.format("Missing required band in product {0}: {1}",
-                                                  merisProduct.getName(), missedBand);
+            String message = MessageFormat.format("Missing required band in MERIS input product: {0} . Not a L1b product?",
+                                                  missedBand);
             throw new OperatorException(message);
         }
         final String missedTPG = validateMerisProductTpgs(merisProduct);
         if (!missedTPG.isEmpty()) {
-            String message = MessageFormat.format("Missing required tie-point grid in product {0}: {1}",
-                                                  merisProduct.getName(), missedTPG);
+            String message = MessageFormat.format("Missing required tie-point grid in MERIS input product: {0} . Not a L1b product?",
+                                                  missedTPG);
             throw new OperatorException(message);
         }
     }
@@ -116,18 +142,39 @@ public class SynergyUtils {
         if (aatsrProduct != null) {
             final String missedBand = validateAatsrProductBands(aatsrProduct);
             if (!missedBand.isEmpty()) {
-                String message = MessageFormat.format("Missing required band in product {0}: {1}",
-                                                      aatsrProduct.getName(), missedBand);
+                String message = MessageFormat.format("Missing required band in AATSR input product: {0} . Not a L1b product?",
+                                                  missedBand);
                 throw new OperatorException(message);
             }
             final String missedTPG = validateAatsrProductTpgs(aatsrProduct);
             if (!missedTPG.isEmpty()) {
-                String message = MessageFormat.format("Missing required tie-point grid in product {0}: {1}",
-                                                      aatsrProduct.getName(), missedTPG);
+                String message = MessageFormat.format("Missing required tie-point grid in AATSR input product: {0} . Not a L1b product?",
+                                                  missedTPG);
                 throw new OperatorException(message);
             }
         }
     }
+
+    private static String validatePreprocessedProductBands(Product product) {
+           List<String> sourceBandNameList = Arrays.asList(product.getBandNames());
+           for (String bandName : EnvisatConstants.MERIS_L1B_SPECTRAL_BAND_NAMES) {
+               if (!sourceBandNameList.contains(bandName + "_MERIS")) {
+                   return bandName;
+               }
+           }
+           if (!sourceBandNameList.contains(EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME + "_MERIS")) {
+               return EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME;
+           }
+
+           for (String bandName : EnvisatConstants.AATSR_L1B_BAND_NAMES) {
+                if (!sourceBandNameList.contains(bandName + "_AATSR")) {
+                    return bandName;
+                }
+            }
+
+           return "";
+       }
+
 
     private static String validateMerisProductBands(Product product) {
         List<String> sourceBandNameList = Arrays.asList(product.getBandNames());

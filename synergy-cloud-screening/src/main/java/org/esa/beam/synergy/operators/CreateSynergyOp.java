@@ -62,10 +62,11 @@ public class CreateSynergyOp extends Operator {
     @TargetProduct(description = "SYNERGY target product.")
     Product targetProduct;
 
-    @Parameter(defaultValue = "true",
-               description = "Copy the original MERIS radiance bands",
-               label = "Copy MERIS TOA radiance bands")
-    boolean copyToaRadiances;
+//    @Parameter(defaultValue = "true",
+//               description = "Copy the original MERIS radiance bands",
+//               label = "Copy MERIS TOA radiance bands")
+//    boolean copyToaRadiances;
+    boolean copyToaRadiances = true;
 
     // options 2-5 removed for final version, 2010/03/12
 //    @Parameter(defaultValue = "true",
@@ -92,10 +93,11 @@ public class CreateSynergyOp extends Operator {
 //    boolean createDEMelevation;
     boolean createDEMelevation = false;
 
-    @Parameter(defaultValue = "true",
-               description = "Crop MERIS/AATSR non-overlapping areas",
-               label = "Crop MERIS/AATSR non-overlapping areas")
-    boolean subsetOvAreas;
+//    @Parameter(defaultValue = "true",
+//               description = "Crop MERIS/AATSR non-overlapping areas",
+//               label = "Crop MERIS/AATSR non-overlapping areas")
+//    boolean subsetOvAreas;
+    boolean subsetOvAreas = true;
 
     @Override
     public void initialize() throws OperatorException {
@@ -106,16 +108,16 @@ public class CreateSynergyOp extends Operator {
         merisParams.put("copyCloudProbability", copyCloudProbability);
         merisParams.put("copyCloudTopPreassureAndMask", copyCloudTopPreassureAndMask);
         merisParams.put("copyLandWaterReclass", copyLandWaterReclass);
+        SynergyUtils.validateMerisProduct(merisSourceProduct);
         Product merisProduct =
             GPF.createProduct(OperatorSpi.getOperatorAlias(CreateMerisOp.class), merisParams, merisSourceProduct);
 
-        SynergyUtils.validateMerisProduct(merisProduct);
-        
+
         // AATSR product
+        SynergyUtils.validateAatsrProduct(aatsrSourceProduct);
         Product aatsrProduct =
             GPF.createProduct(OperatorSpi.getOperatorAlias(CreateAatsrOp.class), GPF.NO_PARAMS, aatsrSourceProduct);
-        
-        SynergyUtils.validateAatsrProduct(aatsrProduct);
+
 
         // TODO: MERIS_FRG and MERIS_FSG products are already orthorectified. Detect this kind
         // of products and save the work of having to create the elevation and orthorectified bands.

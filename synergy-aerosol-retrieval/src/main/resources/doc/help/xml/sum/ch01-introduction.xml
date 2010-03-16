@@ -3,8 +3,9 @@
 
     <sect1 id="sum.introduction.scope">
         <title>Scope</title>
-        <para>This document is part 1 of the software user manual (SUM) for the MERIS/(A)ATSR Synergy Toolbox,
-            This issue describes the aerosol retrieval branch, whereas part 2 describes the cloud screening.
+        <para>This document is the software user manual (SUM) for the MERIS/(A)ATSR Synergy Toolbox,
+            describeing the Preprocessing , the Cloud Screening, and the Aerosol Retrieval / Atmospheric Correction
+            modules.
             </para>
     </sect1>
 
@@ -34,7 +35,7 @@
             This SUM specifically describes the software developed for ocean and land aerosol and SDR retrieval.
         </para>
     </sect1>
-<!--
+
     <sect1 id="sum.introduction.readerLevel">
         <title>Reader Level</title>
 		
@@ -91,23 +92,16 @@
 					[3] Land ATBD.
 				</listitem>
                 <listitem>
-					[4] DPM.
+					[4] Cloud ATBD.
 				</listitem>
                 <listitem>
-					[5] IODD.
+					[5] DPM.
 				</listitem>
                 <listitem>
-					[4] Lindstrot, R., Preusker, R. and J. Fischer, 2008: Empirical correction of stray light within
-                    MERIS and the retrieval of surface and cloud-top pressure. Free University of Berlin,
-                    Internal TechnicalNote.
+					[6] IODD.
 				</listitem>
-                <listitem>
-					[5] R. Santer and O. Aznay, 2008: Direct to direct O2 transmittances: Determine the
-                    surface pressure. LISE, Internal Technical Note.
-				</listitem>
-			</itemizedlist>	
+			</itemizedlist>
 		</para>
     </sect1>
     
-    -->
 </chapter>

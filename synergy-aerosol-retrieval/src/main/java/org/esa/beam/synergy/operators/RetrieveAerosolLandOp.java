@@ -8,8 +8,6 @@ package org.esa.beam.synergy.operators;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.SubProgressMonitor;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
-import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
 import org.esa.beam.framework.datamodel.RasterDataNode;
@@ -25,17 +23,12 @@ import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.synergy.util.AerosolHelpers;
 import org.esa.beam.util.ProductUtils;
 
-import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.io.File;
 
-import org.esa.beam.synergy.util.WavelengthComparator;
 import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 /**

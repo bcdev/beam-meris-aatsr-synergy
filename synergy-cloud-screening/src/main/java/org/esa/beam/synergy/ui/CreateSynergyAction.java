@@ -34,8 +34,13 @@ import java.awt.Dimension;
 public class CreateSynergyAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent commandEvent) {
-        final DefaultSingleTargetProductDialog dialog =
-                new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(CreateSynergyOp.class),
+//        final DefaultSingleTargetProductDialog dialog =
+//                new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(CreateSynergyOp.class),
+//                        getAppContext(),
+//                        "Synergy Preprocessor",
+//                        "synergyhelp");
+        final CreateSynergyDialog dialog =
+                new CreateSynergyDialog(OperatorSpi.getOperatorAlias(CreateSynergyOp.class),
                         getAppContext(),
                         "Synergy Preprocessor",
                         "synergyhelp");

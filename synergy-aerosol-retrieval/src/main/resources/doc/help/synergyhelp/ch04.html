@@ -1,19 +1,28 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 4. The Processor for Creating a Synergy Project</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="prev" href="ch03.html" title="Chapter 3. MERIS/(A)ATSR Synergy Toolbox Products"><link rel="next" href="ch04s02.html" title="4.2. 'Processing Parameters' Tab Pane"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="sum.processor"></a>Chapter 4. The Processor for Creating a Synergy Project</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch04.html#sum.processor.io">4.1. I/O Parameters Tab Pane</a></span></dt><dt><span class="sect1"><a href="ch04s02.html">4.2. 'Processing Parameters' Tab Pane</a></span></dt><dt><span class="sect1"><a href="ch04s03.html">4.3. Control Buttons</a></span></dt><dt><span class="sect1"><a href="ch04s04.html">4.4. Processing from command line</a></span></dt></dl></div><p>
-        The user interface for the Processor for Aerosol and SDR Retrieval  is represented by one main dialog, which
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 4. The Synergy Preprocessor</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="prev" href="ch03.html" title="Chapter 3. MERIS/(A)ATSR Synergy Toolbox Products"><link rel="next" href="ch04s02.html" title="4.2. Control Buttons"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="sum.processor.preprocessor"></a>Chapter 4. The Synergy Preprocessor</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch04.html#sum.processor.preprocessor.io">4.1. I/O Parameters Tab Pane</a></span></dt><dt><span class="sect1"><a href="ch04s02.html">4.2. Control Buttons</a></span></dt><dt><span class="sect1"><a href="ch04s03.html">4.3. Processing from command line</a></span></dt></dl></div><p>
+        The Synergy Preprocessor is the first of three main modules within the MERIS/(A)ATSR Synergy toolbox.
+        As the other modules, it can be accessed through the 'Tools' menu in BEAM Visat
+        (<a class="xref" href="ch04.html#figure.visat.synergy" title="Figure 4.1. The MERIS/(A)ATSR Synergy toolbox in BEAM Visat">Figure 4.1</a>).
+        This preprocessor is supposed to be used for the generation of a colocated MERIS/AATSR source product
+        which will serve as input for the Cloud Screening processor.
+    </p><div class="figure"><a name="figure.visat.synergy"></a><div class="figure-contents"><div><img src="figures/synergy_in_beam.png" alt="The MERIS/(A)ATSR Synergy toolbox in BEAM Visat"></div></div><p class="title"><b>Figure 4.1. The MERIS/(A)ATSR Synergy toolbox in BEAM Visat</b></p></div><br class="figure-break"><p>
+        The user interface for the Synergy Preprocessor is represented by one main dialog, which
         consists of the following components:
         </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
                  'I/O Parameters' Tab Pane
-            </li><li style="list-style-type: disc">
-                 'Processing Parameters' Tab Pane
             </li></ul></div><p>
-    </p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.io"></a>4.1. I/O Parameters Tab Pane</h2></div></div></div><div class="figure"><a name="figure.processor.iotab"></a><div class="figure-contents"><div><img src="figures/iotab.png" alt="I/O Parameters Tab Pane"></div></div><p class="title"><b>Figure 4.1. I/O Parameters Tab Pane</b></p></div><br class="figure-break">
+        There are no processing parameters for this processor, therefore no additional tab pane
+        is required.
+    </p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.preprocessor.io"></a>4.1. I/O Parameters Tab Pane</h2></div></div></div><div class="figure"><a name="figure.processor.preprocessor.iotab"></a><div class="figure-contents"><div><img src="figures/iotab_preprocessing.png" alt="Synergy Preprocessor: I/O Parameters Tab Pane"></div></div><p class="title"><b>Figure 4.2. Synergy Preprocessor: I/O Parameters Tab Pane</b></p></div><br class="figure-break">
 
         This tab pane consists of the following components:
         <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                Source product file: Select the source product file by either typing the product path into the text
+                MERIS source product file: Select the source product file by either typing the product path into the text
                 filed or by pressing the file selection button to invoke a standard file dialog.
-                The source product must be a colocated MERIS/AATSR product generated by the 'Create Synergy'
-                module of the MERIS/(A)ATSR Synergy Toolbox.
+                This source product must be a standard MERIS L1b product.
+            </li><li style="list-style-type: disc">
+                AATSR source product file: Select the source product file by either typing the product path into the text
+                filed or by pressing the file selection button to invoke a standard file dialog.
+                This source product must be a standard AATSR L1b product.
             </li><li style="list-style-type: disc">
                 Target product file: Select the target product file by either typing the product path into the text
                 filed or by pressing the file selection button to invoke a standard file dialog.
