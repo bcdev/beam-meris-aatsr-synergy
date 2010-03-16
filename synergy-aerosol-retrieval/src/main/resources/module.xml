@@ -64,14 +64,14 @@
         <action>
             <id>aerosolOverall</id>
             <class>org.esa.beam.synergy.ui.RetrieveAerosolAction</class>
-            <text>Retrieve Aerosols and SDR...</text>
+            <text>Aerosol Retrieval and Atmospheric Correction...</text>
             <shortDescr>
                 Retrieve aerosols (land/ocean) and SDR (land)
             </shortDescr>
             <mnemonic/>
             <parent>synergyToolbox</parent>
             <helpID>synergyhelp</helpID>
-            <placeAfter>synergyCreateSynergy</placeAfter>
+            <placeAfter>synergyCloudScreening</placeAfter>
         </action>
 
     </extension>

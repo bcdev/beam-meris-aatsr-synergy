@@ -78,9 +78,9 @@ public class RetrieveSurfaceReflOp extends Operator {
     private String vegSpecName;
 
     @Parameter(alias = RetrieveAerosolConstants.LUT_PATH_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.LUT_LAND_PATH_PARAM_DEFAULT,
+               defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
                description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_LAND_PATH_PARAM_LABEL)
+               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
     private String lutPath;
 
 
@@ -183,7 +183,7 @@ public class RetrieveSurfaceReflOp extends Operator {
 
         createTargetProductBands();
 
-        targetProduct.setPreferredTileSize(128, 128);
+        targetProduct.setPreferredTileSize(100, 100);
         setTargetProduct(targetProduct);
 
     }
@@ -239,6 +239,7 @@ public class RetrieveSurfaceReflOp extends Operator {
             Tile[] geometryTiles = getGeometryTiles(merisGeometryBandList, aatsrGeometryBandList, targetRectangle);
 
             Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid("atm_press"), targetRectangle, ProgressMonitor.NULL);
+            Tile ozoneTile = getSourceTile(synergyProduct.getTiePointGrid(RetrieveAerosolConstants.INPUT_OZONE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
             Tile aotTile = getSourceTile(aerosolProduct.getBand("aot"), targetRectangle, ProgressMonitor.NULL);
             Tile aeroModelTile = getSourceTile(aerosolProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
 
@@ -255,6 +256,7 @@ public class RetrieveSurfaceReflOp extends Operator {
                         setToaLut(aeroModel);
 
                         float aveMerisPressure = pressureTile.getSampleFloat(iX, iY);
+                        float aveMerisOzone = ozoneTile.getSampleFloat(iX, iY);
 
                         // this setup is the same as for pure AOD retrieval
                         int iSza = 0;
@@ -262,13 +264,13 @@ public class RetrieveSurfaceReflOp extends Operator {
                         int iVza = 2;
                         int iVaa = 3;
                         int offset = 0; // MERIS geometry
-                        toaLut.subsecLUT("meris", aveMerisPressure, geometry[iVza + offset], geometry[iVaa + offset],
+                        toaLut.subsecLUT("meris", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                                 geometry[iSza + offset], geometry[iSaa + offset], merisWvl, lutSubsecMeris);
                         offset = 4; // AATSR NADIR geometry
-                        toaLut.subsecLUT("aatsr", aveMerisPressure, geometry[iVza + offset], geometry[iVaa + offset],
+                        toaLut.subsecLUT("aatsr", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                                 geometry[iSza + offset], geometry[iSaa + offset], aatsrWvl, lutSubsecAatsr[0]);
                         offset = 8; // AATSR FWARD geometry
-                        toaLut.subsecLUT("aatsr", aveMerisPressure, geometry[iVza + offset], geometry[iVaa + offset],
+                        toaLut.subsecLUT("aatsr", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                                 geometry[iSza + offset], geometry[iSaa + offset], aatsrWvl, lutSubsecAatsr[1]);
 
                         aardvarc.setSza(geometry[0], geometry[4], geometry[8]);
@@ -284,7 +286,7 @@ public class RetrieveSurfaceReflOp extends Operator {
                         //
                         // MERIS
                         //
-                        toaLut.subsecLUT("meris", aveMerisPressure, geometry[iVza + offset], geometry[iVaa + offset],
+                        toaLut.subsecLUT("meris", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                                 geometry[iSza + offset], geometry[iSaa + offset], merisWvl, lutSubsecMeris);
                         float[] toaReflSpec = new float[merisWvl.length];
                         for (int i = 0; i < toaReflSpec.length; i++) {
@@ -300,10 +302,10 @@ public class RetrieveSurfaceReflOp extends Operator {
                         // AATSR
                         //
                         offset = 4; // AATSR NADIR geometry
-                        toaLut.subsecLUT("aatsr", aveMerisPressure, geometry[iVza + offset], geometry[iVaa + offset],
+                        toaLut.subsecLUT("aatsr", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                                 geometry[iSza + offset], geometry[iSaa + offset], aatsrWvl, lutSubsecAatsr[0]);
                         offset = 8; // AATSR FWARD geometry
-                        toaLut.subsecLUT("aatsr", aveMerisPressure, geometry[iVza + offset], geometry[iVaa + offset],
+                        toaLut.subsecLUT("aatsr", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                                 geometry[iSza + offset], geometry[iSaa + offset], aatsrWvl, lutSubsecAatsr[1]);
                         float[][] toaReflSpecAATSR = new float[2][aatsrWvl.length];
                         for (int i = 0; i < aatsrWvl.length; i++) {

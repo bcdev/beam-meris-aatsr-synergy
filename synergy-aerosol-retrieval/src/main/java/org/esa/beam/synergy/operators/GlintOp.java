@@ -40,9 +40,9 @@ public class GlintOp extends Operator {
     private Product targetProduct;
 
     @Parameter(alias = RetrieveAerosolConstants.LUT_PATH_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.LUT_OCEAN_PATH_PARAM_DEFAULT,
+               defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
                description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_OCEAN_PATH_PARAM_LABEL)
+               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
     private String lutPath;
 
     private static final String INVALID_EXPRESSION = "l1_flags" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_MERIS + ".INVALID";

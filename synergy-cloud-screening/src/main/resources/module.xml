@@ -48,9 +48,9 @@
         <action>
             <id>synergyCreateSynergy</id>
             <class>org.esa.beam.synergy.ui.CreateSynergyAction</class>
-            <text>Create Synergy Product ...</text>
+            <text>Synergy Preprocessor ...</text>
             <shortDescr>
-                Create Synergy Product
+                Synergy Preprocessor
             </shortDescr>
             <mnemonic/>
             <parent>synergyToolbox</parent>
@@ -62,14 +62,14 @@
         <action>
             <id>synergyCloudScreening</id>
             <class>org.esa.beam.synergy.ui.SynergyCloudScreeningAction</class>
-            <text>Add Cloud Flags and Index to Synergy Product ...</text>
+            <text>Cloud  Screening ...</text>
             <shortDescr>
                 Generates a final synergy product including cloud flags and index
             </shortDescr>
             <mnemonic/>
             <parent>synergyToolbox</parent>
             <helpID>synergyhelp</helpID>
-            <placeAfter>aerosolOverall</placeAfter>
+            <placeAfter>synergyCreateSynergy</placeAfter>
         </action>
 
     </extension>

@@ -1,213 +1,211 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.glevel.MultiLevelImage;
+import java.awt.Rectangle;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.ParameterBlock;
+import java.awt.image.renderable.RenderableImage;
+import javax.media.jai.JAI;
+import javax.media.jai.RenderedOp;
 import org.esa.beam.framework.datamodel.Band;
+import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.TiePointGrid;
+import org.esa.beam.framework.datamodel.ProductNodeGroup;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.synergy.util.AerosolHelpers;
-
-import javax.media.jai.Interpolation;
-import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.ScaleDescriptor;
-import java.awt.Rectangle;
-import java.awt.image.RenderedImage;
+import org.esa.beam.util.ProductUtils;
 
 /**
- * This operator provides an upscaling of AOTs to original resolution
- * by bicubic interpolation.
  *
- * @author Olaf Danne
- * @version $Revision: 8041 $ $Date: 2010-01-20 17:23:15 +0100 (Mi, 20 Jan 2010) $
+ * @author akheckel
  */
-@OperatorMetadata(alias = "synergy.AotUpscale",
-                  version = "1.0-SNAPSHOT",
-                  authors = "Andreas Heckel, Olaf Danne",
-                  copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT upscaling of interpolated data.")
 public class UpscaleOp extends Operator {
 
-    @SourceProduct(alias = "synergy",
-                   label = "Name (Collocated MERIS AATSR product)",
-                   description = "Select a Collocated MERIS AATSR product.")
-    private Product synergyProduct;
-
     @SourceProduct(alias = "aerosol",
-                   label = "Name (Synergy aerosol product)",
+                   label = "Name (Downscaled aerosol product)",
                    description = "Select a Synergy aerosol product.")
-    private Product aerosolProduct;
+    private Product sourceProduct;
+
+    @SourceProduct(alias = "synergy",
+                   label = "Name (Original Synergy product)",
+                   description = "Select a Synergy product.")
+    private Product originalProduct;
 
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    @Parameter(alias = "scalingfactor",
-               defaultValue = "10.0f",
-               description = "Scaling factor",
-               label = "Scaling factor")
-    private float scalingFactor;
+    @Parameter(defaultValue = "7", label = "BoxSize to invert in Pixel (n x n)", interval = "[1, 100]")
+    private int scalingFactor;
+    private int offset;
 
-    private static String productName = "SYNERGY UPSCALED";
-    private static String productType = "SYNERGY UPSCALED";
+    private static String productName = "SYNERGY UPSCALED AOT";
+    private static String productType = "SYNERGY UPSCALED AOT";
+
+    private String aotName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME;
+    private String errName = RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME;
+    private String modelName = RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME;
 
     private int sourceRasterWidth;
     private int sourceRasterHeight;
+    private int targetRasterWidth;
+    private int targetRasterHeight;
+
 
     @Override
     public void initialize() throws OperatorException {
-
-        sourceRasterWidth = aerosolProduct.getSceneRasterWidth();
-        sourceRasterHeight = aerosolProduct.getSceneRasterHeight();
+        
+        offset = scalingFactor / 2;
+        sourceRasterWidth = sourceProduct.getSceneRasterWidth();
+        sourceRasterHeight = sourceProduct.getSceneRasterHeight();
+        targetRasterWidth = originalProduct.getSceneRasterWidth();
+        targetRasterHeight = originalProduct.getSceneRasterHeight();
+        
         createTargetProduct();
-
-        for (Band band : aerosolProduct.getBands()) {
-            Interpolation interpolation = null;
-            if (!band.getName().equals("land_aerosol_model")) {
-                interpolation = Interpolation.getInstance(Interpolation.INTERP_BICUBIC);
-            }
-            if (!band.isFlagBand()) {
-                RenderedImage sourceImage = band.getSourceImage();
-                System.out.printf("Source, size: %d x %d\n", sourceImage.getWidth(), sourceImage.getHeight());
-                RenderedOp upscaledImage = ScaleDescriptor.create(sourceImage,
-                                                                  scalingFactor,
-                                                                  scalingFactor,
-                                                                  0.0f, 0.0f,
-                                                                  interpolation,
-                                                                  null);
-                System.out.printf("Upscaled, size: %d x %d\n", upscaledImage.getWidth(), upscaledImage.getHeight());
-
-                Band upscaledBand = targetProduct.getBand(band.getName());
-                upscaledBand.setSourceImage(upscaledImage);
-            }
-        }
-    }
-
-    private void createTargetProduct() {
-
-        //TODO: check wether to copy TIEs from source or aerosol Product
-        targetProduct = new Product(productName, productType,
-                                    (int)scalingFactor*sourceRasterWidth, (int)scalingFactor*sourceRasterHeight);
-
-        AerosolHelpers.copySynergyFlagBands(synergyProduct, targetProduct);
-
-        createTargetProductBands();
-
+        targetProduct.setPreferredTileSize(1100, 1100);
         setTargetProduct(targetProduct);
-
-    }
-
-    private void createTargetProductBands() {
-        for (Band band: aerosolProduct.getBands()) {
-            if (!band.isFlagBand()) {
-                Band targetBand = new Band(band.getName(), band.getDataType(),
-                                           (int)scalingFactor*sourceRasterWidth, (int)scalingFactor*sourceRasterHeight);
-                targetBand.setDescription(band.getDescription());
-                targetBand.setNoDataValue(band.getNoDataValue());
-                targetBand.setNoDataValueUsed(true);
-                targetProduct.addBand(targetBand);
-            }
-        }
-
-        AerosolHelpers.copyRescaledTiePointGrids(synergyProduct, targetProduct,
-                                                 (int)scalingFactor*sourceRasterWidth, (int)scalingFactor*sourceRasterHeight);
     }
 
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
-        Rectangle rectangle = targetTile.getRectangle();
+        Rectangle tarRec = targetTile.getRectangle();
 
-        pm.beginTask("Processing frame...", rectangle.height);
+        int srcX = (tarRec.x - offset) / scalingFactor;
+        int srcY = (tarRec.y - offset) / scalingFactor;
+        int srcWidth = tarRec.width / scalingFactor + 1;
+        int srcHeight = tarRec.height / scalingFactor + 1;
+        if (srcX >= sourceRasterWidth) {
+            srcX = sourceRasterWidth - 2;
+            srcWidth = 2;
+        }
+        if (srcY >= sourceRasterHeight) {
+            srcY = sourceRasterHeight - 2;
+            srcHeight = 2;
+        }
+        Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
-        try {
-            int xMax = synergyProduct.getSceneRasterWidth();
-            int yMax = synergyProduct.getSceneRasterHeight();
-
-            if (targetBand.isFlagBand()) {
-                writeSynergyFlagBands(targetBand, targetTile, pm, rectangle, xMax, yMax);
+        Band srcBand = null;
+        Tile srcTile = null;
+        if (originalProduct.containsBand(targetBand.getName())) {
+            srcBand = originalProduct.getBand(targetBand.getName());
+            if (srcBand != null) {
+                srcTile = getSourceTile(srcBand, tarRec, ProgressMonitor.NULL);
+                targetTile.setRawSamples(srcTile.getRawSamples());
             }
-//            else if (targetBand.getName().equals("land_aerosol_model")) {
-//                final Rectangle tr = targetTile.getRectangle();
-//                Rectangle aerosolRectangle = new Rectangle((int) (tr.x/scalingFactor),
-//                        (int) (tr.y/scalingFactor),
-//                        (int) (tr.width/scalingFactor),
-//                        (int) (tr.height/scalingFactor));
-//                System.out.println("target rect: " + tr);
-//                System.out.println("aero rect: " + aerosolRectangle);
-//                Tile aerosolModelTile = getSourceTile(aerosolProduct.getBand("land_aerosol_model"), aerosolRectangle, pm);
-//                int numAve = (int) scalingFactor+1;
-//                for (int y = rectangle.y; y < Math.min(yMax, rectangle.y + rectangle.height); y++) {
-//                    for (int x = rectangle.x; x < Math.min(xMax, rectangle.x + rectangle.width); x++) {
-//                        int xAer = x/numAve;
-//                        int yAer = y/numAve;
-//                        final int aerosolModel = aerosolModelTile.getSampleInt(xAer, yAer);
-//                        targetTile.setSample(x, y, aerosolModel);
-//                    }
-//                }
-//            }
-        } catch (Exception e) {
-            throw new OperatorException("Failed to merge land/ocean aerosol products:\n" + e.getMessage(), e);
-        } finally {
-            pm.done();
+        }
+        else if (sourceProduct.containsBand(targetBand.getName())) {
+            srcBand = sourceProduct.getBand(targetBand.getName());
+            srcTile = getSourceTile(srcBand, srcRec, ProgressMonitor.NULL);
+            if (targetBand.getName().equals(aotName)
+                    || targetBand.getName().equals(errName)
+                    || targetBand.getName().startsWith(modelName)
+                    || targetBand.isFlagBand()) {
+                
+                upscaleTileCopy(srcTile, targetTile, tarRec);
+            } else {
+                upscaleTileBilinear(srcTile, targetTile, tarRec);
+            }
         }
     }
 
-    private void writeSynergyFlagBands(Band targetBand, Tile targetTile, ProgressMonitor pm, Rectangle rectangle, int xMax, int yMax) {
-        Tile aatsrConfidFlagNadirTile = getSourceTile(synergyProduct.getBand(RetrieveAerosolConstants.CONFID_NADIR_FLAGS_AATSR), rectangle, pm);
-        Tile aatsrConfidFlagFwardTile = getSourceTile(synergyProduct.getBand(RetrieveAerosolConstants.CONFID_FWARD_FLAGS_AATSR), rectangle, pm);
-        Tile aatsrCloudFlagNadirTile = getSourceTile(synergyProduct.getBand(RetrieveAerosolConstants.CLOUD_NADIR_FLAGS_AATSR), rectangle, pm);
-        Tile aatsrCloudFlagFwardTile = getSourceTile(synergyProduct.getBand(RetrieveAerosolConstants.CLOUD_FWARD_FLAGS_AATSR), rectangle, pm);
-        Tile merisL1FlagsTile = getSourceTile(synergyProduct.getBand(RetrieveAerosolConstants.L1_FLAGS_MERIS), rectangle, pm);
-        Tile merisCloudFlagTile = getSourceTile(synergyProduct.getBand(RetrieveAerosolConstants.CLOUD_FLAG_MERIS), rectangle, pm);
+    private void createTargetProduct() {
+        
+        targetProduct = new Product(productName, productType, targetRasterWidth, targetRasterHeight);
 
-        FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CONFID_NADIR_FLAGS_AATSR);
-        FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CONFID_FWARD_FLAGS_AATSR);
-        FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CLOUD_NADIR_FLAGS_AATSR);
-        FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CLOUD_FWARD_FLAGS_AATSR);
-        FlagCoding merisL1FlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.L1_FLAGS_MERIS);
-        FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CLOUD_FLAG_MERIS);
+        ProductUtils.copyMetadata(sourceProduct, targetProduct);
+        ProductUtils.copyGeoCoding(originalProduct, targetProduct);
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
+        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
+        ProductUtils.copyTiePointGrids(originalProduct, targetProduct);
+        ProductUtils.copyFlagBands(originalProduct, targetProduct);
 
+        for (String fcName : sourceProduct.getFlagCodingGroup().getNodeNames()) {
+            if (!targetProduct.getFlagCodingGroup().contains(fcName)) {
+                FlagCoding srcFlagCoding = sourceProduct.getFlagCodingGroup().get(fcName);
+                ProductUtils.copyFlagCoding(srcFlagCoding, targetProduct);
+            }
+        }
+        for (String bmName : sourceProduct.getBitmaskDefNames()) {
+            if (!targetProduct.containsBitmaskDef(bmName)) {
+                BitmaskDef srcBitmaskDef = sourceProduct.getBitmaskDef(bmName);
+                targetProduct.addBitmaskDef(srcBitmaskDef);
+            }
+        }
 
-        for (int y = rectangle.y; y < Math.min(yMax, rectangle.y + rectangle.height); y++) {
-            for (int x = rectangle.x; x < Math.min(xMax, rectangle.x + rectangle.width); x++) {
-                if (targetBand.getName().equals(RetrieveAerosolConstants.CONFID_NADIR_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrConfidNadirFlagCoding.getNumAttributes(); i++) {
-                        targetTile.setSample(x, y, i, aatsrConfidFlagNadirTile.getSampleBit(x, y, i));
-                    }
+        Band targetBand;
+        for (Band srcBand : sourceProduct.getBands()) {
+            String bandName = srcBand.getName();
+            if (originalProduct.containsBand(bandName)) {
+                if (!originalProduct.getBand(bandName).isFlagBand()) {
+                    ProductUtils.copyBand(bandName, originalProduct, targetProduct);
                 }
-                if (targetBand.getName().equals(RetrieveAerosolConstants.CONFID_FWARD_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrConfidFwardFlagCoding.getNumAttributes(); i++) {
-                        targetTile.setSample(x, y, i, aatsrConfidFlagFwardTile.getSampleBit(x, y, i));
-                    }
+            }
+            else {
+                targetBand = new Band(bandName, srcBand.getDataType(), targetRasterWidth, targetRasterHeight);
+                targetBand.setDescription(srcBand.getDescription());
+                targetBand.setNoDataValue(srcBand.getNoDataValue());
+                targetBand.setNoDataValueUsed(true);
+                FlagCoding srcFlagCoding = srcBand.getFlagCoding();
+                if (srcFlagCoding != null) {
+                    FlagCoding tarFlagCoding = targetProduct.getFlagCodingGroup().get(srcFlagCoding.getName());
+                    targetBand.setSampleCoding(tarFlagCoding);
                 }
-                if (targetBand.getName().equals(RetrieveAerosolConstants.CLOUD_NADIR_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrCloudNadirFlagCoding.getNumAttributes(); i++) {
-                        targetTile.setSample(x, y, i, aatsrCloudFlagNadirTile.getSampleBit(x, y, i));
-                    }
-                }
-                if (targetBand.getName().equals(RetrieveAerosolConstants.CLOUD_FWARD_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrCloudFwardFlagCoding.getNumAttributes(); i++) {
-                        targetTile.setSample(x, y, i, aatsrCloudFlagFwardTile.getSampleBit(x, y, i));
-                    }
-                }
-                if (targetBand.getName().equals(RetrieveAerosolConstants.L1_FLAGS_MERIS)) {
-                    for (int i=0; i<merisL1FlagCoding.getNumAttributes(); i++) {
-                        targetTile.setSample(x, y, i, merisL1FlagsTile.getSampleBit(x, y, i));
-                    }
-                }
-                if (targetBand.getName().equals(RetrieveAerosolConstants.CLOUD_FLAG_MERIS)) {
-                    for (int i=0; i<merisCloudFlagCoding.getNumAttributes(); i++) {
-                        targetTile.setSample(x, y, i, merisCloudFlagTile.getSampleBit(x, y, i));
-                    }
-                }
-                pm.worked(1);
+                targetProduct.addBand(targetBand);
+            }
+        }
+    }
+
+    private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec) {
+        
+        int tarX = tarRec.x;
+        int tarY = tarRec.y;
+        int tarWidth = tarRec.width;
+        int tarHeight = tarRec.height;
+
+        for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
+            int iSrcY = (iTarY - offset) / scalingFactor;
+            if (iSrcY >= sourceRasterHeight - 1) iSrcY = sourceRasterHeight - 2;
+            float yFac = (float) (iTarY - offset) / scalingFactor - iSrcY;
+            for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
+                int iSrcX = (iTarX - offset) / scalingFactor;
+                if (iSrcX >= sourceRasterWidth - 1) iSrcX = sourceRasterWidth - 2;
+                float xFrac = (float) (iTarX - offset) / scalingFactor - iSrcX;
+                float erg = (1.0f - xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX, iSrcY);
+                erg +=        (xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX+1, iSrcY);
+                erg += (1.0f - xFrac) *        (yFac) * srcTile.getSampleFloat(iSrcX, iSrcY+1);
+                erg +=        (xFrac) *        (yFac) * srcTile.getSampleFloat(iSrcX+1, iSrcY+1);
+                tarTile.setSample(iTarX, iTarY, erg);
+            }
+        }
+    }
+
+    private void upscaleTileCopy(Tile srcTile, Tile tarTile, Rectangle tarRec) {
+
+        int tarX = tarRec.x;
+        int tarY = tarRec.y;
+        int tarWidth = tarRec.width;
+        int tarHeight = tarRec.height;
+
+        for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
+            int iSrcY = iTarY / scalingFactor;
+            if (iSrcY >= sourceRasterHeight) iSrcY = sourceRasterHeight - 1;
+            for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
+                int iSrcX = iTarX / scalingFactor;
+                if (iSrcX >= sourceRasterWidth) iSrcX = sourceRasterWidth - 1;
+                float erg = srcTile.getSampleFloat(iSrcX, iSrcY);
+                tarTile.setSample(iTarX, iTarY, erg);
             }
         }
     }

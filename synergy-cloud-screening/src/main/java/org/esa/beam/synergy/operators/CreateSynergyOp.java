@@ -93,8 +93,8 @@ public class CreateSynergyOp extends Operator {
     boolean createDEMelevation = false;
 
     @Parameter(defaultValue = "true",
-               description = "Subset MERIS and AATSR overlapped areas",
-               label = "Subset MERIS and AATSR overlapped areas")
+               description = "Crop MERIS/AATSR non-overlapping areas",
+               label = "Crop MERIS/AATSR non-overlapping areas")
     boolean subsetOvAreas;
 
     @Override
@@ -108,10 +108,14 @@ public class CreateSynergyOp extends Operator {
         merisParams.put("copyLandWaterReclass", copyLandWaterReclass);
         Product merisProduct =
             GPF.createProduct(OperatorSpi.getOperatorAlias(CreateMerisOp.class), merisParams, merisSourceProduct);
+
+        SynergyUtils.validateMerisProduct(merisProduct);
         
         // AATSR product
         Product aatsrProduct =
             GPF.createProduct(OperatorSpi.getOperatorAlias(CreateAatsrOp.class), GPF.NO_PARAMS, aatsrSourceProduct);
+        
+        SynergyUtils.validateAatsrProduct(aatsrProduct);
 
         // TODO: MERIS_FRG and MERIS_FSG products are already orthorectified. Detect this kind
         // of products and save the work of having to create the elevation and orthorectified bands.

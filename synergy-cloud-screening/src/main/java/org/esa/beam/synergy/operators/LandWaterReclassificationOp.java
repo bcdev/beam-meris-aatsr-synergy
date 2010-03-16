@@ -54,7 +54,7 @@ public class LandWaterReclassificationOp extends Operator {
     
 	@Override
     public void initialize() throws OperatorException {
-        sourceProduct.setPreferredTileSize(16, 16);
+        sourceProduct.setPreferredTileSize(128, 128);
         
         // Radiance to Reflectance
         Map<String, Object> emptyParams = new HashMap<String, Object>();

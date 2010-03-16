@@ -20,4 +20,22 @@
   <mapID target="figure.processor.controlbuttons" url="ch04s03.html#figure.processor.controlbuttons"/>
   <mapID target="sum.processor.gpt" url="ch04s04.html"/>
   <mapID target="figure.processor.gpt" url="ch04s04.html#figure.processor.gpt"/>
+  <mapID target="sum.processor" url="ch05.html"/>
+  <mapID target="sum.processor.io" url="ch05.html#sum.processor.io"/>
+  <mapID target="figure.processor.iotab" url="ch05.html#figure.processor.iotab"/>
+  <mapID target="sum.processor.processing" url="ch05s02.html"/>
+  <mapID target="figure.processor.processingtab" url="ch05s02.html#figure.processor.processingtab"/>
+  <mapID target="sum.processor.control" url="ch05s03.html"/>
+  <mapID target="figure.processor.controlbuttons" url="ch05s03.html#figure.processor.controlbuttons"/>
+  <mapID target="sum.processor.gpt" url="ch05s04.html"/>
+  <mapID target="figure.processor.gpt" url="ch05s04.html#figure.processor.gpt"/>
+  <mapID target="sum.processor" url="ch06.html"/>
+  <mapID target="sum.processor.io" url="ch06.html#sum.processor.io"/>
+  <mapID target="figure.processor.iotab" url="ch06.html#figure.processor.iotab"/>
+  <mapID target="sum.processor.processing" url="ch06s02.html"/>
+  <mapID target="figure.processor.processingtab" url="ch06s02.html#figure.processor.processingtab"/>
+  <mapID target="sum.processor.control" url="ch06s03.html"/>
+  <mapID target="figure.processor.controlbuttons" url="ch06s03.html#figure.processor.controlbuttons"/>
+  <mapID target="sum.processor.gpt" url="ch06s04.html"/>
+  <mapID target="figure.processor.gpt" url="ch06s04.html#figure.processor.gpt"/>
 </map>

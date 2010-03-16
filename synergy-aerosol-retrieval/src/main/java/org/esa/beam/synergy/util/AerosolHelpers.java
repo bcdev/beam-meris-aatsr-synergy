@@ -1,6 +1,8 @@
 package org.esa.beam.synergy.util;
 
-import org.esa.beam.dataio.envisat.EnvisatConstants;
+import com.bc.ceres.core.ProgressMonitor;
+import java.awt.Color;
+import java.awt.Rectangle;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
@@ -16,16 +18,20 @@ import org.esa.beam.util.ProductUtils;
 import javax.media.jai.Interpolation;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ScaleDescriptor;
-import java.awt.Rectangle;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import org.esa.beam.framework.datamodel.BitmaskDef;
+import org.esa.beam.framework.datamodel.RasterDataNode;
 
 /**
  * Utility class for aerosol/SDR retrieval
  *
  * @author Olaf Danne
- * @version $Revision: 8041 $ $Date: 2010-01-20 17:23:15 +0100 (Mi, 20 Jan 2010) $
+ * @version $Revision: 8041 $ $Date: 2010-01-20 16:23:15 +0000 (Mi, 20 Jan 2010) $
  */
 public class AerosolHelpers {
 
@@ -37,6 +43,60 @@ public class AerosolHelpers {
         }
 
         return instance;
+    }
+
+    /**
+     *
+     * @param inputProduct
+     * @param instr
+     * @param bandList
+     */
+    public static void getGeometryBandList(Product inputProduct, String instr, ArrayList<RasterDataNode> bandList) {
+        String[] viewArr = {"nadir", "fward"};
+        int nView = viewArr.length;
+        String[] bodyArr = {"sun", "view"};
+        String[] angArr = {"elev", "azimuth"};
+        String bandName;
+
+        if (instr.equals("MERIS")) {
+            angArr[0] = "zenith";
+            nView = 1;
+        }
+        for (int iView = 0; iView < nView; iView++) {
+            for (String body : bodyArr) {
+                for(String ang : angArr) {
+                    if (instr.equals("AATSR")) {
+                        bandName = body + "_" + ang + "_" + viewArr[iView] + "_" +
+                                RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR;
+                        bandList.add(inputProduct.getBand(bandName));
+                    } else {
+                        bandName = body + "_" + ang;
+                        bandList.add(inputProduct.getRasterDataNode(bandName));
+                    }
+                }
+            }
+        }
+    }
+
+    public static void getSpectralBandList(Product inputProduct, String bandNamePrefix, String bandNameSuffix,
+            int[] excludeBandIndices, ArrayList<Band> bandList) {
+
+        String[] bandNames = inputProduct.getBandNames();
+        Comparator<Band> byWavelength = new WavelengthComparator();
+        for (String name : bandNames) {
+            if (name.startsWith(bandNamePrefix) && name.endsWith(bandNameSuffix)) {
+                boolean exclude = false;
+                if (excludeBandIndices != null) {
+                    for (int i : excludeBandIndices) {
+                        exclude = exclude || (i == inputProduct.getBand(name).getSpectralBandIndex() + 1);
+                    }
+                }
+                if (!exclude) {
+                    bandList.add(inputProduct.getBand(name));
+                }
+            }
+        }
+        Collections.sort(bandList, byWavelength);
     }
 
     /**
@@ -396,10 +456,7 @@ public class AerosolHelpers {
                 tpgIndex++;
             }
         }
-        int bandSuffixLength = RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR.length() + 1;
-        int bandNameLength = band.getName().length();
-        String tpgName = band.getName().substring(0,bandNameLength-bandSuffixLength);
-        TiePointGrid tpg = new TiePointGrid(tpgName,
+        TiePointGrid tpg = new TiePointGrid(band.getName(),
                                             rescaledWidth,
                                             rescaledHeight,
                                             0.0f, 0.0f, 1.0f, 1.0f, tpgData);
@@ -461,6 +518,71 @@ public class AerosolHelpers {
                 }
             }
         }
+    }
+
+    public static void addAerosolFlagBand(Product targetProduct, int rasterWidth, int rasterHeight) {
+        FlagCoding aerosolFlagCoding = new FlagCoding(RetrieveAerosolConstants.aerosolFlagCodingName);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagCloudyName, RetrieveAerosolConstants.cloudyMask, RetrieveAerosolConstants.flagCloudyDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagOceanName,  RetrieveAerosolConstants.oceanMask,   RetrieveAerosolConstants.flagOceanDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagSuccessName, RetrieveAerosolConstants.successMask, RetrieveAerosolConstants.flagSuccessDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagBorderName, RetrieveAerosolConstants.borderMask, RetrieveAerosolConstants.flagBorderDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagFilledName, RetrieveAerosolConstants.filledMask, RetrieveAerosolConstants.flagFilledDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagNegMetricName, RetrieveAerosolConstants.negMetricMask, RetrieveAerosolConstants.flagNegMetricDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagAotLowName, RetrieveAerosolConstants.aotLowMask, RetrieveAerosolConstants.flagAotLowDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagErrHighName, RetrieveAerosolConstants.errHighMask, RetrieveAerosolConstants.flagErrHighDesc);
+        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagCoastName, RetrieveAerosolConstants.coastMask, RetrieveAerosolConstants.flagCoastDesc);
+        targetProduct.getFlagCodingGroup().add(aerosolFlagCoding);
+
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagCloudyName,
+                                RetrieveAerosolConstants.flagCloudyDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagCloudyName,
+                                Color.lightGray, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagOceanName,
+                                RetrieveAerosolConstants.flagOceanDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagOceanName,
+                                Color.blue, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagSuccessName,
+                                RetrieveAerosolConstants.flagSuccessDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagSuccessName,
+                                Color.pink, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagBorderName,
+                                RetrieveAerosolConstants.flagBorderDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagBorderName,
+                                Color.orange, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagFilledName,
+                                RetrieveAerosolConstants.flagFilledDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagFilledName,
+                                Color.magenta, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagNegMetricName,
+                                RetrieveAerosolConstants.flagNegMetricDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagNegMetricName,
+                                Color.magenta, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagAotLowName,
+                                RetrieveAerosolConstants.flagAotLowDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagAotLowName,
+                                Color.magenta, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagErrHighName,
+                                RetrieveAerosolConstants.flagErrHighDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagErrHighName,
+                                Color.magenta, 0.2f));
+        targetProduct.addBitmaskDef(
+                new BitmaskDef( RetrieveAerosolConstants.flagCoastName,
+                                RetrieveAerosolConstants.flagCoastDesc,
+                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagCoastName,
+                                Color.magenta, 0.2f));
+
+        Band targetBand = new Band(RetrieveAerosolConstants.aerosolFlagCodingName, ProductData.TYPE_UINT16, rasterWidth, rasterHeight);
+        targetBand.setDescription(RetrieveAerosolConstants.aerosolFlagCodingDesc);
+        targetBand.setSampleCoding(aerosolFlagCoding);
+        targetProduct.addBand(targetBand);
     }
 
     // currently not used

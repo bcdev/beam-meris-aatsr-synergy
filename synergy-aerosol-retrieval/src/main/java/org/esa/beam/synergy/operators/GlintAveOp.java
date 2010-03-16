@@ -39,9 +39,9 @@ public class GlintAveOp extends Operator {
     private Product targetProduct;
 
     @Parameter(alias = RetrieveAerosolConstants.LUT_PATH_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.LUT_OCEAN_PATH_PARAM_DEFAULT,
+               defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
                description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_OCEAN_PATH_PARAM_LABEL)
+               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
     private String lutPath;
 
     @Parameter(defaultValue = "10", label = "Pixels to average (n x n) for AOD retrieval", interval = "[1, 100]")

@@ -21,6 +21,7 @@ import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,9 +48,9 @@ public class RetrieveAerosolOceanOp extends Operator {
     private Product targetProduct;
 
     @Parameter(alias = RetrieveAerosolConstants.LUT_PATH_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.LUT_OCEAN_PATH_PARAM_DEFAULT,
+               defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
                description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_OCEAN_PATH_PARAM_LABEL)
+               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
     private String lutPath;
 
     @Parameter(defaultValue = "11", label = "Pixels to average (n x n, with n odd number) for AOD retrieval", interval = "[1, 100]")
@@ -217,6 +218,8 @@ public class RetrieveAerosolOceanOp extends Operator {
         ProductUtils.copyMetadata(synergyProduct, targetProduct);
         AerosolHelpers.copyDownscaledTiePointGrids(synergyProduct, targetProduct, scalingFactor);
         AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, scalingFactor);
+
+        AerosolHelpers.addAerosolFlagBand(targetProduct, downscaledRasterWidth, downscaledRasterHeight);
 
         BandMathsOp bandArithmeticOp =
                 BandMathsOp.createBooleanExpressionBand(INVALID_EXPRESSION, synergyProduct);

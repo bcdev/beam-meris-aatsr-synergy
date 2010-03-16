@@ -22,6 +22,8 @@ import org.esa.beam.synergy.operators.CreateSynergyOp;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
 
+import java.awt.Dimension;
+
 /**
  * Action for creating Synergy product.
  *
@@ -35,9 +37,10 @@ public class CreateSynergyAction extends AbstractVisatAction {
         final DefaultSingleTargetProductDialog dialog =
                 new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(CreateSynergyOp.class),
                         getAppContext(),
-                        "Create Synergy Product",
+                        "Synergy Preprocessor",
                         "synergyhelp");
         dialog.setTargetProductNameSuffix("_synergy");
+        dialog.getJDialog().setPreferredSize(new Dimension(500, 500));
         dialog.show();
     }
 

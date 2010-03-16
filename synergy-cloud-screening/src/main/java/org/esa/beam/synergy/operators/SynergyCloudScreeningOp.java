@@ -28,7 +28,7 @@ import org.esa.beam.util.ProductUtils;
 public class SynergyCloudScreeningOp extends Operator {
     
     @SourceProduct(alias = "source",
-                   label ="Name (Synergy product)",
+                   label ="Name (Preprocessed product)",
                    description = "Select a Synergy product")
     private Product sourceProduct;
     

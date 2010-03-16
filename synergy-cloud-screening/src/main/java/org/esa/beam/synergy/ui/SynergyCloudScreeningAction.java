@@ -8,6 +8,8 @@ import org.esa.beam.synergy.operators.SynergyCloudScreeningOp;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
 
+import java.awt.Dimension;
+
 public class SynergyCloudScreeningAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent commandEvent) {
@@ -15,9 +17,10 @@ public class SynergyCloudScreeningAction extends AbstractVisatAction {
                 new DefaultSingleTargetProductDialog(
                 		OperatorSpi.getOperatorAlias(SynergyCloudScreeningOp.class),
                         getAppContext(),
-                        "Generates a synergy product with cloud flags and cloud index",
+                        "Cloud  Screening",
                         "synergyhelp");
         dialog.setTargetProductNameSuffix("_CS");
+        dialog.getJDialog().setPreferredSize(new Dimension(600, 500));
         dialog.show();
     }
 

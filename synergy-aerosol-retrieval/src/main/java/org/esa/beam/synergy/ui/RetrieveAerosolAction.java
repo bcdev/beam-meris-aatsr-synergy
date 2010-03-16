@@ -9,6 +9,8 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.synergy.operators.RetrieveAerosolOceanOp;
 import org.esa.beam.synergy.operators.RetrieveAerosolOp;
 
+import java.awt.Dimension;
+
 /**
  * Action class for Synergy aerosol and SDR retrieval.
  *
@@ -21,9 +23,10 @@ public class RetrieveAerosolAction extends AbstractVisatAction {
         final DefaultSingleTargetProductDialog dialog =
                 new DefaultSingleTargetProductDialog(OperatorSpi.getOperatorAlias(RetrieveAerosolOp.class),
                         getAppContext(),
-                        "Synergy Aerosol and SDR Retrieval",
+                        "Aerosol Retrieval and Atmospheric Correction",
                         "synergyhelp");
         dialog.setTargetProductNameSuffix("_AERO");
+        dialog.getJDialog().setPreferredSize(new Dimension(600, 500));
         dialog.show();
     }
 
