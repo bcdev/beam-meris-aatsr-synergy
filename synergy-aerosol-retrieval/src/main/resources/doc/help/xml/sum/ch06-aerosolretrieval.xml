@@ -1,8 +1,17 @@
 <chapter id="sum.processor.aerosolretrieval">
     <title>The Processor for Aerosol Retrieval and Atmospheric Correction</title>
 
+     <para>
+        The  Processor for Aerosol Retrieval and Atmospheric Correction is the second of three main modules
+        within the MERIS/(A)ATSR Synergy toolbox.
+        Its purpose is to derive aerosol optical depths over land and/or ocean and (optionally) provide an
+        atmospheric correction by using the derived AODs. The processor also makes use of quantities
+         derived from the cloud screening module. Therefore, the input for the aerosol retrieval must be
+         an output product from the cloud screening.
+    </para>
+
     <para>
-        The user interface for the Processor for Aerosol and SDR Retrieval  is represented by one main dialog, which
+        The user interface for the Processor for Aerosol and Atmospheric Correction  is represented by one main dialog, which
         consists of the following components:
         <itemizedlist mark='bullet'>
             <listitem>
@@ -68,11 +77,11 @@
         This tab pane consists of the following components:
         <itemizedlist mark='bullet'>
             <listitem>
-                 'Retrieve AODs over ocean': If this checkbox is selected, the aerosol optical depths will
+                 'Retrieve AODs over ocean': If this checkbox is selected, aerosol optical depths will
                 be retrieved over ocean. The default is 'true'.
             </listitem>
             <listitem>
-                 'Retrieve AODs over land': If this checkbox is selected, the aerosol optical depths will
+                 'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
                 be retrieved over land. The default is 'true'.
             </listitem>
             <listitem>
@@ -81,13 +90,17 @@
             </listitem>
             <listitem>
                 'Soil surface reflectance spectrum': Text field to set the filename containing
-                the soil surface reflectance spectrum. The default is 'spec_soil.dat' and is included
-                in the software package.
+                the soil surface reflectance spectrum. The default is 'spec_soil.dat' and is the only one included
+                in the delivered software package. If the user wants to use different files,
+                they must be added to the software archive (synergy-aerosol-retrieval-1.1-SNAPSHOT.jar)
+                with an appropriate tool before starting Visat.
             </listitem>
             <listitem>
                 'Vegetation surface reflectance spectrum': Text field to set the filename containing
-                the vegetation surface reflectance spectrum. The default is 'spec_veg.dat' and is included
-                in the software package.
+                the vegetation surface reflectance spectrum. The default is 'spec_veg.dat' and is the only one included
+                in the delivered software package. If the user wants to use different files,
+                they must be added to the software archive (synergy-aerosol-retrieval-1.1-SNAPSHOT.jar)
+                with an appropriate tool before starting Visat.
             </listitem>
             <listitem>
                  'List of land aerosol models': Text field to set a comma separated list of the indices of

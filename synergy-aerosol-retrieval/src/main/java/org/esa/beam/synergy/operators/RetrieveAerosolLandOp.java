@@ -337,7 +337,7 @@ public class RetrieveAerosolLandOp extends Operator{
 
             for (int iY = targetRectangle.y; iY < targetRectangle.y + targetRectangle.height; iY++) {
                 for (int iX = targetRectangle.x; iX < targetRectangle.x + targetRectangle.width; iX++) {
-
+                    checkForCancelation(pm);
                     int iSrcX = (2*aveBlock+1)*iX + aveBlock;
                     int iSrcY = (2*aveBlock+1)*iY + aveBlock;
 
@@ -425,7 +425,7 @@ public class RetrieveAerosolLandOp extends Operator{
                         }
 
                     }
-
+                    
                     aerosolFlagTile.setSample(iX, iY, flagPixel);
                     pm.worked(1);
                 }

@@ -240,9 +240,7 @@ public class GlintAveOp extends Operator {
 //                            iTarX + "," + iTarY + "," + iX + "," + iY);
 //                    if (iX == 0 && iY == 128)
 //                        System.out.println("halt!");
-                    if (pm.isCanceled()) {
-                        break;
-                    }
+                    checkForCancelation(pm);
 
                     if ((targetBandIndex != -1 && synergyGlint[targetBandIndex][iX][iY] == -1.0) ||
                             synergyWindspeed[iX][iY] == -1.0) {

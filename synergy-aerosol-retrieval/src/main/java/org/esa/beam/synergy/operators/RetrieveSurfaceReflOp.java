@@ -246,6 +246,7 @@ public class RetrieveSurfaceReflOp extends Operator {
 
             for (int iY = targetRectangle.y; iY < targetRectangle.y + targetRectangle.height; iY++) {
                 for (int iX = targetRectangle.x; iX < targetRectangle.x + targetRectangle.width; iX++) {
+                    checkForCancelation(pm);
                     int aeroModel = aeroModelTile.getSampleInt(iX, iY);
                     validPixel = isValidAeroModel(aeroModel);
 

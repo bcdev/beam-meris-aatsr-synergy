@@ -10,7 +10,7 @@
         <tocitem target="sum.introduction.acronyms" text="Acronyms"/>
         <tocitem target="sum.introduction.nomenclature" text="Nomenclature"/>
       </tocitem>
-      <tocitem target="sum.introduction.referenceDocuments" text="Reference Documents"/>
+      <tocitem target="sum.introduction.referenceDocuments" text="References"/>
     </tocitem>
     <tocitem target="sum.installation" text="Software Installation">
       <tocitem target="sum.installation.plugin" text="Aerosol and SDR Retrieval as BEAM plugin"/>

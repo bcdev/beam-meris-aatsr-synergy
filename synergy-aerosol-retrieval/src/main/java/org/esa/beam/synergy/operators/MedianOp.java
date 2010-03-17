@@ -78,6 +78,7 @@ public class MedianOp extends Operator {
             int tarHeight = tarRec.height;
             for (int iTarY = tarY; iTarY < tarHeight; iTarY++) {
                 for (int iTarX = tarX; iTarX < tarWidth; iTarX++) {
+                    checkForCancelation(pm);
                     float srcPixel = srcTile.getSampleFloat(iTarX, iTarY);
                     if (srcPixel != noDataValue) {
                         float medianPixel = getMedianPixel(srcTile, iTarX, iTarY);

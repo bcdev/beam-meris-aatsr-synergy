@@ -12,7 +12,8 @@
                 </listitem>
             </itemizedlist>
             The BEAM software can be obtained from the BEAM download page
-            (www.brockmann-consult.de/beam).
+            (www.brockmann-consult.de/beam). Note that the MERIS/(A)ATSR Synergy Toolbox software has been
+            developed in the frame of BEAM 4.7 and is not compatible with older BEAM versions.
         </para>
 
         <para>

@@ -151,6 +151,7 @@ public class BoxAveOp extends Operator {
 
         for (int iTarY = tarY; iTarY < tarHeight; iTarY++) {
             for (int iTarX = tarX; iTarX < tarWidth; iTarX++) {
+                checkForCancelation(pm);
                 float origPixel = origAotTile.getSampleFloat(iTarX, iTarY);
                 int flagPixel = flagSrcTile.getSampleInt(iTarX, iTarY);
                 origTarTile.setSample(iTarX, iTarY, origPixel);

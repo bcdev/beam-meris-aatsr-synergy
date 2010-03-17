@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>6.2. 'Processing Parameters' Tab Pane</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch06.html" title="Chapter 6. The Processor for Aerosol Retrieval and Atmospheric Correction"><link rel="prev" href="ch06.html" title="Chapter 6. The Processor for Aerosol Retrieval and Atmospheric Correction"><link rel="next" href="ch06s03.html" title="6.3. Control Buttons"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.aerosolretrieval"></a>6.2. 'Processing Parameters' Tab Pane</h2></div></div></div><div class="figure"><a name="figure.processor.aerosolretrieval"></a><div class="figure-contents"><div><img src="figures/processingtab_aerosolretrieval.png" alt="Aerosol Retrieval and Atmospheric Correction: 'Processing Parameters' Tab Pane"></div></div><p class="title"><b>Figure 6.2. Aerosol Retrieval and Atmospheric Correction: 'Processing Parameters' Tab Pane</b></p></div><br class="figure-break">
+
+        This tab pane consists of the following components:
+        <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
+                 'Retrieve AODs over ocean': If this checkbox is selected, aerosol optical depths will
+                be retrieved over ocean. The default is 'true'.
+            </li><li style="list-style-type: disc">
+                 'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
+                be retrieved over land. The default is 'true'.
+            </li><li style="list-style-type: disc">
+                'Path to LUTs for land and ocean aerosol algorithms': Text field to set the path to the
+                lookup tables required for the ocean aerosol retrieval. See [2] for more details.
+            </li><li style="list-style-type: disc">
+                'Soil surface reflectance spectrum': Text field to set the filename containing
+                the soil surface reflectance spectrum. The default is 'spec_soil.dat' and is the only one included
+                in the delivered software package. If the user wants to use different files,
+                they must be added to the software archive (synergy-aerosol-retrieval-1.1-SNAPSHOT.jar)
+                with an appropriate tool before starting Visat.
+            </li><li style="list-style-type: disc">
+                'Vegetation surface reflectance spectrum': Text field to set the filename containing
+                the vegetation surface reflectance spectrum. The default is 'spec_veg.dat' and is the only one included
+                in the delivered software package. If the user wants to use different files,
+                they must be added to the software archive (synergy-aerosol-retrieval-1.1-SNAPSHOT.jar)
+                with an appropriate tool before starting Visat.
+            </li><li style="list-style-type: disc">
+                 'List of land aerosol models': Text field to set a comma separated list of the indices of
+                the aerosol models to be used for the land aerosol retrieval. The default is '8,20,28'.
+                See [3] for more details.
+            </li><li style="list-style-type: disc">
+                 'N x N average for AOD retrieval': Text field to set
+                the number of pixels to average over in the aerosol retrieval. The default number is '7',
+                which corresponds to a square with 3 pixels to each side of a center pixel.
+            </li><li style="list-style-type: disc">
+                'Rescale AOD to original resolution after interpolation': If this checkbox is selected,
+                the retrieved AODs retrieved on the coarse N x N grid will
+                be rescaled to the original resolution by a bicubic interpolation.
+            </li><li style="list-style-type: disc">
+                'Retrieve surface directional reflectances (over land only)': If this checkbox is selected,
+                SDRs will be retrieved from rescaled AODs. This computation is performed over land only and
+                requires AOD rescaling (previous checkbox).
+            </li></ul></div></div></body></html>

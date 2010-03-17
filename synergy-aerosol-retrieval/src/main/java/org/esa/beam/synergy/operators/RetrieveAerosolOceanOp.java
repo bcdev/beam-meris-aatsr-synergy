@@ -318,12 +318,7 @@ public class RetrieveAerosolOceanOp extends Operator {
                     int iTarY = (int) (scalingFactor*iY + aveBlock);
 //                    System.out.println("iTarX, iTarY, iX, iY: " +
 //                         iTarX + "," + iTarY + "," + iX + "," + iY);
-                    if (pm.isCanceled()) {
-                        break;
-                    }
-
-//                    if (iX == 70 && iY == 60)
-//                        System.out.println("halt!");
+                    checkForCancelation(pm);
 
                     final float aatsrViewElevationNadir = getAvePixel(veAatsrNadirTile, iTarX, iTarY);
                     final float aatsrSunElevationNadir = getAvePixel(seAatsrNadirTile, iTarX, iTarY);

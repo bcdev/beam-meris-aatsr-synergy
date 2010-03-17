@@ -113,9 +113,9 @@ public class UpscaleOp extends Operator {
                     || targetBand.getName().startsWith(modelName)
                     || targetBand.isFlagBand()) {
                 
-                upscaleTileCopy(srcTile, targetTile, tarRec);
+                upscaleTileCopy(srcTile, targetTile, tarRec, pm);
             } else {
-                upscaleTileBilinear(srcTile, targetTile, tarRec);
+                upscaleTileBilinear(srcTile, targetTile, tarRec, pm);
             }
         }
     }
@@ -167,7 +167,7 @@ public class UpscaleOp extends Operator {
         }
     }
 
-    private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec) {
+    private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec, ProgressMonitor pm) {
         
         int tarX = tarRec.x;
         int tarY = tarRec.y;
@@ -179,6 +179,7 @@ public class UpscaleOp extends Operator {
             if (iSrcY >= sourceRasterHeight - 1) iSrcY = sourceRasterHeight - 2;
             float yFac = (float) (iTarY - offset) / scalingFactor - iSrcY;
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
+                checkForCancelation(pm);
                 int iSrcX = (iTarX - offset) / scalingFactor;
                 if (iSrcX >= sourceRasterWidth - 1) iSrcX = sourceRasterWidth - 2;
                 float xFrac = (float) (iTarX - offset) / scalingFactor - iSrcX;
@@ -191,7 +192,7 @@ public class UpscaleOp extends Operator {
         }
     }
 
-    private void upscaleTileCopy(Tile srcTile, Tile tarTile, Rectangle tarRec) {
+    private void upscaleTileCopy(Tile srcTile, Tile tarTile, Rectangle tarRec, ProgressMonitor pm) {
 
         int tarX = tarRec.x;
         int tarY = tarRec.y;
@@ -202,6 +203,9 @@ public class UpscaleOp extends Operator {
             int iSrcY = iTarY / scalingFactor;
             if (iSrcY >= sourceRasterHeight) iSrcY = sourceRasterHeight - 1;
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
+                if (pm.isCanceled()) {
+                    break;
+                }
                 int iSrcX = iTarX / scalingFactor;
                 if (iSrcX >= sourceRasterWidth) iSrcX = sourceRasterWidth - 1;
                 float erg = srcTile.getSampleFloat(iSrcX, iSrcY);

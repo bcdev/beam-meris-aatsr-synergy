@@ -2,6 +2,13 @@
     <title>The Cloud Screening Processor</title>
 
     <para>
+        The  Cloud Screening Processor is the second of three main modules within the MERIS/(A)ATSR Synergy toolbox.
+        Its purpose is to add various bands (i.e cloud flags) to the colocated MERIS/(A)ATSR L1b product
+        obtained from the preprocessor. The output product from the cloud screening shall be used as input for the
+        third module (aerosol retrieval and atmospheric correction).
+    </para>
+    
+    <para>
         The user interface for the Cloud Screening Processor is represented by one main dialog, which
         consists of the following components:
         <itemizedlist mark='bullet'>

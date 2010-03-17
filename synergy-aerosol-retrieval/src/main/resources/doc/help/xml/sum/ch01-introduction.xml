@@ -3,10 +3,9 @@
 
     <sect1 id="sum.introduction.scope">
         <title>Scope</title>
-        <para>This document is the software user manual (SUM) for the MERIS/(A)ATSR Synergy Toolbox,
-            describeing the Preprocessing , the Cloud Screening, and the Aerosol Retrieval / Atmospheric Correction
-            modules.
-            </para>
+        <para>
+            This document is the software user manual (SUM) for the MERIS/(A)ATSR Synergy Toolbox.
+        </para>
     </sect1>
 
     <sect1 id="sum.introduction.objectives">
@@ -32,7 +31,8 @@
                 concepts for the Sentinel-3 OLCI and SLST instruments
             </listitem>
             </itemizedlist>	
-            This SUM specifically describes the software developed for ocean and land aerosol and SDR retrieval.
+            This SUM specifically describes the software developed for Synergy preprocessing, cloud screening,
+            ocean and land aerosol retrieval, and atmospheric correction.
         </para>
     </sect1>
 
@@ -60,14 +60,53 @@
 			
 			<para>
 				<itemizedlist mark='bullet'>
+                    <listitem>
+						AATSR - Advanced Along-Track Scanning Radiometer
+					</listitem>
+                    <listitem>
+						AOD - Aerosol Optical Depth
+					</listitem>
+                    <listitem>
+						AOD - Aerosol Optical Thickness
+					</listitem>
+                    <listitem>
+						ATBD - Algorithm Theoretical Baseline Document
+					</listitem>
 					<listitem>
 						BC - Brockmann Consult
+					</listitem>
+                    <listitem>
+						DEM - Digital Elevation Model
+					</listitem>
+                    <listitem>
+						DPM - Detailed Processing Model
 					</listitem>
 					<listitem>
 						ESA - European Space Agency
 					</listitem>
+                    <listitem>
+						FUB - Free University of Berlin
+					</listitem>
+                    <listitem>
+						MERIS - Medium Resolution Imaging Spectrometer Instrument
+					</listitem>
+                    <listitem>
+						IODD - Input/Output Data Definition
+					</listitem>
 					<listitem>
+						SDR - Surface Downwelling Reflectance
+					</listitem>
+                    <listitem>
+						SU - Swansea University
+					</listitem>
+                    <listitem>
 						SUM - Software User Manual
+					</listitem>
+                    <listitem>
+						VISAT - Visualization and Analysis Tool
+					</listitem>
+                    <listitem>
+						UV - University of Valencia
 					</listitem>
 				</itemizedlist>	
 			</para>
@@ -78,27 +117,39 @@
     </sect1>
 
     <sect1 id="sum.introduction.referenceDocuments">
-        <title>Reference Documents</title>
+        <title>References</title>
 		
 		<para>
 			<itemizedlist mark='bullet'>
 				<listitem>
-					[1] Proposal
+					[1] ENVI-DTEX-EOPS-SW-07-0007, "MERIS/AATSR Synergy – Algorithms for cloud screening,
+                    aerosol retrieval and atmospheric correction", STATEMENT OF WORK, June 2007.
 				</listitem>
                 <listitem>
-					[2] Ocean ATBD.
+					[2] Preusker, R., and J. Fischer: Remote Sensing of Aerosol over Ocean Using a Synergy
+                    of MERIS and AATSR. SYNAO ATBD, Free University of Berlin, Version 1.0, June 2009.
 				</listitem>
                 <listitem>
-					[3] Land ATBD.
+					[3] North, P., Grey, W., Heckel, A., Fischer, J., Preusker, R., and C. Brockmann:
+                    MERIS/AATSR Synergy – Algorithms for cloud screening,
+                    aerosol retrieval and atmospheric correction: Land Aerosol and Surface Reflectance ATBD.
+                    Swansea University, Free University of Berlin, Brockmann Consult Geesthacht, Version 3.1, June 2009.
 				</listitem>
                 <listitem>
-					[4] Cloud ATBD.
+					[4] Gomez-Chova, L., Camps-Valls, G., Calpe, J., Munoz, J., and J. Moreno:
+                    MERIS/AATSR Synergy Algorithms for cloud screening,
+                    aerosol retrieval and atmospheric correction: Cloud Screening ATBD.
+                    University of Valencia, Version 1.0, January 2009.
 				</listitem>
                 <listitem>
-					[5] DPM.
+					[5] MERIS/AATSR Synergy Algorithms for cloud screening,
+                    aerosol retrieval and atmospheric correction: Detailed Processing Model.
+                    Brockmann Consult, Draft Version, March 2010.
 				</listitem>
                 <listitem>
-					[6] IODD.
+					[6] MERIS/AATSR Synergy Algorithms for cloud screening,
+                    aerosol retrieval and atmospheric correction: Input/Output Data Definition.
+                    Brockmann Consult, Draft Version, March 2010.
 				</listitem>
 			</itemizedlist>
 		</para>

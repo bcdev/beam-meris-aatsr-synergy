@@ -225,9 +225,7 @@ public class GlintOp extends Operator {
 
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
-                    if (pm.isCanceled()) {
-                        break;
-                    }
+                    checkForCancelation(pm);
 
                     if ((targetBandIndex != -1 && synergyGlint[targetBandIndex][x][y] == -1.0) ||
                             windspeed1[x][y] == -1.0) {

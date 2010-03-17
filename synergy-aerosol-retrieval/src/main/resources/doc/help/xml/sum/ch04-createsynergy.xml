@@ -3,6 +3,11 @@
 
     <para>
         The Synergy Preprocessor is the first of three main modules within the MERIS/(A)ATSR Synergy toolbox.
+        Its purpose is to create a colocated MERIS/(A)ATSR L1b product containing radiances/reflectances of
+        all channels of both MERIS and AATSR. This colocated product shall be used as input for the cloud screening
+        module.
+    </para>
+    <para>
         As the other modules, it can be accessed through the 'Tools' menu in BEAM Visat
         (<xref linkend="figure.visat.synergy" xrefstyle="select: label"/>).
         This preprocessor is supposed to be used for the generation of a colocated MERIS/AATSR source product
