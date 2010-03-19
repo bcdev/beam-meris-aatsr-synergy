@@ -73,7 +73,7 @@ public class CreateSynergyOp extends Operator {
 //               description = "Adds a band with MERIS cloud probability",
 //               label = "Copy MERIS Cloud Probability (BEAM-FUB)")
 //    boolean copyCloudProbability;
-    boolean copyCloudProbability = true;
+    boolean copyCloudProbability = false;
 
 //    @Parameter(defaultValue = "false",
 //               description = "Add two bands containing MERIS top preassure and cloud mask",

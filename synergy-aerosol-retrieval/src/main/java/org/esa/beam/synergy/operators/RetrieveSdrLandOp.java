@@ -283,7 +283,7 @@ public class RetrieveSdrLandOp extends Operator {
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyTiePointGrids(aerosolProduct, targetProduct);
-        ProductUtils.copyFlagCodings(aerosolProduct, targetProduct);
+//        ProductUtils.copyFlagCodings(aerosolProduct, targetProduct);
         ProductUtils.copyBitmaskDefsAndOverlays(aerosolProduct, targetProduct);
         ProductUtils.copyFlagBands(aerosolProduct, targetProduct);
         for (Band srcBand : aerosolProduct.getBands()) {

@@ -46,6 +46,11 @@ public class RetrieveAerosolOp extends Operator {
                label = "Retrieve AODs over land")
     boolean computeLand;
 
+    @Parameter(defaultValue = "true",
+               label = "Retrieve surface directional reflectances (over land only)",
+               description = "Retrieve surface directional reflectances AODs")
+    boolean computeSurfaceReflectances;
+
     @Parameter(defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
                description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
                label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
@@ -84,15 +89,12 @@ public class RetrieveAerosolOp extends Operator {
 //    boolean doAodInterpolation;
     boolean doAodInterpolation = true;
 
-    @Parameter(defaultValue = "true",
-               description = "Rescale to original resolution after interpolation of AOD gaps",
-               label = "Rescale AOD to original resolution after interpolation")
-    boolean rescaleToOriginalResolution;
+//    @Parameter(defaultValue = "true",
+//               description = "Rescale to original resolution after interpolation of AOD gaps",
+//               label = "Rescale AOD to original resolution after interpolation")
+//    boolean rescaleToOriginalResolution;
+    boolean rescaleToOriginalResolution = true;
 
-    @Parameter(defaultValue = "true",
-               label = "Retrieve surface directional reflectances (over land only)",
-               description = "Retrieve surface directional reflectances AODs")
-    boolean computeSurfaceReflectances;
 
     //@Parameter(defaultValue = "true", label = "Use Cld Screening")
     boolean doCldScreen = true;
@@ -168,10 +170,12 @@ public class RetrieveAerosolOp extends Operator {
         }
 
         Product landOceanInterpolatedProduct;
-        if (doAodInterpolation && !(computeOcean &&!computeLand)) {
-            Map<String, Product> landOceanInterpolatedInput = new HashMap<String, Product>(1);
+        if (doAodInterpolation && computeLand) {
+            Map<String, Product> landOceanInterpolatedInput = new HashMap<String, Product>(2);
+            landOceanInterpolatedInput.put("synergy", synergyProduct);
             landOceanInterpolatedInput.put("source", landOceanAerosolProduct);
             Map<String, Object> landOceanInterpolatedParams = new HashMap<String, Object>();
+            landOceanInterpolatedParams.put("aveBlock", aveBlock);
             //landOceanInterpolatedProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(AotBoxcarInterpolationOp.class), landOceanInterpolatedParams, landOceanInterpolatedInput);
             landOceanInterpolatedProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(AotExtrapOp.class), landOceanInterpolatedParams, landOceanInterpolatedInput);
         } else {
@@ -179,7 +183,7 @@ public class RetrieveAerosolOp extends Operator {
         }
 
         Product landOceanUpscaledProduct;
-        if (rescaleToOriginalResolution) {
+        if (rescaleToOriginalResolution && computeSurfaceReflectances && computeLand) {
             Map<String, Product> landOceanUpscaledInput = new HashMap<String, Product>(2);
             landOceanUpscaledInput.put("synergy", synergyProduct);
             landOceanUpscaledInput.put("aerosol", landOceanInterpolatedProduct);

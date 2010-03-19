@@ -219,7 +219,7 @@ public class RetrieveAerosolOceanOp extends Operator {
         AerosolHelpers.copyDownscaledTiePointGrids(synergyProduct, targetProduct, scalingFactor);
         AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, scalingFactor);
 
-        AerosolHelpers.addAerosolFlagBand(targetProduct, downscaledRasterWidth, downscaledRasterHeight);
+//        AerosolHelpers.addAerosolFlagBand(targetProduct, downscaledRasterWidth, downscaledRasterHeight);
 
         BandMathsOp bandArithmeticOp =
                 BandMathsOp.createBooleanExpressionBand(INVALID_EXPRESSION, synergyProduct);
@@ -247,12 +247,12 @@ public class RetrieveAerosolOceanOp extends Operator {
             angErrBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE);
             angErrBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE_USED);
 
-            Band glintBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NAME, ProductData.TYPE_FLOAT32);
-            glintBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE);
-            glintBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE_USED);
-            Band wsBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_WS_BAND_NAME, ProductData.TYPE_FLOAT32);
-            wsBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE);
-            wsBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE_USED);
+//            Band glintBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NAME, ProductData.TYPE_FLOAT32);
+//            glintBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE);
+//            glintBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE_USED);
+//            Band wsBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_WS_BAND_NAME, ProductData.TYPE_FLOAT32);
+//            wsBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE);
+//            wsBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE_USED);
         }
     }
 

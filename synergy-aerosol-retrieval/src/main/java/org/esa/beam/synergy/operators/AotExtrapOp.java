@@ -17,7 +17,9 @@ import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.util.ProductUtils;
+import org.esa.beam.synergy.util.AerosolHelpers;
 
 
 /**
@@ -31,13 +33,21 @@ import org.esa.beam.util.ProductUtils;
                   description = "AOT extrapolation of missing data.")
 public class AotExtrapOp extends Operator {
 
-    @SourceProduct(alias = "source",
+    @SourceProduct(alias = "synergy",
+                   label = "Name (Synergy cloud srceening product)",
+                   description = "Select a Synergy aerosol product.")
+    private Product synergyProduct;
+
+     @SourceProduct(alias = "source",
                    label = "Name (Synergy aerosol product)",
                    description = "Select a Synergy aerosol product.")
     private Product sourceProduct;
 
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
+
+    @Parameter(defaultValue = "7", label = "Pixels to average for AOD retrieval", interval = "[1, 100]")
+    private int aveBlock;
 
     private Product aveAotProd;
 
@@ -68,8 +78,9 @@ public class AotExtrapOp extends Operator {
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
-        ProductUtils.copyFlagCodings(sourceProduct, targetProduct);
+//        ProductUtils.copyFlagCodings(sourceProduct, targetProduct);
         ProductUtils.copyBitmaskDefs(sourceProduct, targetProduct);
+        AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, aveBlock*1.0f);
         for (String srcBandName : sourceProduct.getBandNames()) {
             if (!targetProduct.containsBand(srcBandName)) {
                 ProductUtils.copyBand(srcBandName, sourceProduct, targetProduct);
