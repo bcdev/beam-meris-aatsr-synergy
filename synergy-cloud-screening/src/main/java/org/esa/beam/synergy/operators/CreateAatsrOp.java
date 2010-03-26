@@ -33,6 +33,7 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.math.RsMathUtils;
+import org.esa.beam.aatsrrecalibration.operators.RecalibrateAATSRReflectancesOp;
 
 import com.bc.ceres.core.ProgressMonitor;
 

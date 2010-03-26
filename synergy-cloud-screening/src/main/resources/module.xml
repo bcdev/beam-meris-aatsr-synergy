@@ -40,6 +40,9 @@
     <dependency>
         <module>beam-collocation</module>
     </dependency>
+    <dependency>
+        <module>aatsr-recalibration-recalibrate</module>
+    </dependency>
 
     <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
 

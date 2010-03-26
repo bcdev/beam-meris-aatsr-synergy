@@ -57,6 +57,11 @@
 			<artifactId>beam-meris-sdr</artifactId>
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
+        <dependency>
+			<groupId>org.esa.beam.aatsr-recalibration</groupId>
+			<artifactId>aatsr-recalibration-recalibrate</artifactId>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
     </dependencies>
     <!--
     <build>
