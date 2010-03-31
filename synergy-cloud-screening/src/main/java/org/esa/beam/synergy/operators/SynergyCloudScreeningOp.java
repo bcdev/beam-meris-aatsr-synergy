@@ -28,8 +28,8 @@ import org.esa.beam.util.ProductUtils;
 public class SynergyCloudScreeningOp extends Operator {
     
     @SourceProduct(alias = "source",
-                   label ="Name (Preprocessed product)",
-                   description = "Select a collocated MERIS AATSR product obtained from preprocessing.")
+                   label ="Name (Synergy product)",
+                   description = "Select a Synergy product")
     private Product sourceProduct;
     
     @TargetProduct(description = "The target product. Contains a synergy product with cloud screening masks.")
@@ -57,9 +57,7 @@ public class SynergyCloudScreeningOp extends Operator {
 	    
     @Override
     public void initialize() throws OperatorException {
-
-        SynergyUtils.validatePreprocessedProduct(sourceProduct);
-
+    	
     	// Classify features params
         Map<String, Object> cloudParams = new HashMap<String, Object>(4);
         cloudParams.put("useForwardView", useForwardView);
@@ -85,7 +83,7 @@ public class SynergyCloudScreeningOp extends Operator {
         if (computeCOT) {
             targetProduct.addBand(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX));
             targetProduct.getBand(SynergyConstants.B_CLOUDINDEX).
-            setSourceImage(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX).getSourceImage());
+                setSourceImage(cloudProduct.getBand(SynergyConstants.B_CLOUDINDEX).getSourceImage());
         }
         // Copy contents
         targetProduct.getBand(SynergyConstants.B_CLOUDFLAGS).
@@ -93,12 +91,13 @@ public class SynergyCloudScreeningOp extends Operator {
         
         // And copy the sourceProduct to targetProduct
         
-        ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
-        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
-        targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct);
         ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
+        // since BEAM-4.7, copyGeoCoding must be after copyTiePointGrids,
+        // otherwise copyGeoCoding generates/ latitude and longitude TPGs
+        // and copyTiePoint generates an error.
+        ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
         
         for (Band sourceBand : sourceProduct.getBands()) {
             Band targetBand;

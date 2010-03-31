@@ -278,16 +278,21 @@ public class ClassifyFeaturesNNOp extends Operator {
             tileMap.put(SynergyConstants.F_870_670_RATIO,
                         getSourceTile(featProduct.getBand(SynergyConstants.F_870_670_RATIO), targetRectangle, pm));
             
+            //System.out.println(this + " targetRect " + targetRectangle);
+            
             for (int y=targetRectangle.y; y<targetRectangle.y + targetRectangle.height; y++) {                
                 for (int x=targetRectangle.x; x<targetRectangle.x + targetRectangle.width; x++) {
                     
                     checkForCancelation(pm);
                     
+                    //System.out.println(this +" x " + x + " y " + y);
+                    
                     // Compute neural network only if:
-                    // 1. Solar zenith angle is less than 80º (day only)
+                    // 1. Solar zenith angle is less than 85º (day only)
                     // 2. Both meris and aatsr bands have data values
-                    if (szaTile.getSampleFloat(x, y) < 80.0 &&
-                            bMeris[0].isPixelValid(x, y) && bAatsrFward[0].isPixelValid(x, y)) {
+                    if ( (szaTile.getSampleFloat(x, y) < 85.0) &&                        
+                         // Since BEAM-4.7, calling isPixelValid here throws an OperatorException
+                        (bMeris[0].isPixelValid(x, y)) && (bAatsrFward[0].isPixelValid(x, y)) ) {
                     
                         final boolean isLand =
                             ((l1Tile.getSampleInt(x, y) & flagLandMask) == flagLandMask) ? true : false;
@@ -426,6 +431,9 @@ public class ClassifyFeaturesNNOp extends Operator {
                 
                 pm.worked(1);
             }
+        }
+        // TODO: remove this catch when isPixelValid is fixed
+        catch (java.lang.ArrayIndexOutOfBoundsException e) {
         }
         finally {
             pm.done();

@@ -4,11 +4,12 @@ import com.bc.ceres.core.ProgressMonitor;
 
 import org.esa.beam.dataio.envisat.EnvisatConstants;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
+//import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.GeneralFilterBand;
 import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.GeoPos;
+import org.esa.beam.framework.datamodel.Mask;
 import org.esa.beam.framework.datamodel.PixelPos;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
@@ -207,17 +208,25 @@ public class ClassifyFeaturesOp extends Operator {
             }
             else {
             	// Create it
-            	final String productType = sourceProduct.getProductType();
-            	if (SynergyUtils.isFR(sourceProduct)) {
-            	    sourceProduct.setProductType(EnvisatConstants.MERIS_FR_L1B_PRODUCT_TYPE_NAME);
+            	try {
+	            	final String productType = sourceProduct.getProductType();
+	            	if (SynergyUtils.isFR(sourceProduct)) {
+	            	    sourceProduct.setProductType(EnvisatConstants.MERIS_FR_L1B_PRODUCT_TYPE_NAME);
+	            	}
+	            	else {
+	            	    sourceProduct.setProductType(EnvisatConstants.MERIS_RR_L1B_PRODUCT_TYPE_NAME);
+	            	}            	
+	            	final Product demProduct = GPF.createProduct("synergy.CreateElevationBand", GPF.NO_PARAMS, sourceProduct);
+	            	sourceProduct.setProductType(productType);
+	            	altitudeRDN = demProduct.getBand(SynergyConstants.DEM_ELEVATION);
             	}
-            	else {
-            	    sourceProduct.setProductType(EnvisatConstants.MERIS_RR_L1B_PRODUCT_TYPE_NAME);
-            	}            	
-            	final Product demProduct = GPF.createProduct("synergy.CreateElevationBand", GPF.NO_PARAMS, sourceProduct);
-            	sourceProduct.setProductType(productType);
-            	altitudeRDN = demProduct.getBand(SynergyConstants.DEM_ELEVATION);
-            	if (altitudeRDN != null) {
+            	catch (OperatorException e) {
+            		SynergyUtils.info("  " + e.getMessage());
+            		SynergyUtils.info("  Shadow Risk Flag will be computed from tie point grid altitude");
+            		altitudeRDN = null;
+            	}
+            	
+            	if (altitudeRDN == null) {
 	                altitudeRDN = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_DEM_ALTITUDE_DS_NAME);
 	                if (shadowWidth == 0) shadowWidth = 64;
             	}
@@ -254,6 +263,41 @@ public class ClassifyFeaturesOp extends Operator {
         targetProduct.getFlagCodingGroup().add(flagCoding);
         
         // Bitmasks
+        targetProduct.getMaskGroup().
+            add(Mask.BandMathsType.create("cloud_synergy",
+                                          flagCoding.getAttribute(SynergyConstants.FLAGNAME_CLOUD).getDescription(),
+                                          targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
+                                          flagCoding.getName() + "." + SynergyConstants.FLAGNAME_CLOUD,
+                                          new Color(240,240,0), 0.5F));
+        targetProduct.getMaskGroup().
+            add(Mask.BandMathsType.create("cloud_filled_synergy",
+                                          flagCoding.getAttribute(SynergyConstants.FLAGNAME_CLOUD_FILLED).getDescription(),
+                                          targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
+                                          flagCoding.getName() + "." + SynergyConstants.FLAGNAME_CLOUD_FILLED,
+                                          new Color(200,200,0), 0.5F));
+        if (computeSF) {
+            targetProduct.getMaskGroup().
+                add(Mask.BandMathsType.create("snow_risk_synergy",
+                                              flagCoding.getAttribute(SynergyConstants.FLAGNAME_SNOW).getDescription(),
+                                              targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
+                                              flagCoding.getName() + "." + SynergyConstants.FLAGNAME_SNOW,
+                                              Color.cyan, 0.5F));
+            targetProduct.getMaskGroup().
+                add(Mask.BandMathsType.create("snow_risk_filled_synergy",
+                                              flagCoding.getAttribute(SynergyConstants.FLAGNAME_SNOW_FILLED).getDescription(),
+                                              targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
+                                              flagCoding.getName() + "." + SynergyConstants.FLAGNAME_SNOW_FILLED,
+                                              Color.blue, 0.5F));
+        }
+        if (computeSH) {
+            targetProduct.getMaskGroup().
+            add(Mask.BandMathsType.create("cloud_shadow_risk_synergy",
+                                          flagCoding.getAttribute(SynergyConstants.FLAGNAME_SHADOW).getDescription(),
+                                          targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
+                                          flagCoding.getName() + "." + SynergyConstants.FLAGNAME_SHADOW,
+                                          Color.blue, 0.5F));
+        }
+        /*
         targetProduct.addBitmaskDef(
                       new BitmaskDef("cloud_synergy",
                                      flagCoding.getAttribute(SynergyConstants.FLAGNAME_CLOUD).getDescription(),
@@ -285,6 +329,7 @@ public class ClassifyFeaturesOp extends Operator {
             
             // TODO: if we've create dem_altitude band, we can add it to final product
         }
+        */
         
         // The flags band containing everything
         tBand_flags = targetProduct.addBand(SynergyConstants.B_CLOUDFLAGS, ProductData.TYPE_UINT8);
@@ -376,6 +421,9 @@ public class ClassifyFeaturesOp extends Operator {
                         if (sTiles[1].getSampleBoolean(x, y) ||
                         	sTile_filled[1].getSampleBoolean(x, y)) flags |= SynergyConstants.FLAGMASK_SNOW_FILLED;
                     }
+                    
+                    tTile_flags.setSample(x, y, flags);
+                    
                     if (computeSH) {
                         if (sTiles[0].getSampleBoolean(x, y)) {
                             final float sza = szaTile.getSampleFloat(x, y) * MathUtils.DTOR_F;
@@ -395,7 +443,10 @@ public class ClassifyFeaturesOp extends Operator {
                                         final int pixelX = MathUtils.floorInt(pixelPos.x);
                                         final int pixelY = MathUtils.floorInt(pixelPos.y);
                                         if (!sTiles[0].getSampleBoolean(pixelX, pixelY)) {
-                                            flags |= SynergyConstants.FLAGMASK_SHADOW;
+                                            //flags |= SynergyConstants.FLAGMASK_SHADOW;
+                                            int temp = tTile_flags.getSampleInt(pixelX, pixelY);
+                                            temp |= SynergyConstants.FLAGMASK_SHADOW;
+                                            tTile_flags.setSample(pixelX, pixelY, temp);
                                         }
                                     }
                                 }
@@ -403,8 +454,6 @@ public class ClassifyFeaturesOp extends Operator {
                         }
                     }
                     
-                    tTile_flags.setSample(x, y, flags);
-
                     if (computeCOT) {
                         if (sBand_abun.isPixelValid(x, y)) {
                             tTile_abun.setSample(x, y,
@@ -417,6 +466,9 @@ public class ClassifyFeaturesOp extends Operator {
                 pm.worked(1);
             }
         }
+        // TODO: remove this catch when isPixelValid is fixed
+        catch (java.lang.ArrayIndexOutOfBoundsException e) {
+        }        
         finally {
             pm.done();
         }
