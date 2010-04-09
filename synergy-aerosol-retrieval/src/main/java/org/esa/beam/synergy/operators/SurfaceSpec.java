@@ -6,9 +6,8 @@
 package org.esa.beam.synergy.operators;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,15 +31,16 @@ public class SurfaceSpec {
 
     public SurfaceSpec(String fname, float[] wvl) {
 
-        final InputStream inputStream = RetrieveAerosolLandOp.class.getResourceAsStream(fname);
+//        final InputStream inputStream = RetrieveAerosolLandOp.class.getResourceAsStream(fname);
         BufferedReader reader = null;
 
         float[] fullspec = null;
         float[] fullwvl = null;
         int i = 0;
         try {
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-//            reader = new BufferedReader(new FileReader(fname));
+//            final InputStream inputStream = new FileInputStream(fname);
+//            reader = new BufferedReader(new InputStreamReader(inputStream));
+            reader = new BufferedReader(new FileReader(fname));
             String line;
             String[] stmp;
             fullspec = new float[100000];

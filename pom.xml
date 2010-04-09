@@ -6,7 +6,7 @@
     <name>Synergy</name>
     <groupId>org.esa.beam.synergy</groupId>
     <artifactId>synergy</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -56,7 +56,9 @@
         </snapshotRepository>
     </distributionManagement>
     <modules>
+        <module>synergy-core</module>
         <module>synergy-bootstrap</module>
+		<module>synergy-preprocessing</module>
         <module>synergy-cloud-screening</module>
         <module>synergy-aerosol-retrieval</module>
     </modules>

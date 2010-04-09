@@ -1,5 +1,4 @@
 org.esa.beam.synergy.operators.RetrieveAerosolLandOp$Spi
-org.esa.beam.synergy.operators.RetrieveSurfaceReflOp$Spi
 org.esa.beam.synergy.operators.LaplaceInterpolationOp$Spi
 org.esa.beam.synergy.operators.AotBoxcarInterpolationOp$Spi
 org.esa.beam.synergy.operators.LandOceanMergeOp$Spi
@@ -11,5 +10,4 @@ org.esa.beam.synergy.operators.BoxAveOp$Spi
 org.esa.beam.synergy.operators.MedianOp$Spi
 org.esa.beam.synergy.operators.RetrieveAerosolOceanOp$Spi
 org.esa.beam.synergy.operators.RetrieveAerosolOp$Spi
-org.esa.beam.synergy.operators.GlintOp$Spi
 org.esa.beam.synergy.operators.GlintAveOp$Spi

@@ -1,13 +1,9 @@
 package org.esa.beam.synergy.operators;
 
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.bc.ceres.core.ProgressMonitor;
+import com.bc.jnn.Jnn;
+import com.bc.jnn.JnnException;
+import com.bc.jnn.JnnNet;
 import org.esa.beam.dataio.envisat.EnvisatConstants;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
@@ -20,12 +16,17 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
 
-import com.bc.ceres.core.ProgressMonitor;
-import com.bc.jnn.Jnn;
-import com.bc.jnn.JnnException;
-import com.bc.jnn.JnnNet;
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @OperatorMetadata(alias = "synergy.ClassifyFeaturesNN",
                   version = "1.0-SNAPSHOT",
@@ -427,9 +428,9 @@ public class ClassifyFeaturesNNOp extends Operator {
                         
                     }
 
+                    pm.worked(1);
                 }
-                
-                pm.worked(1);
+
             }
         }
         // TODO: remove this catch when isPixelValid is fixed
@@ -450,7 +451,7 @@ public class ClassifyFeaturesNNOp extends Operator {
      * @param y:           y coord
      * @param tMeris:      meris tiles
      * @param tAatsrNadir: aatsr nadir tiles
-     * @param tAatsFwardr: aatsr fward tiles
+     * @param tAatsrFward: aatsr fward tiles
      * @param tileMap:     map of tiles containing several features
      * 
      * @return             the NN output
@@ -495,7 +496,7 @@ public class ClassifyFeaturesNNOp extends Operator {
         in.add(tileMap.get(SynergyConstants.F_761_754_865_RATIO).getSampleDouble(x, y));
         in.add(tileMap.get(SynergyConstants.F_865_890_NDSI).getSampleDouble(x, y));
         in.add(tileMap.get(SynergyConstants.F_11_12_DIFF).getSampleDouble(x, y));
-        in.add(tileMap.get(SynergyConstants.F_555_1600_NDSI).getSampleDouble(x, y));            
+        in.add(tileMap.get(SynergyConstants.F_555_1600_NDSI).getSampleDouble(x, y));
         in.add(tileMap.get(SynergyConstants.F_870_670_RATIO).getSampleDouble(x, y));
         
         // Finally we have all the NN inputs
@@ -558,7 +559,7 @@ public class ClassifyFeaturesNNOp extends Operator {
             }
             // And features
             in.add(tileMap.get(SynergyConstants.F_11_12_DIFF).getSampleDouble(x, y));
-            in.add(tileMap.get(SynergyConstants.F_555_1600_NDSI).getSampleDouble(x, y));            
+            in.add(tileMap.get(SynergyConstants.F_555_1600_NDSI).getSampleDouble(x, y));
         }
         
         // Finally we have all the NN inputs

@@ -6,10 +6,6 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-import java.awt.Rectangle;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
@@ -21,8 +17,13 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.synergy.util.math.LaplaceInterpolation;
 import org.esa.beam.util.ProductUtils;
+
+import java.awt.Rectangle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * CURRENTLY NOT USED!
@@ -45,16 +46,16 @@ public class LaplaceInterpolationOp extends Operator {
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    @Parameter(alias = RetrieveAerosolConstants.OUTPUT_PRODUCT_NAME_NAME,
-              defaultValue = RetrieveAerosolConstants.OUTPUT_PRODUCT_NAME_DEFAULT,
-              description = RetrieveAerosolConstants.OUTPUT_PRODUCT_NAME_DESCRIPTION,
-              label = RetrieveAerosolConstants.OUTPUT_PRODUCT_NAME_LABEL)
+    @Parameter(alias = SynergyConstants.OUTPUT_PRODUCT_NAME_NAME,
+              defaultValue = SynergyConstants.OUTPUT_PRODUCT_NAME_DEFAULT,
+              description = SynergyConstants.OUTPUT_PRODUCT_NAME_DESCRIPTION,
+              label = SynergyConstants.OUTPUT_PRODUCT_NAME_LABEL)
     private String productName;
 
-    @Parameter(alias = RetrieveAerosolConstants.OUTPUT_PRODUCT_TYPE_NAME,
-              defaultValue = RetrieveAerosolConstants.OUTPUT_PRODUCT_TYPE_DEFAULT,
-              description = RetrieveAerosolConstants.OUTPUT_PRODUCT_TYPE_DESCRITPION,
-              label = RetrieveAerosolConstants.OUTPUT_PRODUCT_TYPE_LABEL)
+    @Parameter(alias = SynergyConstants.OUTPUT_PRODUCT_TYPE_NAME,
+              defaultValue = SynergyConstants.OUTPUT_PRODUCT_TYPE_DEFAULT,
+              description = SynergyConstants.OUTPUT_PRODUCT_TYPE_DESCRITPION,
+              label = SynergyConstants.OUTPUT_PRODUCT_TYPE_LABEL)
     private String productType;
 
     private String aotBandName = "aot";
@@ -135,27 +136,27 @@ public class LaplaceInterpolationOp extends Operator {
     }
 
     private void createTargetProductBands() {
-        //String bandName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME
+        //String bandName = SynergyPreprocessingConstants.OUTPUT_AOT_BAND_NAME
         //                  + String.format("_%02d", aerosolModels.get(iAM));
 
         final Band aotBand = new Band(aotBandName+"_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
-        aotBand.setDescription(RetrieveAerosolConstants.OUTPUT_AOT_BAND_DESCRIPTION);
-        aotBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE);
-        aotBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
+        aotBand.setDescription(SynergyConstants.OUTPUT_AOT_BAND_DESCRIPTION);
+        aotBand.setNoDataValue(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE);
+        aotBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
         aotBand.setValidPixelExpression(aotBand.getName() + ">= 0 AND " + aotBand.getName() + "<= 1");
         targetProduct.addBand(aotBand);
 
         final Band errBand = new Band(errBandName+"_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
-        errBand.setDescription(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_DESCRIPTION);
-        errBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NODATAVALUE);
-        errBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NODATAVALUE_USED);
+        errBand.setDescription(SynergyConstants.OUTPUT_AOTERR_BAND_DESCRIPTION);
+        errBand.setNoDataValue(SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE);
+        errBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE_USED);
         errBand.setValidPixelExpression(errBand.getName() + ">= 0 AND " + errBand.getName() + "<= 1");
         targetProduct.addBand(errBand);
 
         final Band modelBand = new Band(modelBandName+"_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
-        modelBand.setDescription(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_DESCRIPTION);
-        modelBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
-        modelBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE_USED);
+        modelBand.setDescription(SynergyConstants.OUTPUT_AOTMODEL_BAND_DESCRIPTION);
+        modelBand.setNoDataValue(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
+        modelBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE_USED);
         modelBand.setValidPixelExpression(modelBand.getName() + ">= 0 AND " + modelBand.getName() + "<= 1");
         targetProduct.addBand(modelBand);
     }

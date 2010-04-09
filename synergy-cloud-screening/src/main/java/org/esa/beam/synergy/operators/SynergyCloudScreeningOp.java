@@ -1,8 +1,5 @@
 package org.esa.beam.synergy.operators;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.GPF;
@@ -13,7 +10,11 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // TODO: remove not used UIs
 // TODO: sort bands in final product

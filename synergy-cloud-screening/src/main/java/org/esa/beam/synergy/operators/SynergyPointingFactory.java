@@ -6,6 +6,7 @@ import org.esa.beam.framework.datamodel.PointingFactory;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.RasterDataNode;
 import org.esa.beam.framework.datamodel.TiePointGridPointing;
+import org.esa.beam.synergy.util.SynergyConstants;
 
 /*
  * This class is needed to assign a PointingFactory to our Synergy products,

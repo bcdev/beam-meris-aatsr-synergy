@@ -2,10 +2,10 @@ package org.esa.beam.synergy.operators;
 
 import com.bc.jnn.JnnException;
 import com.bc.jnn.JnnNet;
+import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.GlintHelpers;
 import org.esa.beam.util.math.LookupTable;
 import org.esa.beam.util.math.MathUtils;
-import org.esa.beam.framework.gpf.OperatorException;
 
 import java.io.IOException;
 import java.util.HashMap;

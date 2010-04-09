@@ -1,0 +1,4 @@
+org.esa.beam.synergy.operators.MasterOp$Spi
+org.esa.beam.synergy.operators.CreateMerisOp$Spi
+org.esa.beam.synergy.operators.CreateAatsrOp$Spi
+org.esa.beam.synergy.operators.CreateSynergyOp$Spi

@@ -1,16 +1,15 @@
 package org.esa.beam.synergy.operators;
 
 import Jama.Matrix;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.esa.beam.synergy.util.math.Brent;
 import org.esa.beam.synergy.util.math.Function;
 import org.esa.beam.synergy.util.math.MvFunction;
 import org.esa.beam.synergy.util.math.Powell;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Locale;
 
 /**
  * The AARDVARC class provides the main implementation of the Synergy aerosol

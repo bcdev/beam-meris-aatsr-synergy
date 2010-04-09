@@ -6,18 +6,10 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.glevel.MultiLevelImage;
-import java.awt.Rectangle;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
-import java.awt.image.renderable.RenderableImage;
-import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductNodeGroup;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
@@ -25,7 +17,10 @@ import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
+
+import java.awt.Rectangle;
 
 /**
  *
@@ -53,9 +48,9 @@ public class UpscaleOp extends Operator {
     private static String productName = "SYNERGY UPSCALED AOT";
     private static String productType = "SYNERGY UPSCALED AOT";
 
-    private String aotName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME;
-    private String errName = RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME;
-    private String modelName = RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME;
+    private String aotName = SynergyConstants.OUTPUT_AOT_BAND_NAME;
+    private String errName = SynergyConstants.OUTPUT_AOTERR_BAND_NAME;
+    private String modelName = SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME;
 
     private int sourceRasterWidth;
     private int sourceRasterHeight;

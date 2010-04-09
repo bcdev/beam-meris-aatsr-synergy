@@ -5,6 +5,11 @@
 
 package org.esa.beam.synergy.operators;
 
+import org.esa.beam.framework.gpf.OperatorException;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
+import org.esa.beam.util.math.LookupTable;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,8 +18,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.esa.beam.framework.gpf.OperatorException;
-import org.esa.beam.util.math.LookupTable;
 
 /**
  * Class representing a reflectance LUT for land aerosol / SDR retrieval
@@ -55,7 +58,7 @@ public class ReflectanceBinLUT {
         // read the actual LUT (simulated Top Of Atmosphere Radiances)
         // for all wavelength
         toaMERIS = new LookupTable[merisWvl.length];
-        for (String ws : RetrieveAerosolConstants.LUT_LAND_MERIS_WAVELEN) {
+        for (String ws : SynergyConstants.LUT_LAND_MERIS_WAVELEN) {
             lutFileName = lutFileNameStub.replaceAll("%WVLSTR%", ws);
             lutWvl = Float.valueOf(ws);
             iWvl = findWvlIndex(lutWvl, merisWvl);
@@ -71,7 +74,7 @@ public class ReflectanceBinLUT {
         // read the actual LUT (simulated Top Of Atmosphere Radiances)
         // for all wavelength
         toaAATSR = new LookupTable[aatsrWvl.length];
-        for (String ws : RetrieveAerosolConstants.LUT_LAND_AATSR_WAVELEN) {
+        for (String ws : SynergyConstants.LUT_LAND_AATSR_WAVELEN) {
             lutFileName = lutFileNameStub.replaceAll("%WVLSTR%", ws);
             lutWvl = Float.valueOf(ws);
             iWvl = findWvlIndex(lutWvl, aatsrWvl);
@@ -139,11 +142,11 @@ public class ReflectanceBinLUT {
         
         for (int iWl = 0; iWl < nWl; iWl++){
             if (isAatsr) {
-                o3Corr = Math.exp(o3 / 1000 * RetrieveAerosolConstants.o3CorrSlopeAatsr[iWl] * geomAMF);
-                wvCorr = Math.exp(wvCol*RetrieveAerosolConstants.wvCorrSlopeAatsr[iWl]);
+                o3Corr = Math.exp(o3 / 1000 * SynergyConstants.o3CorrSlopeAatsr[iWl] * geomAMF);
+                wvCorr = Math.exp(wvCol* SynergyConstants.wvCorrSlopeAatsr[iWl]);
             } else if (isMeris) {
-                o3Corr = Math.exp(o3 / 1000 * RetrieveAerosolConstants.o3CorrSlopeMeris[iWl] * geomAMF);
-                wvCorr = Math.exp(wvCol*RetrieveAerosolConstants.wvCorrSlopeMeris[iWl]);
+                o3Corr = Math.exp(o3 / 1000 * SynergyConstants.o3CorrSlopeMeris[iWl] * geomAMF);
+                wvCorr = Math.exp(wvCol* SynergyConstants.wvCorrSlopeMeris[iWl]);
             }
             for (int iAlb = 0; iAlb < nAlb; iAlb++) {
                 for (int iAot = 0; iAot < nAot; iAot++) {
@@ -244,7 +247,8 @@ public class ReflectanceBinLUT {
         } catch (Exception ex1) {
             String mess = "Could not open LUT file: \n" + ex1.getMessage();
             //Logger.getLogger(ReflectanceBinLUT.class.getName()).log(Level.SEVERE, mess, ex);
-            throw new OperatorException(mess, ex1);
+            SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
+//            throw new OperatorException(mess, ex1);
         } finally {
             try {
                 if (toaFile != null) toaFile.close();

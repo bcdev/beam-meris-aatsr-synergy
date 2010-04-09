@@ -7,8 +7,6 @@ package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.SubProgressMonitor;
-import java.awt.Rectangle;
-import java.util.Arrays;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
@@ -18,7 +16,11 @@ import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
+
+import java.awt.Rectangle;
+import java.util.Arrays;
 
 /**
  *
@@ -37,8 +39,8 @@ public class MedianOp extends Operator {
     private static String productName = "SYNERGY MEDIAN";
     private static String productType = "SYNERGY MEDIAN";
 
-    private String srcBandName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME + "_filled";
-    private String tarBandName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME + "_filter";
+    private String srcBandName = SynergyConstants.OUTPUT_AOT_BAND_NAME + "_filled";
+    private String tarBandName = SynergyConstants.OUTPUT_AOT_BAND_NAME + "_filter";
     private int medBox = 3;
     private int medBoxHalf;
 

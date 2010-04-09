@@ -1,10 +1,8 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-
 import org.esa.beam.dataio.envisat.EnvisatConstants;
 import org.esa.beam.framework.datamodel.Band;
-//import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.GeneralFilterBand;
 import org.esa.beam.framework.datamodel.GeoCoding;
@@ -14,7 +12,6 @@ import org.esa.beam.framework.datamodel.PixelPos;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
 import org.esa.beam.framework.datamodel.RasterDataNode;
-//import org.esa.beam.framework.datamodel.Stx;
 import org.esa.beam.framework.datamodel.TiePointGrid;
 import org.esa.beam.framework.gpf.GPF;
 import org.esa.beam.framework.gpf.Operator;
@@ -25,11 +22,14 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.RectangleExtender;
 import org.esa.beam.util.math.MathUtils;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -202,7 +202,7 @@ public class ClassifyFeaturesOp extends Operator {
                                                                  shadowWidth, shadowWidth);
             geoCoding = sourceProduct.getGeoCoding();
             
-            altitudeRDN = SynergyUtils.searchBand(sourceProduct, SynergyConstants.DEM_ELEVATION);        
+            altitudeRDN = SynergyUtils.searchBand(sourceProduct, SynergyConstants.DEM_ELEVATION);
             if (altitudeRDN != null) {
                 if (SynergyUtils.isFSG(sourceProduct) && shadowWidth == 0) shadowWidth = 16;
             }
@@ -462,8 +462,8 @@ public class ClassifyFeaturesOp extends Operator {
                         }
                         else tTile_abun.setSample(x, y, sBand_abun.getNoDataValue());
                     }
+                    pm.worked(1);
                 }
-                pm.worked(1);
             }
         }
         // TODO: remove this catch when isPixelValid is fixed

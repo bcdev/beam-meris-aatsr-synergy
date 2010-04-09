@@ -1,14 +1,6 @@
 package org.esa.beam.synergy.operators;
 
-import java.awt.Rectangle;
-import java.awt.image.RenderedImage;
-import java.util.Map;
-
-import javax.media.jai.KernelJAI;
-import javax.media.jai.operator.AndDescriptor;
-import javax.media.jai.operator.ConvolveDescriptor;
-import javax.media.jai.operator.MaxFilterDescriptor;
-
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
@@ -18,9 +10,17 @@ import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
 
-import com.bc.ceres.core.ProgressMonitor;
+import javax.media.jai.KernelJAI;
+import javax.media.jai.operator.AndDescriptor;
+import javax.media.jai.operator.ConvolveDescriptor;
+import javax.media.jai.operator.MaxFilterDescriptor;
+import java.awt.Rectangle;
+import java.awt.image.RenderedImage;
+import java.util.Map;
 
 @OperatorMetadata(alias = "synergy.ClassifyFeaturesCloudCoastRemover",
         version = "1.0-SNAPSHOT",
@@ -59,7 +59,7 @@ public class ClassifyFeaturesCloudCoastRemoverOp extends Operator {
     	// Get cloudmasks
     	sBand_nnCm[0] = nnProduct.getBand(SynergyConstants.B_CLOUDMASK);
     	// It doesn't make sense to remove coast line from snow areas
-    	//sBand_nnCm[1] = nnProduct.getBand(SynergyConstants.B_SNOWMASK);
+    	//sBand_nnCm[1] = nnProduct.getBand(SynergyCloudScreeningConstants.B_SNOWMASK);
     	
     	// Intermediate images
     	final RenderedImage[] nnCmIm     = new RenderedImage[sBand_nnCm.length];
@@ -101,7 +101,7 @@ public class ClassifyFeaturesCloudCoastRemoverOp extends Operator {
         targetProduct.setEndTime(nnProduct.getEndTime());
 
         tBand_eroded[0] = targetProduct.addBand(SynergyConstants.B_COAST_ERODED, ProductData.TYPE_INT8);
-        //tBand_eroded[1] = targetProduct.addBand(SynergyConstants.B_COAST_ERODED_NADIR, ProductData.TYPE_INT8);
+        //tBand_eroded[1] = targetProduct.addBand(SynergyCloudScreeningConstants.B_COAST_ERODED_NADIR, ProductData.TYPE_INT8);
         
         ProductUtils.copyMetadata(featProduct, targetProduct);
         targetProduct.setPreferredTileSize(32,32);

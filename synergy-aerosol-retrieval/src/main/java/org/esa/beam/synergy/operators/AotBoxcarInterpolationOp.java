@@ -8,6 +8,7 @@ import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
 
 import javax.media.jai.JAI;
@@ -72,8 +73,8 @@ public class AotBoxcarInterpolationOp extends Operator {
                 map = new double[1];
 
                 // todo: clean up this!
-                low[0] =  RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE - 0.5;
-                high[0] = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE + 0.5;
+                low[0] =  SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE - 0.5;
+                high[0] = SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE + 0.5;
                 map[0] = 0.0;
 
                 // threshold operation.

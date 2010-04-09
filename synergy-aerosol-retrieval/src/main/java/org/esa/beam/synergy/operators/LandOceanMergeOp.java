@@ -11,10 +11,10 @@ import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.annotations.Parameter;
-import org.esa.beam.util.ProductUtils;
-import org.esa.beam.synergy.util.AerosolHelpers;
 import org.esa.beam.gpf.operators.standard.BandMathsOp;
+import org.esa.beam.synergy.util.AerosolHelpers;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.util.ProductUtils;
 
 import java.awt.Rectangle;
 
@@ -33,7 +33,7 @@ import java.awt.Rectangle;
 public class LandOceanMergeOp extends Operator {
 
     private static final String LAND_EXPRESSION = "l1_flags" + "_" +
-            RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_MERIS + ".LAND_OCEAN";
+            SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ".LAND_OCEAN";
     private Band isLandBand;
 
     @Override
@@ -95,12 +95,12 @@ public class LandOceanMergeOp extends Operator {
             }
         }
         // also add aerosol model number (defined for land product)
-        Band targetBand = new Band(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME, ProductData.TYPE_INT32,
+        Band targetBand = new Band(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME, ProductData.TYPE_INT32,
                                            landProduct.getSceneRasterWidth(), landProduct.getSceneRasterHeight());
         targetBand.setDescription("aerosol model number Band");
-        targetBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
-        targetBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE_USED);
-        targetBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
+        targetBand.setNoDataValue(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
+        targetBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE_USED);
+        targetBand.setNoDataValue(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
         targetProduct.addBand(targetBand);
 
         AerosolHelpers.addAerosolFlagBand(targetProduct, oceanProduct.getSceneRasterWidth(), oceanProduct.getSceneRasterHeight());
@@ -111,7 +111,7 @@ public class LandOceanMergeOp extends Operator {
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
         if (targetBand.isFlagBand()
-                && !targetBand.getName().equals(RetrieveAerosolConstants.aerosolFlagCodingName)) {
+                && !targetBand.getName().equals(SynergyConstants.aerosolFlagCodingName)) {
             // no computations
             System.out.println(targetBand.getName());
             return;
@@ -125,27 +125,27 @@ public class LandOceanMergeOp extends Operator {
             Tile oceanTile = null;
             Tile landTile = null;
             Tile isLand = getSourceTile(isLandBand, rectangle, pm);
-            if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME)) {
-                oceanTile = getSourceTile(oceanProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME), rectangle, pm);
-                landTile = getSourceTile(landProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME), rectangle, pm);
+            if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOT_BAND_NAME)) {
+                oceanTile = getSourceTile(oceanProduct.getBand(SynergyConstants.OUTPUT_AOT_BAND_NAME), rectangle, pm);
+                landTile = getSourceTile(landProduct.getBand(SynergyConstants.OUTPUT_AOT_BAND_NAME), rectangle, pm);
                 mergeTileFloat(targetTile, isLand, oceanTile, landTile);
             }
-            else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME)) {
-                oceanTile = getSourceTile(oceanProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME), rectangle, pm);
-                landTile = getSourceTile(landProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME), rectangle, pm);
+            else if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOTERR_BAND_NAME)) {
+                oceanTile = getSourceTile(oceanProduct.getBand(SynergyConstants.OUTPUT_AOTERR_BAND_NAME), rectangle, pm);
+                landTile = getSourceTile(landProduct.getBand(SynergyConstants.OUTPUT_AOTERR_BAND_NAME), rectangle, pm);
                 mergeTileFloat(targetTile, isLand, oceanTile, landTile);
             }
-            else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME)) {
-                landTile = getSourceTile(landProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME), rectangle, pm);
+            else if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME)) {
+                landTile = getSourceTile(landProduct.getBand(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME), rectangle, pm);
                 boolean isOceanConst = true;
-                mergeTileInt(targetTile, isLand, landTile, isOceanConst, RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
+                mergeTileInt(targetTile, isLand, landTile, isOceanConst, SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
             }
-            else if (targetBand.getName().equals(RetrieveAerosolConstants.aerosolFlagCodingName)) {
-                landTile = getSourceTile(landProduct.getBand(RetrieveAerosolConstants.aerosolFlagCodingName), rectangle, pm);
+            else if (targetBand.getName().equals(SynergyConstants.aerosolFlagCodingName)) {
+                landTile = getSourceTile(landProduct.getBand(SynergyConstants.aerosolFlagCodingName), rectangle, pm);
                 mergeFlagTile(targetTile, isLand, landTile);
                 /*
-                int oceanFlag = RetrieveAerosolConstants.oceanMask;
-                oceanFlag |= RetrieveAerosolConstants.successMask;
+                int oceanFlag = SynergyPreprocessingConstants.oceanMask;
+                oceanFlag |= SynergyPreprocessingConstants.successMask;
                 boolean isOceanConst = true;
                 mergeTileInt(targetTile, isLand, landTile, isOceanConst, oceanFlag);
                 */
@@ -232,16 +232,16 @@ public class LandOceanMergeOp extends Operator {
 
     private void mergeFlagTile(Tile targetTile, Tile isLand, Tile landTile) {
         Rectangle rectangle = isLand.getRectangle();
-        int oceanValue = RetrieveAerosolConstants.oceanMask;
-        oceanValue |= RetrieveAerosolConstants.successMask;
-        int coastValue = RetrieveAerosolConstants.coastMask;
+        int oceanValue = SynergyConstants.oceanMask;
+        oceanValue |= SynergyConstants.successMask;
+        int coastValue = SynergyConstants.coastMask;
         int landValue;
         for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
             for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                 landValue = landTile.getSampleInt(x,y);
                 if (testCoast(isLand, x, y)) {
-                    if((landValue & RetrieveAerosolConstants.cloudyMask) == RetrieveAerosolConstants.cloudyMask) {
-                        coastValue |= RetrieveAerosolConstants.cloudyMask;
+                    if((landValue & SynergyConstants.cloudyMask) == SynergyConstants.cloudyMask) {
+                        coastValue |= SynergyConstants.cloudyMask;
                     }
                     targetTile.setSample(x, y, coastValue);
                 }

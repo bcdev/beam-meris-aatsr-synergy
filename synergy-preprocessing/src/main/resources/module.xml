@@ -1,0 +1,72 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>synergy-preprocessing</symbolicName>
+    <version>1.2-SNAPSHOT</version>
+    <name>Synergy Preprocessing</name>
+    <description>Synergy Preprocessing Module</description>
+
+    <vendor>Brockmann Consult GmbH</vendor>
+    <contactAddress>
+        Max Planck Str.2, 21502 Geesthacht (Germany)
+    </contactAddress>
+    <copyright>(C) 2007 by Brockmann Consult GmbH</copyright>
+    <url>http://envisat.esa.int/beam</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <changelog/>
+    
+    <dependency>
+        <module>beam-core</module>
+    </dependency>
+	<dependency>
+        <module>beam-gpf</module>
+    </dependency>
+	 <dependency>
+        <module>beam-visat</module>
+        <optional>true</optional>
+    </dependency>
+	<dependency>
+        <module>beam-envisat-reader</module>
+    </dependency>	
+	<dependency>
+        <module>beam-meris-brr</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-sdr</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-l2auxdata</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-sdr</module>
+    </dependency>
+    <dependency>
+        <module>beam-collocation</module>
+    </dependency>
+    <dependency>
+        <module>synergy-cloud-screening</module>
+    </dependency>
+    <dependency>
+        <module>lib-netcdf</module>
+    </dependency>
+
+    <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
+
+    <extension point="beam-ui:actions">
+        <action>
+            <id>synergyToolbox</id>
+            <class>org.esa.beam.synergy.ui.MasterAction</class>
+            <text>MERIS/(A)ATSR Synergy Toolbox... </text>
+            <mnemonic/>
+            <placeAfter/>
+        </action>
+
+    </extension>
+
+    <!--<extension point="beam-ui:helpSets">-->
+        <!--<helpSet>-->
+            <!--<parent>beam-help</parent>-->
+            <!--<path>doc/help/synergyhelp.hs</path>-->
+        <!--</helpSet>-->
+    <!--</extension>-->
+</module>

@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,7 @@ public class AerosolAuxData {
     private static final String AEROSOL_CLASS_FILE_NAME = "aerosol_classes.d";
     private static final int AEROSOL_CLASS_TABLE_MAXLENGTH = 20;
 
-    private static final String AEROSOL_MODEL_FILE_NAME = "all_mie.nc";
+    public static final String AEROSOL_MODEL_FILE_NAME = "all_mie.nc";
 
     public static AerosolAuxData getInstance() {
         if (instance == null) {

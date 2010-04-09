@@ -13,15 +13,17 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.gpf.operators.standard.BandMathsOp;
 import org.esa.beam.synergy.util.AerosolHelpers;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.math.LookupTable;
 import org.esa.beam.util.math.MathUtils;
-import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 import java.awt.Rectangle;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +49,8 @@ public class RetrieveAerosolOceanOp extends Operator {
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    @Parameter(alias = RetrieveAerosolConstants.LUT_PATH_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
-               description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
-    private String lutPath;
+    private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
+            "aerosolLUTs" + File.separator + "ocean";
 
     @Parameter(defaultValue = "11", label = "Pixels to average (n x n, with n odd number) for AOD retrieval", interval = "[1, 100]")
     private int aveBlock;
@@ -61,7 +60,7 @@ public class RetrieveAerosolOceanOp extends Operator {
 
     public static final String RESULT_GLINT_NAME = "glint";
 
-    private static final String INVALID_EXPRESSION = "l1_flags" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_MERIS + ".INVALID";
+    private static final String INVALID_EXPRESSION = "l1_flags" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ".INVALID";
     private Band invalidBand;
     private float noDataVal;
     private int minNAve;
@@ -106,20 +105,19 @@ public class RetrieveAerosolOceanOp extends Operator {
     public void initialize() throws OperatorException {
         System.out.println("starting...");
 
-        noDataVal = (float) RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE;
+        noDataVal = (float) SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE;
 
         // get the glint product...
         Map<String, Product> glintInput = new HashMap<String, Product>(3);
         glintInput.put("l1bSynergy", synergyProduct);
         Map<String, Object> glintAveParams = new HashMap<String, Object>(2);
-        glintAveParams.put("lutPath", lutPath);
         glintAveParams.put("aveBlock", aveBlock);
         glintProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(GlintAveOp.class), glintAveParams, glintInput);
 
         scalingFactor = aveBlock;
         aveBlock /= 2;
         minNAve = (int) (scalingFactor*scalingFactor - 1);
-        noDataVal = (float) RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE;
+        noDataVal = (float) SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE;
 
         createTargetProduct();
 //        targetProduct = glintProduct;       // test
@@ -130,7 +128,7 @@ public class RetrieveAerosolOceanOp extends Operator {
         int sceneHeight = synergyProduct.getSceneRasterHeight();
         Rectangle rect = new Rectangle(0, 0, sceneWidth, sceneHeight);
         vaMerisTileComplete = getSourceTile(synergyProduct.getTiePointGrid("view_azimuth"), rect, null);
-        vaAatsrNadirTileComplete = getSourceTile(synergyProduct.getBand("view_azimuth_nadir" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), rect, null);
+        vaAatsrNadirTileComplete = getSourceTile(synergyProduct.getBand("view_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), rect, null);
 
         aot550Result = new float[sceneWidth][sceneHeight];
         angResult = new float[sceneWidth][sceneHeight];
@@ -143,14 +141,18 @@ public class RetrieveAerosolOceanOp extends Operator {
         try {
             aerosolClassTable = AerosolAuxData.getInstance().createAerosolClassTable();
         } catch (IOException e) {
-            throw new OperatorException("Failed to read aerosol class table:\n" + e.getMessage(), e);
+//            throw new OperatorException("Failed to read aerosol class table:\n" + e.getMessage(), e);
+            String msg = SynergyConstants.AUXDATA_ERROR_MESSAGE;
+            SynergyUtils.logErrorMessage(msg);
         }
 
         // read aerosol models
         try {
-            aerosolModelTable = AerosolAuxData.getInstance().createAerosolModelTable(lutPath);
+            aerosolModelTable = AerosolAuxData.getInstance().createAerosolModelTable(auxdataPath);
         } catch (IOException e) {
-            throw new OperatorException("Failed to read aerosol class table:\n" + e.getMessage(), e);
+//            throw new OperatorException("Failed to read aerosol class table:\n" + e.getMessage(), e);
+            String msg = SynergyConstants.AUXDATA_ERROR_MESSAGE;
+            SynergyUtils.logErrorMessage(msg);
         }
 
 //        wvl=[ 865,  885,1610,   885,1610,   885]
@@ -166,9 +168,11 @@ public class RetrieveAerosolOceanOp extends Operator {
         nWvl = wvlIndex.length;
 
         try {
-            aerosolLookupTables = AerosolAuxData.getInstance().createAerosolOceanLookupTables(lutPath, modelIndices, wvl, wvlIndex);
+            aerosolLookupTables = AerosolAuxData.getInstance().createAerosolOceanLookupTables(auxdataPath, modelIndices, wvl, wvlIndex);
         } catch (IOException e) {
             throw new OperatorException("Failed to create aerosol lookup tables:\n" + e.getMessage(), e);
+//            String msg = SynergyConstants.AUXDATA_ERROR_MESSAGE;
+//            SynergyUtils.logErrorMessage(msg);
         }
         nTauLut = aerosolLookupTables[0][0].getDimensions()[4].getSequence().length;
 
@@ -229,30 +233,30 @@ public class RetrieveAerosolOceanOp extends Operator {
     }
 
     private void setTargetBands() {
-        Band aot550Band = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME, ProductData.TYPE_FLOAT32);
-        aot550Band.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE);
-        aot550Band.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
+        Band aot550Band = targetProduct.addBand(SynergyConstants.OUTPUT_AOT_BAND_NAME, ProductData.TYPE_FLOAT32);
+        aot550Band.setNoDataValue(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE);
+        aot550Band.setNoDataValueUsed(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
         aot550Band.setUnit("dl");
-        Band aot550ErrBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME, ProductData.TYPE_FLOAT32);
-        aot550ErrBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE);
-        aot550ErrBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
+        Band aot550ErrBand = targetProduct.addBand(SynergyConstants.OUTPUT_AOTERR_BAND_NAME, ProductData.TYPE_FLOAT32);
+        aot550ErrBand.setNoDataValue(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE);
+        aot550ErrBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
         aot550ErrBand.setUnit("dl");
 
         if (!computeLand) {
             // write more bands specific for ocean retrieval
-            Band angBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NAME, ProductData.TYPE_FLOAT32);
-            angBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE);
-            angBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE_USED);
-            Band angErrBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_ANGERR_BAND_NAME, ProductData.TYPE_FLOAT32);
-            angErrBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE);
-            angErrBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE_USED);
+            Band angBand = targetProduct.addBand(SynergyConstants.OUTPUT_ANG_BAND_NAME, ProductData.TYPE_FLOAT32);
+            angBand.setNoDataValue(SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE);
+            angBand.setNoDataValueUsed(SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE_USED);
+            Band angErrBand = targetProduct.addBand(SynergyConstants.OUTPUT_ANGERR_BAND_NAME, ProductData.TYPE_FLOAT32);
+            angErrBand.setNoDataValue(SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE);
+            angErrBand.setNoDataValueUsed(SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE_USED);
 
-//            Band glintBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NAME, ProductData.TYPE_FLOAT32);
-//            glintBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE);
-//            glintBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE_USED);
-//            Band wsBand = targetProduct.addBand(RetrieveAerosolConstants.OUTPUT_WS_BAND_NAME, ProductData.TYPE_FLOAT32);
-//            wsBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE);
-//            wsBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE_USED);
+//            Band glintBand = targetProduct.addBand(SynergyConstants.OUTPUT_GLINT_BAND_NAME, ProductData.TYPE_FLOAT32);
+//            glintBand.setNoDataValue(SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE);
+//            glintBand.setNoDataValueUsed(SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE_USED);
+//            Band wsBand = targetProduct.addBand(SynergyConstants.OUTPUT_WS_BAND_NAME, ProductData.TYPE_FLOAT32);
+//            wsBand.setNoDataValue(SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE);
+//            wsBand.setNoDataValueUsed(SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE_USED);
         }
     }
 
@@ -280,33 +284,33 @@ public class RetrieveAerosolOceanOp extends Operator {
             Tile saMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_azimuth"), big, pm);
             Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid("atm_press"), big, pm);
 
-            Tile seAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_elev_nadir" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile veAatsrNadirTile = getSourceTile(synergyProduct.getBand("view_elev_nadir" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile saAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_azimuth_nadir" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile seAatsrFwardTile = getSourceTile(synergyProduct.getBand("sun_elev_fward" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile veAatsrFwardTile = getSourceTile(synergyProduct.getBand("view_elev_fward" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile saAatsrFwardTile = getSourceTile(synergyProduct.getBand("sun_azimuth_fward" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile vaAatsrFwardTile = getSourceTile(synergyProduct.getBand("view_azimuth_fward" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            Tile merisRad13Tile = getSourceTile(synergyProduct.getBand("radiance_13" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
-            Tile merisRad14Tile = getSourceTile(synergyProduct.getBand("radiance_14" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
+            Tile seAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile veAatsrNadirTile = getSourceTile(synergyProduct.getBand("view_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile saAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile seAatsrFwardTile = getSourceTile(synergyProduct.getBand("sun_elev_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile veAatsrFwardTile = getSourceTile(synergyProduct.getBand("view_elev_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile saAatsrFwardTile = getSourceTile(synergyProduct.getBand("sun_azimuth_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile vaAatsrFwardTile = getSourceTile(synergyProduct.getBand("view_azimuth_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            Tile merisRad13Tile = getSourceTile(synergyProduct.getBand("radiance_13" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
+            Tile merisRad14Tile = getSourceTile(synergyProduct.getBand("radiance_14" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
 
-            final Band reflecNadir16Band = synergyProduct.getBand("reflec_nadir_1600" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Band reflecNadir16Band = synergyProduct.getBand("reflec_nadir_1600" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
             Tile aatsrReflNadir1600Tile = getSourceTile(reflecNadir16Band, big, pm);
-            final Band reflecNadir87Band = synergyProduct.getBand("reflec_nadir_0870" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Band reflecNadir87Band = synergyProduct.getBand("reflec_nadir_0870" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
             Tile aatsrReflNadir0870Tile = getSourceTile(reflecNadir87Band, big, pm);
-            final Band reflecFward16Band = synergyProduct.getBand("reflec_fward_1600" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Band reflecFward16Band = synergyProduct.getBand("reflec_fward_1600" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
             Tile aatsrReflFward1600Tile = getSourceTile(reflecFward16Band, big, pm);
-            final Band reflecFward87Band = synergyProduct.getBand("reflec_fward_0870" + "_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Band reflecFward87Band = synergyProduct.getBand("reflec_fward_0870" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
             Tile aatsrReflFward0870Tile = getSourceTile(reflecFward87Band, big, pm);
 
             Tile wsTile = getSourceTile(glintProduct.getBand(GlintAveOp.RESULT_WINDSPEED_NAME), rectangle, pm);
 
             // Flags tiles
-            final Band merisCloudFlagsBand = synergyProduct.getBand(RetrieveAerosolConstants.CLOUD_FLAG_MERIS);
+            final Band merisCloudFlagsBand = synergyProduct.getBand(SynergyConstants.CLOUD_FLAG_MERIS);
 //            final Tile merisCloudFlagsTile = getSourceTile(merisCloudFlagsBand, big, pm);
-            final Band aatsrCloudFlagsNadirBand = synergyProduct.getBand(RetrieveAerosolConstants.CLOUD_NADIR_FLAGS_AATSR);
+            final Band aatsrCloudFlagsNadirBand = synergyProduct.getBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
 //            final Tile aatsrCloudFlagsNadirTile = getSourceTile(aatsrCloudFlagsNadirBand, big, pm);
-            final Band aatsrCloudFlagsFwardBand = synergyProduct.getBand(RetrieveAerosolConstants.CLOUD_FWARD_FLAGS_AATSR);
+            final Band aatsrCloudFlagsFwardBand = synergyProduct.getBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
 //            final Tile aatsrCloudFlagsFwardTile = getSourceTile(aatsrCloudFlagsFwardBand, big, pm);
 
             Tile isInvalid = getSourceTile(invalidBand, rectangle, pm);
@@ -335,26 +339,26 @@ public class RetrieveAerosolOceanOp extends Operator {
 
                     if (isInvalid.getSampleBoolean(iX, iY)
 //                            || !isCloudfreeMeris || isCloudyAatsrNadir
-                            || ws == RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE
+                            || ws == SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE
                               ) {
                         targetTile.setSample(iX, iY, noDataVal);
-                    } else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME) && (aot550Result[iX][iY] > 0.0 ||
-                            aot550Result[iX][iY] == RetrieveAerosolConstants.OUTPUT_AOT_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOT_BAND_NAME) && (aot550Result[iX][iY] > 0.0 ||
+                            aot550Result[iX][iY] == SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, aot550Result[iX][iY]);
-                    } else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NAME) && (angResult[iX][iY] > 0.0 ||
-                            angResult[iX][iY] == RetrieveAerosolConstants.OUTPUT_ANG_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_ANG_BAND_NAME) && (angResult[iX][iY] > 0.0 ||
+                            angResult[iX][iY] == SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, angResult[iX][iY]);
-                    } else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME) && (aot550ErrorResult[iX][iY] > 0.0 ||
-                            aot550ErrorResult[iX][iY] == RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOTERR_BAND_NAME) && (aot550ErrorResult[iX][iY] > 0.0 ||
+                            aot550ErrorResult[iX][iY] == SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, aot550ErrorResult[iX][iY]);
-                    } else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_ANGERR_BAND_NAME) && (angErrorResult[iX][iY] > 0.0 ||
-                            angErrorResult[iX][iY] == RetrieveAerosolConstants.OUTPUT_ANGERR_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_ANGERR_BAND_NAME) && (angErrorResult[iX][iY] > 0.0 ||
+                            angErrorResult[iX][iY] == SynergyConstants.OUTPUT_ANGERR_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, aot550ErrorResult[iX][iY]);
-                    } else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NAME) && (glintResult[iX][iY] > 0.0 ||
-                            glintResult[iX][iY] == RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_GLINT_BAND_NAME) && (glintResult[iX][iY] > 0.0 ||
+                            glintResult[iX][iY] == SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, glintResult[iX][iY]);
-                    } else if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_WS_BAND_NAME) && (wsResult[iX][iY] > 0.0 ||
-                            wsResult[iX][iY] == RetrieveAerosolConstants.OUTPUT_WS_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_WS_BAND_NAME) && (wsResult[iX][iY] > 0.0 ||
+                            wsResult[iX][iY] == SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, wsResult[iX][iY]);
                     } else {
                         float merisViewAzimuth = getAvePixel(vaMerisTileComplete, iTarX, iTarY);
@@ -365,8 +369,8 @@ public class RetrieveAerosolOceanOp extends Operator {
                         final float merisViewZenith = getAvePixel(vzMerisTile, iTarX, iTarY);
                         float szOrig = szMerisTile.getSampleFloat(iTarX, iTarY);
                         final float merisSunZenith = getAvePixel(szMerisTile, iTarX, iTarY);
-                        final float merisRad13 = getAvePixel(merisRad13Tile, iTarX, iTarY)/RetrieveAerosolConstants.MERIS_13_SOLAR_FLUX;
-                        final float merisRad14 = getAvePixel(merisRad14Tile, iTarX, iTarY)/RetrieveAerosolConstants.MERIS_14_SOLAR_FLUX;
+                        final float merisRad13 = getAvePixel(merisRad13Tile, iTarX, iTarY)/ SynergyConstants.MERIS_13_SOLAR_FLUX;
+                        final float merisRad14 = getAvePixel(merisRad14Tile, iTarX, iTarY)/ SynergyConstants.MERIS_14_SOLAR_FLUX;
                         final double aatsrSeNadir = getAvePixel(seAatsrNadirTile, iTarX, iTarY);
                         final double aatsrSeFward = getAvePixel(seAatsrFwardTile, iTarX, iTarY);
 
@@ -420,22 +424,22 @@ public class RetrieveAerosolOceanOp extends Operator {
 
                         // breadboard end STEP 3
 
-                        if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME)) {
+                        if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOT_BAND_NAME)) {
                             targetTile.setSample(iX, iY, aot550Result[iX][iY]);
                         }
-                        if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_ANG_BAND_NAME)) {
+                        if (targetBand.getName().equals(SynergyConstants.OUTPUT_ANG_BAND_NAME)) {
                             targetTile.setSample(iX, iY, angResult[iX][iY]);
                         }
-                        if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME)) {
+                        if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOTERR_BAND_NAME)) {
                             targetTile.setSample(iX, iY, aot550ErrorResult[iX][iY]);
                         }
-                        if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_ANGERR_BAND_NAME)) {
+                        if (targetBand.getName().equals(SynergyConstants.OUTPUT_ANGERR_BAND_NAME)) {
                             targetTile.setSample(iX, iY, angErrorResult[iX][iY]);
                         }
-                        if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_GLINT_BAND_NAME)) {
+                        if (targetBand.getName().equals(SynergyConstants.OUTPUT_GLINT_BAND_NAME)) {
                             targetTile.setSample(iX, iY, glintResult[iX][iY]);
                         }
-                         if (targetBand.getName().equals(RetrieveAerosolConstants.OUTPUT_WS_BAND_NAME)) {
+                         if (targetBand.getName().equals(SynergyConstants.OUTPUT_WS_BAND_NAME)) {
                             targetTile.setSample(iX, iY, wsResult[iX][iY]);
                         }
                     }
@@ -491,12 +495,12 @@ public class RetrieveAerosolOceanOp extends Operator {
 //               glint[j] = 0.0f;
 //            } else {
 //                glint[j] = GlintRetrieval.calcGlintAnalytical(iSun[j], iView[j],
-//                                                          iAzi[j], RetrieveAerosolConstants.refractiveIndex[wvlIndex[j]],
-//                                                          ws, RetrieveAerosolConstants.rhoFoam[wvlIndex[j]]);
+//                                                          iAzi[j], SynergyConstants.refractiveIndex[wvlIndex[j]],
+//                                                          ws, SynergyConstants.rhoFoam[wvlIndex[j]]);
 //            }
             glint[j] = GlintRetrieval.calcGlintAnalytical(iSun[j], iView[j],
-                                                          iAzi[j], RetrieveAerosolConstants.refractiveIndex[wvlIndex[j]],
-                                                          ws, RetrieveAerosolConstants.rhoFoam[wvlIndex[j]]);
+                                                          iAzi[j], SynergyConstants.refractiveIndex[wvlIndex[j]],
+                                                          ws, SynergyConstants.rhoFoam[wvlIndex[j]]);
         }
 
         vectorTauLutHigh = AerosolHelpers.interpolateArray(vectorTauLut, nTau);

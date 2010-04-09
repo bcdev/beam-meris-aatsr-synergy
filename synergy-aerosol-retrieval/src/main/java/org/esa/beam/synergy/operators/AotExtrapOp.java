@@ -5,9 +5,6 @@
 
 package org.esa.beam.synergy.operators;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.GPF;
@@ -15,11 +12,14 @@ import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
+import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.annotations.Parameter;
-import org.esa.beam.util.ProductUtils;
 import org.esa.beam.synergy.util.AerosolHelpers;
+import org.esa.beam.util.ProductUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**

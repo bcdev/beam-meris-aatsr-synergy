@@ -2,7 +2,7 @@
   <parent>
     <artifactId>synergy</artifactId>
     <groupId>org.esa.beam.synergy</groupId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
   
   <packaging>jar</packaging>
@@ -11,7 +11,7 @@
   <groupId>org.esa.beam.synergy</groupId>
   <artifactId>synergy-aerosol-retrieval</artifactId>
   <name>Synergy Aerosol Retrieval</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <description>Synergy Aerosol Retrieval</description>
   <url>http://maven.apache.org</url>
 
@@ -57,9 +57,14 @@
 		</dependency>
         <dependency>
 			<groupId>org.esa.beam.synergy</groupId>
-			<artifactId>synergy-cloud-screening</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<artifactId>synergy-core</artifactId>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
+        <!--<dependency>-->
+			<!--<groupId>org.esa.beam.synergy</groupId>-->
+			<!--<artifactId>synergy-cloud-screening</artifactId>-->
+			<!--<version>1.2-SNAPSHOT</version>-->
+		<!--</dependency>-->
         <dependency>
             <groupId>ucar.netcdf</groupId>
             <artifactId>lib-netcdf</artifactId>

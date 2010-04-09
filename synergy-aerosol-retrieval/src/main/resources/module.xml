@@ -52,34 +52,34 @@
 
     <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
 
-    <extension point="beam-ui:actions">
-        <action>
-            <id>synergyToolbox</id>
-            <class>org.esa.beam.visat.actions.ActionGroup</class>
-            <text>MERIS/(A)ATSR Synergy Toolbox </text>
-            <mnemonic/>
-            <placeAfter/>
-        </action>
+    <!--<extension point="beam-ui:actions">-->
+        <!--<action>-->
+            <!--<id>synergyToolbox</id>-->
+            <!--<class>org.esa.beam.visat.actions.ActionGroup</class>-->
+            <!--<text>MERIS/(A)ATSR Synergy Toolbox </text>-->
+            <!--<mnemonic/>-->
+            <!--<placeAfter/>-->
+        <!--</action>-->
 
-        <action>
-            <id>aerosolOverall</id>
-            <class>org.esa.beam.synergy.ui.RetrieveAerosolAction</class>
-            <text>Aerosol Retrieval and Atmospheric Correction...</text>
-            <shortDescr>
-                Retrieve aerosols (land/ocean) and SDR (land)
-            </shortDescr>
-            <mnemonic/>
-            <parent>synergyToolbox</parent>
-            <helpID>synergyhelp</helpID>
-            <placeAfter>synergyCloudScreening</placeAfter>
-        </action>
+        <!--<action>-->
+            <!--<id>aerosolOverall</id>-->
+            <!--<class>org.esa.beam.synergy.ui.RetrieveAerosolAction</class>-->
+            <!--<text>Aerosol Retrieval and Atmospheric Correction...</text>-->
+            <!--<shortDescr>-->
+                <!--Retrieve aerosols (land/ocean) and SDR (land)-->
+            <!--</shortDescr>-->
+            <!--<mnemonic/>-->
+            <!--<parent>synergyToolbox</parent>-->
+            <!--<helpID>synergyhelp</helpID>-->
+            <!--<placeAfter>synergyCloudScreening</placeAfter>-->
+        <!--</action>-->
 
-    </extension>
+    <!--</extension>-->
 
-    <extension point="beam-ui:helpSets">
-        <helpSet>
-            <parent>beam-help</parent>
-            <path>doc/help/aerosol.hs</path>
-        </helpSet>
-    </extension>
+    <!--<extension point="beam-ui:helpSets">-->
+        <!--<helpSet>-->
+            <!--<parent>beam-help</parent>-->
+            <!--<path>doc/help/aerosol.hs</path>-->
+        <!--</helpSet>-->
+    <!--</extension>-->
 </module>

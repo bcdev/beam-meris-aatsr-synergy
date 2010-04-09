@@ -48,40 +48,40 @@
 
     <extension point="beam-ui:actions">
 
-        <action>
-            <id>synergyCreateSynergy</id>
-            <class>org.esa.beam.synergy.ui.CreateSynergyAction</class>
-            <text>Synergy Preprocessor ...</text>
-            <shortDescr>
-                Synergy Preprocessor
-            </shortDescr>
-            <mnemonic/>
-            <parent>synergyToolbox</parent>
-            <placeAfter/>
-            <helpID>synergyhelp</helpID>
-            <separatorBefore>true</separatorBefore>
-        </action>
+        <!--<action>-->
+            <!--<id>synergyCreateSynergy</id>-->
+            <!--<class>org.esa.beam.synergy.ui.CreateSynergyAction</class>-->
+            <!--<text>Synergy Preprocessor ...</text>-->
+            <!--<shortDescr>-->
+                <!--Synergy Preprocessor-->
+            <!--</shortDescr>-->
+            <!--<mnemonic/>-->
+            <!--<parent>synergyToolbox</parent>-->
+            <!--<placeAfter/>-->
+            <!--<helpID>synergyhelp</helpID>-->
+            <!--<separatorBefore>true</separatorBefore>-->
+        <!--</action>-->
 
-        <action>
-            <id>synergyCloudScreening</id>
-            <class>org.esa.beam.synergy.ui.SynergyCloudScreeningAction</class>
-            <text>Cloud  Screening ...</text>
-            <shortDescr>
-                Generates a final synergy product including cloud flags and index
-            </shortDescr>
-            <mnemonic/>
-            <parent>synergyToolbox</parent>
-            <helpID>synergyhelp</helpID>
-            <placeAfter>synergyCreateSynergy</placeAfter>
-        </action>
+        <!--<action>-->
+            <!--<id>synergyCloudScreening</id>-->
+            <!--<class>org.esa.beam.synergy.ui.SynergyCloudScreeningAction</class>-->
+            <!--<text>Cloud  Screening ...</text>-->
+            <!--<shortDescr>-->
+                <!--Generates a final synergy product including cloud flags and index-->
+            <!--</shortDescr>-->
+            <!--<mnemonic/>-->
+            <!--<parent>synergyToolbox</parent>-->
+            <!--<helpID>synergyhelp</helpID>-->
+            <!--<placeAfter>synergyCreateSynergy</placeAfter>-->
+        <!--</action>-->
 
     </extension>
                 
-    <extension point="beam-ui:helpSets">
-        <helpSet>
-            <parent>beam-help</parent>
-            <path>doc/help/cloudscreening.hs</path>
-        </helpSet>
-    </extension>
+    <!--<extension point="beam-ui:helpSets">-->
+        <!--<helpSet>-->
+            <!--<parent>beam-help</parent>-->
+            <!--<path>doc/help/cloudscreening.hs</path>-->
+        <!--</helpSet>-->
+    <!--</extension>-->
 
 </module>

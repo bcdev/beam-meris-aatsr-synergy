@@ -4,7 +4,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.jnn.Jnn;
 import com.bc.jnn.JnnException;
 import com.bc.jnn.JnnNet;
-
 import org.esa.beam.dataio.envisat.EnvisatConstants;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
@@ -20,17 +19,19 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.meris.l2auxdata.L2AuxData;
 import org.esa.beam.meris.l2auxdata.L2AuxdataProvider;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.math.MathUtils;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import static java.lang.Math.*;
 import java.util.ArrayList;
 import java.util.Map;
-import static java.lang.Math.*;
 
 /**
  * Operator for extracting cloud features from TOA reflectances.
@@ -566,8 +567,8 @@ public class ExtractFeaturesOp extends Operator {
                         tTileCoastline.setSample(x,y,
                                                (sTileL1F.getSampleInt(x,y) & coastMask) != 0 ? 1 : 0);
                     }
+                    pm.worked(1);
                 }
-                pm.worked(1);
             }
         }
         finally {
@@ -652,7 +653,7 @@ public class ExtractFeaturesOp extends Operator {
         final double mu = 1.0 / ( 1.0/cos(SZA*MathUtils.DTOR) + 1.0/cos(VZA*MathUtils.DTOR) );
         // Calculate ratio
         final double[] reflectances = getSamples(x,y,sourceTiles);                
-        final double wva = -mu / SynergyConstants.TAU_ATM * log( reflectances[1]/reflectances[0] ); 
+        final double wva = -mu / SynergyConstants.TAU_ATM * log( reflectances[1]/reflectances[0] );
         return wva;
     }
     

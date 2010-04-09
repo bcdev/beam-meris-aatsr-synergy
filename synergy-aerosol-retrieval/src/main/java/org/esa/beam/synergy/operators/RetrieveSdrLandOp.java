@@ -18,14 +18,16 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.gpf.operators.standard.BandMathsOp;
+import org.esa.beam.synergy.util.AerosolHelpers;
+import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
 
 import java.awt.Rectangle;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.esa.beam.synergy.util.AerosolHelpers;
-import org.esa.beam.gpf.operators.standard.BandMathsOp;
 
 /**
  * Operator for SDR retrieval over land within MERIS/AATSR Synergy project.
@@ -54,23 +56,20 @@ public class RetrieveSdrLandOp extends Operator {
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    @Parameter(alias = RetrieveAerosolConstants.SOIL_SPEC_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.SOIL_SPEC_PARAM_DEFAULT,
-               description = RetrieveAerosolConstants.SOIL_SPEC_PARAM_DESCRIPTION,
-                label = RetrieveAerosolConstants.SOIL_SPEC_PARAM_LABEL)
+    @Parameter(alias = SynergyConstants.SOIL_SPEC_PARAM_NAME,
+               defaultValue = SynergyConstants.SOIL_SPEC_PARAM_DEFAULT,
+               description = SynergyConstants.SOIL_SPEC_PARAM_DESCRIPTION,
+                label = SynergyConstants.SOIL_SPEC_PARAM_LABEL)
     private String soilSpecName;
 
-    @Parameter(alias = RetrieveAerosolConstants.VEG_SPEC_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.VEG_SPEC_PARAM_DEFAULT,
-               description = RetrieveAerosolConstants.VEG_SPEC_PARAM_DESCRIPTION,
-                label = RetrieveAerosolConstants.VEG_SPEC_PARAM_LABEL)
+    @Parameter(alias = SynergyConstants.VEG_SPEC_PARAM_NAME,
+               defaultValue = SynergyConstants.VEG_SPEC_PARAM_DEFAULT,
+               description = SynergyConstants.VEG_SPEC_PARAM_DESCRIPTION,
+                label = SynergyConstants.VEG_SPEC_PARAM_LABEL)
     private String vegSpecName;
 
-    @Parameter(alias = RetrieveAerosolConstants.LUT_PATH_PARAM_NAME,
-               defaultValue = RetrieveAerosolConstants.LUT_PATH_PARAM_DEFAULT,
-               description = RetrieveAerosolConstants.LUT_PATH_PARAM_DESCRIPTION,
-               label = RetrieveAerosolConstants.LUT_PATH_PARAM_LABEL)
-    private String lutPath;
+    private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
+            "aerosolLUTs" + File.separator + "land";
 
     @Parameter(defaultValue = "true", label = "dump pixel")
     boolean dumpPixel;
@@ -132,15 +131,15 @@ public class RetrieveSdrLandOp extends Operator {
         toaLut = null;
         toaLutList = new ArrayList<ReflectanceBinLUT>();
 
-        AerosolHelpers.getSpectralBandList(synergyProduct, RetrieveAerosolConstants.INPUT_BANDS_PREFIX_MERIS,
-                RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_MERIS,
-                RetrieveAerosolConstants.EXCLUDE_INPUT_BANDS_MERIS, merisBandList);
-        AerosolHelpers.getSpectralBandList(synergyProduct, RetrieveAerosolConstants.INPUT_BANDS_PREFIX_AATSR_NAD,
-                RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR,
-                RetrieveAerosolConstants.EXCLUDE_INPUT_BANDS_AATSR, aatsrBandListNad);
-        AerosolHelpers.getSpectralBandList(synergyProduct, RetrieveAerosolConstants.INPUT_BANDS_PREFIX_AATSR_FWD,
-                RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR,
-                RetrieveAerosolConstants.EXCLUDE_INPUT_BANDS_AATSR, aatsrBandListFwd);
+        AerosolHelpers.getSpectralBandList(synergyProduct, SynergyConstants.INPUT_BANDS_PREFIX_MERIS,
+                SynergyConstants.INPUT_BANDS_SUFFIX_MERIS,
+                SynergyConstants.EXCLUDE_INPUT_BANDS_MERIS, merisBandList);
+        AerosolHelpers.getSpectralBandList(synergyProduct, SynergyConstants.INPUT_BANDS_PREFIX_AATSR_NAD,
+                SynergyConstants.INPUT_BANDS_SUFFIX_AATSR,
+                SynergyConstants.EXCLUDE_INPUT_BANDS_AATSR, aatsrBandListNad);
+        AerosolHelpers.getSpectralBandList(synergyProduct, SynergyConstants.INPUT_BANDS_PREFIX_AATSR_FWD,
+                SynergyConstants.INPUT_BANDS_SUFFIX_AATSR,
+                SynergyConstants.EXCLUDE_INPUT_BANDS_AATSR, aatsrBandListFwd);
         AerosolHelpers.getGeometryBandList(synergyProduct, "MERIS", merisGeometryBandList);
         AerosolHelpers.getGeometryBandList(synergyProduct, "AATSR", aatsrGeometryBandList);
 
@@ -187,10 +186,10 @@ public class RetrieveSdrLandOp extends Operator {
 
         Tile[] geometryTiles = getGeometryTiles(merisGeometryBandList, aatsrGeometryBandList, targetRectangle);
 
-        Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid(RetrieveAerosolConstants.INPUT_PRESSURE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
-        Tile ozoneTile = getSourceTile(synergyProduct.getTiePointGrid(RetrieveAerosolConstants.INPUT_OZONE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
-        Tile aotTile = getSourceTile(aerosolProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME+"_filter"), targetRectangle, ProgressMonitor.NULL);
-        Tile aeroModelTile = getSourceTile(aerosolProduct.getBand(RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME+"_filled"), targetRectangle, ProgressMonitor.NULL);
+        Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid(SynergyConstants.INPUT_PRESSURE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
+        Tile ozoneTile = getSourceTile(synergyProduct.getTiePointGrid(SynergyConstants.INPUT_OZONE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
+        Tile aotTile = getSourceTile(aerosolProduct.getBand(SynergyConstants.OUTPUT_AOT_BAND_NAME+"_filter"), targetRectangle, ProgressMonitor.NULL);
+        Tile aeroModelTile = getSourceTile(aerosolProduct.getBand(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME+"_filled"), targetRectangle, ProgressMonitor.NULL);
         Tile validPixelTile = getSourceTile(validBand, targetRectangle, ProgressMonitor.NULL);
 
         for (int iY = targetRectangle.y; iY < targetRectangle.y + targetRectangle.height; iY++) {
@@ -259,13 +258,13 @@ public class RetrieveSdrLandOp extends Operator {
 
                     for (int i = 0; i < merisWvl.length; i++) {
                         Tile targetTile = targetTiles.get(targetProduct.getBand(sdrMerisBandNames[i]));
-                        targetTile.setSample(iX, iY, RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE);
+                        targetTile.setSample(iX, iY, SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE);
                     }
                     for (int i = 0; i < aatsrWvl.length; i++) {
                         Tile targetTile = targetTiles.get(targetProduct.getBand(sdrAatsrBandNames[0][i]));
-                        targetTile.setSample(iX, iY, RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE);
+                        targetTile.setSample(iX, iY, SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE);
                         targetTile = targetTiles.get(targetProduct.getBand(sdrAatsrBandNames[1][i]));
-                        targetTile.setSample(iX, iY, RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE);
+                        targetTile.setSample(iX, iY, SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE);
                     }
                 }
                 pm.worked(1);
@@ -306,12 +305,12 @@ public class RetrieveSdrLandOp extends Operator {
         Band targetBand;
 
         for (int iWL = 0; iWL < merisWvl.length; iWL++) {
-            sdrMerisBandNames[iWL] = RetrieveAerosolConstants.OUTPUT_SDR_BAND_NAME
+            sdrMerisBandNames[iWL] = SynergyConstants.OUTPUT_SDR_BAND_NAME
                                      + String.format("_%d", (iWL + 1)) + "_MERIS";
             targetBand = new Band(sdrMerisBandNames[iWL], ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
-            targetBand.setDescription(RetrieveAerosolConstants.OUTPUT_SDR_BAND_DESCRIPTION);
-            targetBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE);
-            targetBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE_USED);
+            targetBand.setDescription(SynergyConstants.OUTPUT_SDR_BAND_DESCRIPTION);
+            targetBand.setNoDataValue(SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE);
+            targetBand.setNoDataValueUsed(SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE_USED);
             targetBand.setValidPixelExpression(sdrMerisBandNames[iWL] + ">= 0 AND " + sdrMerisBandNames[iWL] + "<= 1");
             //targetBand.setSpectralBandIndex(iWL);
             targetBand.setSpectralBandwidth(merisBandWidth[iWL]);
@@ -322,13 +321,13 @@ public class RetrieveSdrLandOp extends Operator {
         String[] viewString = {"_nadir", "_fward"};
         for (int iView = 0; iView < 2; iView++) {
             for (int iWL = 0; iWL < aatsrWvl.length; iWL++) {
-                sdrAatsrBandNames[iView][iWL] = RetrieveAerosolConstants.OUTPUT_SDR_BAND_NAME
+                sdrAatsrBandNames[iView][iWL] = SynergyConstants.OUTPUT_SDR_BAND_NAME
                                                 + viewString[iView]
                                                 + String.format("_%d", (iWL + 1)) + "_AATSR";
                 targetBand = new Band(sdrAatsrBandNames[iView][iWL], ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
-                targetBand.setDescription(RetrieveAerosolConstants.OUTPUT_SDR_BAND_DESCRIPTION);
-                targetBand.setNoDataValue(RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE);
-                targetBand.setNoDataValueUsed(RetrieveAerosolConstants.OUTPUT_SDR_BAND_NODATAVALUE_USED);
+                targetBand.setDescription(SynergyConstants.OUTPUT_SDR_BAND_DESCRIPTION);
+                targetBand.setNoDataValue(SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE);
+                targetBand.setNoDataValueUsed(SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE_USED);
                 targetBand.setValidPixelExpression(sdrAatsrBandNames[iView][iWL] + ">= 0 AND " + sdrAatsrBandNames[iView][iWL] + "<= 1");
                 //targetBand.setSpectralBandIndex(iWL);
                 targetBand.setSpectralBandwidth(aatsrBandWidth[iWL]);
@@ -352,7 +351,7 @@ public class RetrieveSdrLandOp extends Operator {
         }
         // not yet in list --> provide complete LUT:
         if (!lutExists) {
-            toaLut = new ReflectanceBinLUT(lutPath, aeroModel, merisWvl, aatsrWvl);
+            toaLut = new ReflectanceBinLUT(auxdataPath, aeroModel, merisWvl, aatsrWvl);
             toaLutList.add(toaLut);
         }
         lutAlbedo = toaLut.getAlbDim();
@@ -403,7 +402,7 @@ public class RetrieveSdrLandOp extends Operator {
                 for(String ang : angArr) {
                     if (instr.equals("AATSR")) {
                         bandName = body + "_" + ang + "_" + viewArr[iView] + "_" +
-                                RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR;
+                                SynergyPreprocessingConstants.INPUT_BANDS_SUFFIX_AATSR;
                         bandList.add(inputProduct.getBand(bandName));
                     } else {
                         bandName = body + "_" + ang;

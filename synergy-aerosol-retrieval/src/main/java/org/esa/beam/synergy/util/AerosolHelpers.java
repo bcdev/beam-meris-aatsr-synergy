@@ -1,8 +1,7 @@
 package org.esa.beam.synergy.util;
 
-import com.bc.ceres.core.ProgressMonitor;
 import java.awt.Color;
-import java.awt.Rectangle;
+
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
@@ -10,7 +9,6 @@ import org.esa.beam.framework.datamodel.ProductData;
 import org.esa.beam.framework.datamodel.TiePointGrid;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.synergy.operators.RetrieveAerosolConstants;
 import org.esa.beam.synergy.util.math.Spline;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.util.ProductUtils;
@@ -67,7 +65,7 @@ public class AerosolHelpers {
                 for(String ang : angArr) {
                     if (instr.equals("AATSR")) {
                         bandName = body + "_" + ang + "_" + viewArr[iView] + "_" +
-                                RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR;
+                                SynergyConstants.INPUT_BANDS_SUFFIX_AATSR;
                         bandList.add(inputProduct.getBand(bandName));
                     } else {
                         bandName = body + "_" + ang;
@@ -303,34 +301,34 @@ public class AerosolHelpers {
      * @param targetProduct - the target product
      */
     public static void copySynergyFlagBands(Product synergyProduct, Product targetProduct) {
-        Band aatsrConfidFlagNadirBand = targetProduct.addBand(RetrieveAerosolConstants.CONFID_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band aatsrConfidFlagFwardBand = targetProduct.addBand(RetrieveAerosolConstants.CONFID_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band aatsrCloudFlagNadirBand = targetProduct.addBand(RetrieveAerosolConstants.CLOUD_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band aatsrCloudFlagFwardBand = targetProduct.addBand(RetrieveAerosolConstants.CLOUD_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band merisL1FlagsBand = targetProduct.addBand(RetrieveAerosolConstants.L1_FLAGS_MERIS, ProductData.TYPE_INT16);
-        Band merisCloudFlagBand = targetProduct.addBand(RetrieveAerosolConstants.CLOUD_FLAG_MERIS, ProductData.TYPE_INT16);
+        Band aatsrConfidFlagNadirBand = targetProduct.addBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
+        Band aatsrConfidFlagFwardBand = targetProduct.addBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
+        Band aatsrCloudFlagNadirBand = targetProduct.addBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
+        Band aatsrCloudFlagFwardBand = targetProduct.addBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
+        Band merisL1FlagsBand = targetProduct.addBand(SynergyConstants.L1_FLAGS_MERIS, ProductData.TYPE_INT16);
+        Band merisCloudFlagBand = targetProduct.addBand(SynergyConstants.CLOUD_FLAG_MERIS, ProductData.TYPE_INT16);
 
-        FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CONFID_NADIR_FLAGS_AATSR);
+        FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrConfidNadirFlagCoding, targetProduct);
         aatsrConfidFlagNadirBand.setSampleCoding(aatsrConfidNadirFlagCoding);
 
-        FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CONFID_FWARD_FLAGS_AATSR);
+        FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrConfidFwardFlagCoding, targetProduct);
         aatsrConfidFlagFwardBand.setSampleCoding(aatsrConfidFwardFlagCoding);
 
-        FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CLOUD_NADIR_FLAGS_AATSR);
+        FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrCloudNadirFlagCoding, targetProduct);
         aatsrCloudFlagNadirBand.setSampleCoding(aatsrCloudNadirFlagCoding);
 
-        FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CLOUD_FWARD_FLAGS_AATSR);
+        FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrCloudFwardFlagCoding, targetProduct);
         aatsrCloudFlagFwardBand.setSampleCoding(aatsrCloudFwardFlagCoding);
 
-        FlagCoding merisL1FlagsCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.L1_FLAGS_MERIS);
+        FlagCoding merisL1FlagsCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.L1_FLAGS_MERIS);
         ProductUtils.copyFlagCoding(merisL1FlagsCoding, targetProduct);
         merisL1FlagsBand.setSampleCoding(merisL1FlagsCoding);
 
-        FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(RetrieveAerosolConstants.CLOUD_FLAG_MERIS);
+        FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FLAG_MERIS);
         ProductUtils.copyFlagCoding(merisCloudFlagCoding, targetProduct);
         merisCloudFlagBand.setSampleCoding(merisCloudFlagCoding);
     }
@@ -344,11 +342,11 @@ public class AerosolHelpers {
      */
     public static void copyDownscaledTiePointGrids(Product sourceProduct, Product targetProduct, float scalingFactor) {
         // Add tie point grids for sun/view zenith/azimuths. Get data from AATSR bands.
-        Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band latitudeBand = sourceProduct.getBand("latitude_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band longitudeBand = sourceProduct.getBand("longitude_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band altitudeBand = sourceProduct.getBand("altitude_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band latitudeBand = sourceProduct.getBand("latitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band longitudeBand = sourceProduct.getBand("longitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band altitudeBand = sourceProduct.getBand("altitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
 
         Band szaDownscaledBand = downscaleBand(szaBand, scalingFactor);
         Band saaDownscaledBand = downscaleBand(saaBand, scalingFactor);
@@ -377,11 +375,11 @@ public class AerosolHelpers {
     public static void copyRescaledTiePointGrids(Product sourceProduct, Product targetProduct,
                                                  int xScalingFactor, int yScalingFactor) {
         // Add tie point grids for sun/view zenith/azimuths. Get data from AATSR bands.
-        Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band latitudeBand = sourceProduct.getBand("latitude_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band longitudeBand = sourceProduct.getBand("longitude_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band altitudeBand = sourceProduct.getBand("altitude_" + RetrieveAerosolConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band latitudeBand = sourceProduct.getBand("latitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band longitudeBand = sourceProduct.getBand("longitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        Band altitudeBand = sourceProduct.getBand("altitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
 
         TiePointGrid szaTpg = getRescaledTpgFromBand(szaBand, xScalingFactor, yScalingFactor);
         targetProduct.addTiePointGrid(szaTpg);
@@ -521,66 +519,66 @@ public class AerosolHelpers {
     }
 
     public static void addAerosolFlagBand(Product targetProduct, int rasterWidth, int rasterHeight) {
-        FlagCoding aerosolFlagCoding = new FlagCoding(RetrieveAerosolConstants.aerosolFlagCodingName);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagCloudyName, RetrieveAerosolConstants.cloudyMask, RetrieveAerosolConstants.flagCloudyDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagOceanName,  RetrieveAerosolConstants.oceanMask,   RetrieveAerosolConstants.flagOceanDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagSuccessName, RetrieveAerosolConstants.successMask, RetrieveAerosolConstants.flagSuccessDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagBorderName, RetrieveAerosolConstants.borderMask, RetrieveAerosolConstants.flagBorderDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagFilledName, RetrieveAerosolConstants.filledMask, RetrieveAerosolConstants.flagFilledDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagNegMetricName, RetrieveAerosolConstants.negMetricMask, RetrieveAerosolConstants.flagNegMetricDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagAotLowName, RetrieveAerosolConstants.aotLowMask, RetrieveAerosolConstants.flagAotLowDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagErrHighName, RetrieveAerosolConstants.errHighMask, RetrieveAerosolConstants.flagErrHighDesc);
-        aerosolFlagCoding.addFlag(RetrieveAerosolConstants.flagCoastName, RetrieveAerosolConstants.coastMask, RetrieveAerosolConstants.flagCoastDesc);
+        FlagCoding aerosolFlagCoding = new FlagCoding(SynergyConstants.aerosolFlagCodingName);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagCloudyName, SynergyConstants.cloudyMask, SynergyConstants.flagCloudyDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagOceanName,  SynergyConstants.oceanMask,   SynergyConstants.flagOceanDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagSuccessName, SynergyConstants.successMask, SynergyConstants.flagSuccessDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagBorderName, SynergyConstants.borderMask, SynergyConstants.flagBorderDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagFilledName, SynergyConstants.filledMask, SynergyConstants.flagFilledDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagNegMetricName, SynergyConstants.negMetricMask, SynergyConstants.flagNegMetricDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagAotLowName, SynergyConstants.aotLowMask, SynergyConstants.flagAotLowDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagErrHighName, SynergyConstants.errHighMask, SynergyConstants.flagErrHighDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagCoastName, SynergyConstants.coastMask, SynergyConstants.flagCoastDesc);
         targetProduct.getFlagCodingGroup().add(aerosolFlagCoding);
 
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagCloudyName,
-                                RetrieveAerosolConstants.flagCloudyDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagCloudyName,
+                new BitmaskDef( SynergyConstants.flagCloudyName,
+                                SynergyConstants.flagCloudyDesc,
+                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagCloudyName,
                                 Color.lightGray, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagOceanName,
-                                RetrieveAerosolConstants.flagOceanDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagOceanName,
+                new BitmaskDef( SynergyConstants.flagOceanName,
+                                SynergyConstants.flagOceanDesc,
+                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagOceanName,
                                 Color.blue, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagSuccessName,
-                                RetrieveAerosolConstants.flagSuccessDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagSuccessName,
+                new BitmaskDef( SynergyConstants.flagSuccessName,
+                                SynergyConstants.flagSuccessDesc,
+                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagSuccessName,
                                 Color.pink, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagBorderName,
-                                RetrieveAerosolConstants.flagBorderDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName+"."+RetrieveAerosolConstants.flagBorderName,
+                new BitmaskDef( SynergyConstants.flagBorderName,
+                                SynergyConstants.flagBorderDesc,
+                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagBorderName,
                                 Color.orange, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagFilledName,
-                                RetrieveAerosolConstants.flagFilledDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagFilledName,
+                new BitmaskDef( SynergyConstants.flagFilledName,
+                                SynergyConstants.flagFilledDesc,
+                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagFilledName,
                                 Color.magenta, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagNegMetricName,
-                                RetrieveAerosolConstants.flagNegMetricDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagNegMetricName,
+                new BitmaskDef( SynergyConstants.flagNegMetricName,
+                                SynergyConstants.flagNegMetricDesc,
+                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagNegMetricName,
                                 Color.magenta, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagAotLowName,
-                                RetrieveAerosolConstants.flagAotLowDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagAotLowName,
+                new BitmaskDef( SynergyConstants.flagAotLowName,
+                                SynergyConstants.flagAotLowDesc,
+                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagAotLowName,
                                 Color.magenta, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagErrHighName,
-                                RetrieveAerosolConstants.flagErrHighDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagErrHighName,
+                new BitmaskDef( SynergyConstants.flagErrHighName,
+                                SynergyConstants.flagErrHighDesc,
+                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagErrHighName,
                                 Color.magenta, 0.2f));
         targetProduct.addBitmaskDef(
-                new BitmaskDef( RetrieveAerosolConstants.flagCoastName,
-                                RetrieveAerosolConstants.flagCoastDesc,
-                                RetrieveAerosolConstants.aerosolFlagCodingName + "." + RetrieveAerosolConstants.flagCoastName,
+                new BitmaskDef( SynergyConstants.flagCoastName,
+                                SynergyConstants.flagCoastDesc,
+                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagCoastName,
                                 Color.magenta, 0.2f));
 
-        Band targetBand = new Band(RetrieveAerosolConstants.aerosolFlagCodingName, ProductData.TYPE_UINT16, rasterWidth, rasterHeight);
-        targetBand.setDescription(RetrieveAerosolConstants.aerosolFlagCodingDesc);
+        Band targetBand = new Band(SynergyConstants.aerosolFlagCodingName, ProductData.TYPE_UINT16, rasterWidth, rasterHeight);
+        targetBand.setDescription(SynergyConstants.aerosolFlagCodingDesc);
         targetBand.setSampleCoding(aerosolFlagCoding);
         targetProduct.addBand(targetBand);
     }

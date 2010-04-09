@@ -7,17 +7,9 @@ package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.SubProgressMonitor;
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.util.Map;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
-import org.esa.beam.framework.datamodel.MetadataAttribute;
-import org.esa.beam.framework.datamodel.MetadataElement;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
-import org.esa.beam.framework.datamodel.VirtualBand;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
@@ -26,9 +18,12 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.jai.VirtualBandOpImage;
-import org.esa.beam.util.ProductUtils;
 import org.esa.beam.gpf.operators.standard.BandMathsOp;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.util.ProductUtils;
+
+import java.awt.Rectangle;
+import java.util.Map;
 
 
 /**
@@ -50,12 +45,12 @@ public class BoxAveOp extends Operator {
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    private String aotBandName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME;
-    private String errBandName = RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME;
-    private String modelBandName = RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME;
-    private String aotExtrpName = RetrieveAerosolConstants.OUTPUT_AOT_BAND_NAME + "_filled";
-    private String errExtrpName = RetrieveAerosolConstants.OUTPUT_AOTERR_BAND_NAME + "_filled";
-    private String modelExtrpName = RetrieveAerosolConstants.OUTPUT_AOTMODEL_BAND_NAME + "_filled";
+    private String aotBandName = SynergyConstants.OUTPUT_AOT_BAND_NAME;
+    private String errBandName = SynergyConstants.OUTPUT_AOTERR_BAND_NAME;
+    private String modelBandName = SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME;
+    private String aotExtrpName = SynergyConstants.OUTPUT_AOT_BAND_NAME + "_filled";
+    private String errExtrpName = SynergyConstants.OUTPUT_AOTERR_BAND_NAME + "_filled";
+    private String modelExtrpName = SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME + "_filled";
 
     @Parameter(defaultValue = "3", label = "BoxSize in Pixel (n x n)", interval = "[1, 100]")
     private int aveBlock;
@@ -67,10 +62,10 @@ public class BoxAveOp extends Operator {
     private int rasterWidth;
     private int rasterHeight;
 
-    private final String aerosolFlagName = RetrieveAerosolConstants.aerosolFlagCodingName;
+    private final String aerosolFlagName = SynergyConstants.aerosolFlagCodingName;
     //private final String validPixelExpression = "true";
-    private final String validPixelExpression = "(" + aerosolFlagName + "." + RetrieveAerosolConstants.flagSuccessName
-                                              + " || " + aerosolFlagName + "." + RetrieveAerosolConstants.flagFilledName + ")";
+    private final String validPixelExpression = "(" + aerosolFlagName + "." + SynergyConstants.flagSuccessName
+                                              + " || " + aerosolFlagName + "." + SynergyConstants.flagFilledName + ")";
 
     private Band origAotBand;
     private Band aotSrcBand;
@@ -92,7 +87,7 @@ public class BoxAveOp extends Operator {
         aotSrcBand = (sourceProduct.containsBand(aotExtrpName)) ? sourceProduct.getBand(aotExtrpName) : sourceProduct.getBand(aotBandName);
         errSrcBand = (sourceProduct.containsBand(errExtrpName)) ? sourceProduct.getBand(errExtrpName) : sourceProduct.getBand(errBandName);
         modelSrcBand = (sourceProduct.containsBand(modelExtrpName)) ? sourceProduct.getBand(modelExtrpName) : sourceProduct.getBand(modelBandName);
-        flagSrcBand = sourceProduct.getBand(RetrieveAerosolConstants.aerosolFlagCodingName);
+        flagSrcBand = sourceProduct.getBand(SynergyConstants.aerosolFlagCodingName);
 
         validPixelOp = BandMathsOp.createBooleanExpressionBand(validPixelExpression, sourceProduct);
 
@@ -160,7 +155,7 @@ public class BoxAveOp extends Operator {
                     float pixel = getAvePixel(aotSrcTile, iTarX, iTarY, validPixelTile);
                     aotTarTile.setSample(iTarX, iTarY, pixel);
                     if (pixel != aotSrcTile.getRasterDataNode().getNoDataValue()) {
-                        flagPixel |= RetrieveAerosolConstants.filledMask;
+                        flagPixel |= SynergyConstants.filledMask;
                     }
 
                     pixel = getAvePixel(errSrcTile, iTarX, iTarY, validPixelTile);

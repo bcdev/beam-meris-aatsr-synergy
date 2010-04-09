@@ -15,10 +15,7 @@
  */
 package org.esa.beam.synergy.operators;
 
-import java.awt.Rectangle;
-//import java.util.HashMap;
-import java.util.Map;
-
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.GeoPos;
 import org.esa.beam.framework.datamodel.PixelPos;
@@ -36,8 +33,11 @@ import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyUtils;
 
-import com.bc.ceres.core.ProgressMonitor;
+import java.awt.Rectangle;
+import java.util.Map;
 
 /**
  * Operator for create an elevation band.
@@ -118,7 +118,7 @@ public class CreateElevationBandOp extends Operator {
             lonBand.setUnit("degree");
             lonBand.setDescription("Orthorectification corrected longitude");            
         }
-        else SynergyUtils.info("  Product cannot be orthorectified");      
+        else SynergyUtils.info("  Product cannot be orthorectified");
     }
 
     @Override

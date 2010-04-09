@@ -6,7 +6,7 @@
     <parent>
         <artifactId>synergy</artifactId>
         <groupId>org.esa.beam.synergy</groupId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -14,7 +14,7 @@
     <groupId>org.esa.beam.synergy</groupId>
     <artifactId>synergy-cloud-screening</artifactId>
     <name>Synergy Cloud Screening</name>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <description>Synergy Cloud Screening</description>
 
     <dependencies>
@@ -47,6 +47,11 @@
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-envisat-reader</artifactId>
         </dependency>
+        <!--<dependency>-->
+			<!--<groupId>org.esa.beam</groupId>-->
+			<!--<artifactId>beam-meris-l2auxdata</artifactId>-->
+			<!--<version>1.0</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.esa.beam</groupId>
 			<artifactId>beam-meris-brr</artifactId>
@@ -61,6 +66,11 @@
 			<groupId>org.esa.beam.aatsr-recalibration</groupId>
 			<artifactId>aatsr-recalibration-recalibrate</artifactId>
 			<version>1.1-SNAPSHOT</version>
+		</dependency>
+        <dependency>
+			<groupId>org.esa.beam.synergy</groupId>
+			<artifactId>synergy-core</artifactId>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
     </dependencies>
     <!--
