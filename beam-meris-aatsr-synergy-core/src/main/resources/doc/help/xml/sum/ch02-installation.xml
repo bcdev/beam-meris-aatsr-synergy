@@ -23,10 +23,19 @@
             Reflectance) modules, which provide additional Java classes used by the toolbox:
             <itemizedlist mark='bullet'>
                 <listitem>
-                    synergy-aerosol-retrieval-1.1-SNAPSHOT.jar
+                    synergy-core-1.1.jar
                 </listitem>
                 <listitem>
-                    synergy-cloud-screening-1.1-SNAPSHOT.jar
+                    synergy-aerosol-retrieval-1.1.jar
+                </listitem>
+                <listitem>
+                    synergy-preprocessing-1.1.jar
+                </listitem>
+                <listitem>
+                    synergy-cloud-screening-1.1.jar
+                </listitem>
+                <listitem>
+                    beam-aatsr-recalibration-1.1.jar
                 </listitem>
                 <listitem>
                     beam-meris-brr-2.1-SNAPSHOT.jar

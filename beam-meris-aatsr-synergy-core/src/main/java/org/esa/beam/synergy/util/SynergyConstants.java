@@ -3,13 +3,13 @@ package org.esa.beam.synergy.util;
 import java.io.File;
 
 /**
+ * Constants defined for whole Synergy project
+ *
  * @author Olaf Danne
  * @version $Revision: $ $Date:  $
  */
 public class SynergyConstants {
     // Constants
-
-   
 
     public static final String SYNERGY_AUXDATA_HOME_DEFAULT =
             System.getProperty("user.home")
@@ -35,25 +35,22 @@ public class SynergyConstants {
                     + "For the Synergy aerosol retrieval and atmospheric correction, various <br>"
                     + "auxiliary data (such as lookup tables and surface reflectance spectrum files), <br> "
                     + "are required. Please follow the instructions in chapter x.x.x of the Software  <br>"
-                    + "User Manual for download and installation of auxiliary data. "
+                    + "User Manual or online help for download and installation of auxiliary data. "
                     + "</html>";
 
     public static final String AEROSOL_MODEL_INFO_MESSAGE =
-//            "<html>This is how to get:<ul><li><i>italics</i> and "
-//                    + "<li><b>bold</b> and "
-//                    + "<li><u>underlined</u>...</ul></html>";
                "<html> "
                        + "For the Synergy land aerosol retrieval, appropriate aerosol models are used. <br>"
-                       + "For most use cases, the default set of three selected models will be sufficient. <br> "
-                       + "However, advanced users may want to specify an own subset from all available aerosol models.<br><br> "
+                       + "For most use cases, the default set of models will be sufficient. <br> "
+                       + "However, advanced users may want to specify an own subset from all available<br> "
+                       + "aerosol models.<br><br> "
                        + "To download either the default or the full set of aerosol models, <br>"
                        + "please follow the instructions in chapter x.x.x of the Software  <br>"
                        + "User Manual for download and installation of auxiliary data. <br> "
-                       + "Note that the full set of models requires approx. 6 GB of disk space. <br><br> "
+                       + "Note that the full set of models requires approximately 6 GB of disk space. <br><br> "
                        + "For more details on these land aerosol models, see the Synergy documentation <br> "
                        + "referenced in the Software User Manual <br> "
                        + "</html>";
-
 
     public static final String preprocessingRadioButtonLabel = "Only create a colocated MERIS/AATSR product";
     public static final String cloudScreeningRadioButtonLabel = "Create a cloud screening product";
@@ -70,6 +67,9 @@ public class SynergyConstants {
 
     public static final String defaultLandAerosolButtonLabel = "Use default land aerosol models (recommended)";
     public static final String customLandAerosolButtonLabel = "Use specific land aerosol models (for advanced users)";
+
+    public static final String GAUSS_PARS_LUT_FILE_NAME = "gauss_lut.nc";
+    public static final String AEROSOL_MODEL_FILE_NAME = "all_mie.nc";
 
     public static final String SOIL_SPEC_PARAM_NAME    = "soilspec";
     public static final String SOIL_SPEC_PARAM_DEFAULT = "spec_soil.dat";
@@ -96,7 +96,8 @@ public class SynergyConstants {
                                                       "00778.00","00865.00","00885.00"};
 
     public static final String AEROSOL_MODEL_PARAM_NAME    = "aerosolModels";
-    public static final String AEROSOL_MODEL_PARAM_DEFAULT = "8,20,28";
+//    public static final String AEROSOL_MODEL_PARAM_DEFAULT = "8,20,28";
+    public static final String AEROSOL_MODEL_PARAM_DEFAULT = "8";
     public static final String AEROSOL_MODEL_PARAM_LABEL   = "List of land aerosol models";
     public static final String AEROSOL_MODEL_PARAM_DESCRIPTION = "Comma sep. list of aerosol model identifiers";
 

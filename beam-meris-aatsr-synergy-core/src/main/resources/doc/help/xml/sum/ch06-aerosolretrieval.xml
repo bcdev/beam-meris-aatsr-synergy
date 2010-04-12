@@ -92,14 +92,14 @@
                 'Soil surface reflectance spectrum': Text field to set the filename containing
                 the soil surface reflectance spectrum. The default is 'spec_soil.dat' and is the only one included
                 in the delivered software package. If the user wants to use different files,
-                they must be added to the software archive (synergy-aerosol-retrieval-1.1-SNAPSHOT.jar)
+                they must be added to the software archive (synergy-aerosol-retrieval-1.1.jar)
                 with an appropriate tool before starting Visat.
             </listitem>
             <listitem>
                 'Vegetation surface reflectance spectrum': Text field to set the filename containing
                 the vegetation surface reflectance spectrum. The default is 'spec_veg.dat' and is the only one included
                 in the delivered software package. If the user wants to use different files,
-                they must be added to the software archive (synergy-aerosol-retrieval-1.1-SNAPSHOT.jar)
+                they must be added to the software archive (synergy-aerosol-retrieval-1.1.jar)
                 with an appropriate tool before starting Visat.
             </listitem>
             <listitem>

@@ -1,0 +1,53 @@
+<?xml version="1.0"?><project>
+  <parent>
+    <artifactId>beam-meris-aatsr-synergy</artifactId>
+    <groupId>org.esa.beam.synergy</groupId>
+    <version>1.1</version>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.esa.beam.synergy</groupId>
+  <artifactId>beam-meris-aatsr-synergy-core</artifactId>
+  <name>Synergy Core</name>
+  <version>1.1</version>
+  <description>Synergy Core Module</description>
+  <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.bc.ceres</groupId>
+            <artifactId>ceres-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-gpf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-visat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-collocation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-envisat-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ucar.netcdf</groupId>
+            <artifactId>lib-netcdf</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
