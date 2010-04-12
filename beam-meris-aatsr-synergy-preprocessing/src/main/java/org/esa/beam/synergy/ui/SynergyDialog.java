@@ -1,40 +1,39 @@
 package org.esa.beam.synergy.ui;
 
+import com.bc.ceres.binding.Property;
+import com.bc.ceres.binding.PropertyContainer;
+import com.bc.ceres.binding.PropertyDescriptor;
+import com.bc.ceres.binding.ValidationException;
+import com.bc.ceres.binding.ValueSet;
+import com.bc.ceres.swing.TableLayout;
+import com.bc.ceres.swing.binding.PropertyPane;
+import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
+import com.bc.ceres.swing.selection.Selection;
+import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.datamodel.ProductFilter;
+import org.esa.beam.framework.datamodel.ProductNodeEvent;
+import org.esa.beam.framework.datamodel.ProductNodeListener;
+import org.esa.beam.framework.datamodel.RasterDataNode;
+import org.esa.beam.framework.gpf.GPF;
+import org.esa.beam.framework.gpf.OperatorException;
+import org.esa.beam.framework.gpf.OperatorSpi;
+import org.esa.beam.framework.gpf.annotations.ParameterDescriptorFactory;
+import org.esa.beam.framework.gpf.annotations.SourceProduct;
+import org.esa.beam.framework.gpf.internal.RasterDataNodeValues;
 import org.esa.beam.framework.gpf.ui.SingleTargetProductDialog;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelectorModel;
-import org.esa.beam.framework.gpf.OperatorSpi;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.gpf.internal.RasterDataNodeValues;
-import org.esa.beam.framework.gpf.annotations.ParameterDescriptorFactory;
-import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.framework.datamodel.ProductFilter;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductNodeListener;
-import org.esa.beam.framework.datamodel.ProductNodeEvent;
-import org.esa.beam.framework.datamodel.RasterDataNode;
 
-import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.lang.reflect.Field;
-
-import com.bc.ceres.binding.PropertyDescriptor;
-import com.bc.ceres.binding.PropertyContainer;
-import com.bc.ceres.binding.ValidationException;
-import com.bc.ceres.binding.Property;
-import com.bc.ceres.binding.ValueSet;
-import com.bc.ceres.swing.TableLayout;
-import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
-import com.bc.ceres.swing.selection.SelectionChangeEvent;
-import com.bc.ceres.swing.selection.Selection;
-import com.bc.ceres.swing.binding.PropertyPane;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olaf Danne
@@ -212,11 +211,13 @@ public class SynergyDialog extends SingleTargetProductDialog {
 
     @Override
     protected Product createTargetProduct() throws Exception {
+        // test:
+        OperatorException e = new OperatorException("bla");
+        // end test
         final HashMap<String, Product> sourceProducts = createSourceProductsMap();
         parameterMap = model.getAllSynergyParameters();
         Product targetProduct = GPF.createProduct(operatorName, parameterMap, sourceProducts);
         return targetProduct;
-//        return GPF.createProduct(operatorName, parameterMap, sourceProducts);
     }
 
     private void initSourceProductSelectors() {

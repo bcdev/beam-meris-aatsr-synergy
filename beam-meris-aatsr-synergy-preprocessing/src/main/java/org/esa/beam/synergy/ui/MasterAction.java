@@ -2,14 +2,10 @@ package org.esa.beam.synergy.ui;
 
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.OperatorSpi;
-import org.esa.beam.framework.gpf.ui.DefaultSingleTargetProductDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.synergy.operators.RetrieveAerosolLandOp;
 import org.esa.beam.synergy.operators.MasterOp;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
-
-import java.awt.Dimension;
 
 /**
  * Action class for Aerosol retrieval over land within MERIS/AATSR Synergy project.

@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
-    <symbolicName>synergy-preprocessing</symbolicName>
-    <version>1.2-SNAPSHOT</version>
+    <symbolicName>beam-meris-aatsr-synergy-preprocessing</symbolicName>
+    <version>1.1</version>
     <name>Synergy Preprocessing</name>
     <description>Synergy Preprocessing Module</description>
 
@@ -32,9 +32,6 @@
         <module>beam-meris-brr</module>
     </dependency>
     <dependency>
-        <module>beam-meris-sdr</module>
-    </dependency>
-    <dependency>
         <module>beam-meris-l2auxdata</module>
     </dependency>
     <dependency>
@@ -44,7 +41,13 @@
         <module>beam-collocation</module>
     </dependency>
     <dependency>
-        <module>synergy-cloud-screening</module>
+        <module>beam-meris-aatsr-synergy-aerosol-retrieval</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-aatsr-synergy-cloud-screening</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-aatsr-synergy-core</module>
     </dependency>
     <dependency>
         <module>lib-netcdf</module>

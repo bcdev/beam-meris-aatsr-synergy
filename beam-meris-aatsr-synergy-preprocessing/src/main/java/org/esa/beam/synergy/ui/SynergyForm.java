@@ -1,48 +1,47 @@
 package org.esa.beam.synergy.ui;
 
+import com.bc.ceres.binding.PropertyContainer;
+import com.bc.ceres.swing.TableLayout;
+import com.bc.ceres.swing.binding.BindingContext;
+import com.bc.ceres.swing.binding.PropertyPane;
+import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
-import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.io.FileChooserFactory;
 
-import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.SwingUtilities;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.ButtonGroup;
-import javax.swing.JRadioButton;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.lang.reflect.Field;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URL;
-
-import com.bc.ceres.swing.TableLayout;
-import com.bc.ceres.swing.binding.BindingContext;
-import com.bc.ceres.swing.binding.PropertyPane;
-import com.bc.ceres.binding.PropertyContainer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olaf Danne
@@ -150,7 +149,7 @@ public class SynergyForm extends JTabbedPane {
 
 
     private void initComponents() {
-        setPreferredSize(new Dimension(600, 740));
+        setPreferredSize(new Dimension(600, 600));
 
         synergyAuxdataHome = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
 
@@ -483,6 +482,9 @@ public class SynergyForm extends JTabbedPane {
         customLandAerosolSelected = customLandAerosolRadioButton.isSelected();
         customLandAerosolLabel.setEnabled(customLandAerosolSelected);
         landAerosolModelTextField.setEnabled(customLandAerosolSelected);
+        if (!customLandAerosolSelected) {
+            landAerosolModelTextField.setText(SynergyConstants.AEROSOL_MODEL_PARAM_DEFAULT);
+        }
     }
 
 

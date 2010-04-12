@@ -1,13 +1,13 @@
 package org.esa.beam.synergy.ui;
 
+import com.bc.ceres.binding.PropertyContainer;
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.ParameterDescriptorFactory;
-import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.synergy.util.SynergyConstants;
-import com.bc.ceres.binding.PropertyContainer;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olaf Danne

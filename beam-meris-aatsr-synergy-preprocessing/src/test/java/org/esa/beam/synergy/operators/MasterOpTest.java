@@ -3,6 +3,7 @@ package org.esa.beam.synergy.operators;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.esa.beam.synergy.util.SynergyUtils;
 
 /**
  * Test class for Aerosol retrieval over land within Synergy project.
@@ -36,6 +37,6 @@ public class MasterOpTest
     }
 
     public void testIsAuxdataAvailable() {
-        assertTrue(MasterOp.validateAuxdata());
+        assertTrue(SynergyUtils.validateAuxdata(false, null));
     }
 }

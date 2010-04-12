@@ -14,11 +14,6 @@ import org.esa.beam.synergy.util.SynergyUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.io.File;
-import java.io.IOException;
-import java.text.DecimalFormat;
-
-import ucar.nc2.NetcdfFile;
 
 /**
  * Master operator for MERIS/AATSR Synergy toolbox.
@@ -107,8 +102,6 @@ public class MasterOp extends Operator {
                label = SynergyConstants.VEG_SPEC_PARAM_LABEL)
     private String vegSpecName;
 
-    private String aerosolModelString = "8,20,28";
-
     @Parameter(defaultValue = "7",
                description = "Pixels to average (n x n, with n odd number) for AOD retrieval",
                label = "N x N average for AOD retrieval",
@@ -129,7 +122,7 @@ public class MasterOp extends Operator {
         SynergyUtils.validateMerisProduct(merisSourceProduct);
         SynergyUtils.validateAatsrProduct(aatsrSourceProduct);
 
-        if (!validateAuxdata()) {
+        if (!SynergyUtils.validateAuxdata(useCustomLandAerosol, customLandAerosol)) {
             return;
         }
 
@@ -158,7 +151,7 @@ public class MasterOp extends Operator {
         }
 
         // get the aerosol / atmospheric correction product...
-        Product landOceanAerosolProduct = null;
+        Product landOceanAerosolProduct;
         if (createAerosolProduct) {
             Map<String, Product> landOceanInput = new HashMap<String, Product>(1);
             landOceanInput.put("source", cloudScreeningProduct);
@@ -177,65 +170,7 @@ public class MasterOp extends Operator {
         }
     }
 
-    public static boolean validateAuxdata() {
-
-        String auxdataPathRoot =
-                SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
-        String auxdataPathAerosolOcean =
-                SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator + "aerosolLUTs" + File.separator + "ocean";
-        String auxdataPathAerosolLand =
-                SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator + "aerosolLUTs" + File.separator + "land";
-
-        try {
-            final NetcdfFile netcdfFileGaussLut =
-                    NetcdfFile.open(auxdataPathAerosolOcean + File.separator + GlintAuxData.GAUSS_PARS_LUT_FILE_NAME);
-            final NetcdfFile netcdfFileMie =
-                    NetcdfFile.open(auxdataPathAerosolOcean + File.separator + AerosolAuxData.AEROSOL_MODEL_FILE_NAME);
-        } catch (IOException e) {
-            SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
-            return false;
-        }
-
-        DecimalFormat df2 = new DecimalFormat("00");
-        final int NUMBER_OCEAN_AEROSOL_MODELS = 40;
-        final int NUMBER_OCEAN_AEROSOL_AATSR_WAVELENGTHS = 4;
-        final String[] oceanAerosolAatsrWavelengths = {"00778","00865","00885","01610"};
-        for (int i=1; i<=NUMBER_OCEAN_AEROSOL_MODELS; i++) {
-            for (int j=0; j<NUMBER_OCEAN_AEROSOL_AATSR_WAVELENGTHS; j++) {
-                String modelIndex =(df2.format((long)i));
-                String inputFileString = "aer" + modelIndex + "_wvl" + oceanAerosolAatsrWavelengths[j] + ".nc";
-                try {
-                    final NetcdfFile netcdfFileOceanLuts =
-                            NetcdfFile.open(auxdataPathAerosolOcean + File.separator + inputFileString);
-                } catch (IOException e) {
-                    SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
-                    return false;
-                }
-            }
-        }
-
-        final int NUMBER_LAND_AEROSOL_MODELS = 40;
-        final int NUMBER_LAND_AEROSOL_MERIS_WAVELENGTHS = 13;
-        final int NUMBER_LAND_AEROSOL_AATSR_WAVELENGTHS = 4;
-        final String[] landAerosolMerisWavelengths = {"00778","00865","00885","01610"};
-        final String[] landAerosolAatsrWavelengths = {"00778","00865","00885","01610"};
-        for (int i=1; i<=NUMBER_OCEAN_AEROSOL_MODELS; i++) {
-            for (int j=0; j<NUMBER_OCEAN_AEROSOL_AATSR_WAVELENGTHS; j++) {
-                String modelIndex =(df2.format((long)i));
-                String inputFileString = "aer" + modelIndex + "_wvl" + oceanAerosolAatsrWavelengths[j] + ".nc";
-                try {
-                    final NetcdfFile netcdfFileOceanLuts =
-                            NetcdfFile.open(auxdataPathAerosolOcean + File.separator + inputFileString);
-                } catch (IOException e) {
-                    SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
+    
     /**
      * The Service Provider Interface (SPI) for the operator.
      * It provides operator meta-data and is a factory for new operator instances.
