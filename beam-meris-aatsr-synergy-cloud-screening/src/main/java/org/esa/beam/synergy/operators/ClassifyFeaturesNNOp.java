@@ -84,12 +84,6 @@ public class ClassifyFeaturesNNOp extends Operator {
     private Map<String,Band> tgtBandMap = new HashMap<String,Band>
         (SynergyConstants.nn_synergy.length + SynergyConstants.nn_single.length);
 
-    /*
-    final static double[] nn_weigths = { 0.088726197040742, 0.283243340585966, 0.149129120872092, 0.219486840936770 };
-    final static double nn_threshold = 0.4;
-    final static double[] nn_weigths_nadir = { 0.341411914064634, 0.403683637228184 };
-    */
-    
     @Override
     public void initialize() throws OperatorException {
         // Get bands and flags from synergy source product and make them ready
