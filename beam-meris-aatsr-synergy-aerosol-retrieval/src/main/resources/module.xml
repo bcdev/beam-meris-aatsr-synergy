@@ -1,0 +1,85 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>beam-meris-aatsr-synergy-aerosol-retrieval</symbolicName>
+    <version>1.1</version>
+    <name>Synergy Aerosol Retrieval</name>
+    <description>Synergy Aerosol Retrieval</description>
+
+    <vendor>Brockmann Consult GmbH</vendor>
+    <contactAddress>
+        Max Planck Str.2, 21502 Geesthacht (Germany)
+    </contactAddress>
+    <copyright>(C) 2007 by Brockmann Consult GmbH</copyright>
+    <url>http://envisat.esa.int/beam</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <changelog/>
+    
+    <dependency>
+        <module>beam-core</module>
+    </dependency>
+	<dependency>
+        <module>beam-gpf</module>
+    </dependency>
+	 <dependency>
+        <module>beam-visat</module>
+        <optional>true</optional>
+    </dependency>
+	<dependency>
+        <module>beam-envisat-reader</module>
+    </dependency>	
+	<dependency>
+        <module>beam-meris-brr</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-sdr</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-l2auxdata</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-sdr</module>
+    </dependency>
+    <dependency>
+        <module>beam-collocation</module>
+    </dependency>
+    <dependency>
+        <module>beam-meris-aatsr-synergy-core</module>
+    </dependency>
+    <dependency>
+        <module>lib-netcdf</module>
+    </dependency>
+
+    <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
+
+    <!--<extension point="beam-ui:actions">-->
+        <!--<action>-->
+            <!--<id>synergyToolbox</id>-->
+            <!--<class>org.esa.beam.visat.actions.ActionGroup</class>-->
+            <!--<text>MERIS/(A)ATSR Synergy Toolbox </text>-->
+            <!--<mnemonic/>-->
+            <!--<placeAfter/>-->
+        <!--</action>-->
+
+        <!--<action>-->
+            <!--<id>aerosolOverall</id>-->
+            <!--<class>org.esa.beam.synergy.ui.RetrieveAerosolAction</class>-->
+            <!--<text>Aerosol Retrieval and Atmospheric Correction...</text>-->
+            <!--<shortDescr>-->
+                <!--Retrieve aerosols (land/ocean) and SDR (land)-->
+            <!--</shortDescr>-->
+            <!--<mnemonic/>-->
+            <!--<parent>synergyToolbox</parent>-->
+            <!--<helpID>synergyhelp</helpID>-->
+            <!--<placeAfter>synergyCloudScreening</placeAfter>-->
+        <!--</action>-->
+
+    <!--</extension>-->
+
+    <!--<extension point="beam-ui:helpSets">-->
+        <!--<helpSet>-->
+            <!--<parent>beam-help</parent>-->
+            <!--<path>doc/help/aerosol.hs</path>-->
+        <!--</helpSet>-->
+    <!--</extension>-->
+</module>
