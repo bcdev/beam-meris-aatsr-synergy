@@ -13,33 +13,23 @@
   <mapID target="sum.installation" url="ch02.html"/>
   <mapID target="sum.installation.plugin" url="ch02.html#sum.installation.plugin"/>
   <mapID target="figure.installation.beammodules" url="ch02.html#figure.installation.beammodules"/>
-  <mapID target="sum.installation.luts" url="ch02s02.html"/>
+  <mapID target="sum.installation.auxdata" url="ch02s02.html"/>
+  <mapID target="sum.installation.auxdata.format" url="ch02s02.html#sum.installation.auxdata.format"/>
+  <mapID target="sum.installation.auxdata.download" url="ch02s02.html#sum.installation.auxdata.download"/>
   <mapID target="sum.installation.addons" url="ch02s03.html"/>
   <mapID target="sum.products" url="ch03.html"/>
-  <mapID target="sum.processor.preprocessor" url="ch04.html"/>
+  <mapID target="sum.toolbox" url="ch04.html"/>
   <mapID target="figure.visat.synergy" url="ch04.html#figure.visat.synergy"/>
-  <mapID target="sum.processor.preprocessor.io" url="ch04.html#sum.processor.preprocessor.io"/>
-  <mapID target="figure.processor.preprocessor.iotab" url="ch04.html#figure.processor.preprocessor.iotab"/>
-  <mapID target="sum.processor.preprocessor.control" url="ch04s02.html"/>
-  <mapID target="figure.processor.preprocessor.controlbuttons" url="ch04s02.html#figure.processor.preprocessor.controlbuttons"/>
-  <mapID target="sum.processor.preprocessor.gpt" url="ch04s03.html"/>
-  <mapID target="figure.processor.gpt" url="ch04s03.html#figure.processor.gpt"/>
-  <mapID target="sum.processor.cloudscreening" url="ch05.html"/>
-  <mapID target="sum.processor.cloudscreening.io" url="ch05.html#sum.processor.cloudscreening.io"/>
-  <mapID target="figure.processor.cloudscreening.iotab" url="ch05.html#figure.processor.cloudscreening.iotab"/>
-  <mapID target="sum.processor.cloudscreening.processing" url="ch05s02.html"/>
-  <mapID target="figure.processor.cloudscreening.processingtab" url="ch05s02.html#figure.processor.cloudscreening.processingtab"/>
-  <mapID target="sum.processor.cloudscreening.control" url="ch05s03.html"/>
-  <mapID target="figure.processor.cloudscreening.controlbuttons" url="ch05s03.html#figure.processor.cloudscreening.controlbuttons"/>
-  <mapID target="sum.processor.cloudscreening.gpt" url="ch05s04.html"/>
-  <mapID target="figure.processor.cloudscreening.gpt" url="ch05s04.html#figure.processor.cloudscreening.gpt"/>
-  <mapID target="sum.processor.aerosolretrieval" url="ch06.html"/>
-  <mapID target="sum.processor.aerosolretrieval.io" url="ch06.html#sum.processor.aerosolretrieval.io"/>
-  <mapID target="figure.processor.aerosolretrieval.iotab" url="ch06.html#figure.processor.aerosolretrieval.iotab"/>
-  <mapID target="sum.processor.aerosolretrieval" url="ch06s02.html"/>
-  <mapID target="figure.processor.aerosolretrieval" url="ch06s02.html#figure.processor.aerosolretrieval"/>
-  <mapID target="sum.processor.aerosolretrieval.control" url="ch06s03.html"/>
-  <mapID target="figure.processor.aerosolretrieval.controlbuttons" url="ch06s03.html#figure.processor.aerosolretrieval.controlbuttons"/>
-  <mapID target="sum.processor.aerosolretrieval.gpt" url="ch06s04.html"/>
-  <mapID target="figure.processor.aerosolretrieval.gpt" url="ch06s04.html#figure.processor.aerosolretrieval.gpt"/>
+  <mapID target="sum.toolbox.io" url="ch04.html#sum.toolbox.io"/>
+  <mapID target="sum.toolbox.io.io" url="ch04.html#sum.toolbox.io.io"/>
+  <mapID target="figure.toolbox.io.iotab" url="ch04.html#figure.toolbox.io.iotab"/>
+  <mapID target="sum.toolbox.io.control" url="ch04.html#sum.toolbox.io.control"/>
+  <mapID target="figure.toolbox.io.controlbuttons" url="ch04.html#figure.toolbox.io.controlbuttons"/>
+  <mapID target="sum.toolbox.cloudscreening" url="ch04s02.html"/>
+  <mapID target="figure.toolbox.cloudscreening" url="ch04s02.html#figure.toolbox.cloudscreening"/>
+  <mapID target="sum.toolbox.aerosol" url="ch04s03.html"/>
+  <mapID target="figure.toolbox.aerosol" url="ch04s03.html#figure.toolbox.aerosol"/>
+  <mapID target="figure.toolbox.aerosol.custommodels" url="ch04s03.html#figure.toolbox.aerosol.custommodels"/>
+  <mapID target="sum.toolbox.commandline" url="ch04s04.html"/>
+  <mapID target="figure.toolbox.gpt" url="ch04s04.html#figure.toolbox.gpt"/>
 </map>

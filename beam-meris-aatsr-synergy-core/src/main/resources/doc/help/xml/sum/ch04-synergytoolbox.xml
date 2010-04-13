@@ -1,0 +1,331 @@
+<chapter id="sum.toolbox">
+    <title>Processors</title>
+
+    <para>
+        The MERIS/(A)ATSR Synergy toolbox can be invoked from the BEAM 'Tools' menu as shown below.
+    </para>
+    <figure id="figure.visat.synergy">
+        <title>The MERIS/(A)ATSR Synergy toolbox in BEAM Visat</title>
+        <graphic scale="40" fileref="figures/synergy_in_beam.png"/>
+    </figure>
+
+    <sect1 id="sum.toolbox.io">
+        <title>I/O Parameters and Preprocessing</title>
+        <para>
+            The Synergy Preprocessor is the first of three main modules within the MERIS/(A)ATSR Synergy toolbox.
+            Its purpose is to create a colocated MERIS/(A)ATSR L1b product containing radiances/reflectances of
+            all channels of both MERIS and AATSR. This colocated product shall be used as input for the cloud screening
+            module.
+        </para>
+        <para>
+            There is no separate user interface for the Synergy Preprocessor,
+            also, there are no processing parameters. The preprocessor is invoked automatically
+            when a MERIS/AATSR colocated product is generated either as final product or as intermediate
+            product required for cloud screening or aerosol retrieval. These options are provided through
+            radio buttons on the Synergy Toolbox I/O Parameters Tab Pane (see below).
+        </para>
+
+        <sect2 id="sum.toolbox.io.io">
+            <title>I/O Parameters Tab Pane</title>
+
+            <figure id="figure.toolbox.io.iotab">
+                <title>Synergy Toolbox: I/O Parameters Tab Pane</title>
+                <graphic scale="60" fileref="figures/iotab.png"/>
+            </figure>
+
+            This tab pane consists of the following components:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    MERIS source product file: Select the source product file by either typing the product path into the
+                    text
+                    filed or by pressing the file selection button to invoke a standard file dialog.
+                    This source product must be a standard MERIS L1b product.
+                </listitem>
+                <listitem>
+                    AATSR source product file: Select the source product file by either typing the product path into the
+                    text
+                    filed or by pressing the file selection button to invoke a standard file dialog.
+                    This source product must be a standard AATSR L1b product.
+                </listitem>
+                <listitem>
+                    Target product file: Select the target product file by either typing the product path into the text
+                    filed or by pressing the file selection button to invoke a standard file dialog.
+                </listitem>
+                <listitem>
+                    Target product format and target directory:
+                    <itemizedlist mark='bullet'>
+                        <listitem>
+                            'Save as': If this checkbox is selected, the output product will be saved to disk.
+                        </listitem>
+                        <listitem>
+                            Target product format: Select one of the available output product formats.
+                        </listitem>
+                        <listitem>
+                            Select the target product directory by either typing the product path into the text
+                            filed or by pressing the file selection button to invoke a standard file dialog.
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    'Open in Visat': If this checkbox is selected, the output product is opened in Visat
+                    after successful processing.
+                </listitem>
+                <listitem>
+                    Target product specification: This user option is represented by radio buttons
+                    and specifies the computation type and results written to the target product:
+                    <itemizedlist mark='bullet'>
+                        <listitem>
+                            'Only create a colocated MERIS/AATSR product':
+                            If this radio button is selected, just a colocated MERIS/AATSR product
+                            will be generated. No cloud screening or aerosol retrieval is performed.
+                        </listitem>
+                        <listitem>
+                            'Create a cloud screening product':
+                            If this radio button is selected, a cloud screening product
+                            will be generated. A colocated MERIS/AATSR product is created as intermediate
+                            product. No aerosol retrieval is performed.
+                        </listitem>
+                        <listitem>
+                            'Create an aerosol and atmospheric correction product':
+                            If this radio button is selected, an aerosol and atmospheric correction product
+                            will be generated. Atmospheric correction over land can be added by aerosol
+                            retrieval user option
+                            (see<xref linkend="sum.toolbox.aerosol" xrefstyle="select: label"/>)
+                            The aerosol retrieval processor automatically
+                            creates a colocated MERIS/AATSR product and performs cloud screening
+                            as foregoing steps.
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </sect2>
+
+        <sect2 id="sum.toolbox.io.control">
+            <title>Control Buttons</title>
+
+            From the 'I/O Parameters' tab pane, the following control buttons can be accessed:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    'Run': If this button is clicked, the processor will start the computations.
+                </listitem>
+                <listitem>
+                    'Close': If this button is clicked, the 'MERIS/(A)ATSR Synergy Toolbox' dialog is closed.
+                </listitem>
+                <listitem>
+                    'Help': If this button is clicked, this manual is displayed as online help.
+                </listitem>
+            </itemizedlist>
+
+            <figure id="figure.toolbox.io.controlbuttons">
+                <title>Synergy Toolbox: control buttons</title>
+                <graphic scale="60" fileref="figures/controlbuttons.png"/>
+            </figure>
+
+        </sect2>
+
+    </sect1>
+
+
+    <sect1 id="sum.toolbox.cloudscreening">
+        <title>Cloudscreening</title>
+        <para>
+            The Cloud Screening Processor is the second of three main modules within the MERIS/(A)ATSR Synergy toolbox.
+            Its purpose is to add various bands (i.e cloud flags) to the colocated MERIS/(A)ATSR L1b product
+            obtained from the preprocessor. The output product from the cloud screening shall be used as input for the
+            third module (aerosol retrieval and atmospheric correction).
+        </para>
+        <para>
+            The user interface for the Cloud Screening Processor can be accessed by clicking the 'Cloud Screening'
+            tab in the 'MERIS/(A)ATSR Synergy Toolbox' dialog.
+            (<xref linkend="figure.toolbox.cloudscreening" xrefstyle="select: label"/>):
+
+            <figure id="figure.toolbox.cloudscreening">
+                <title>Synergy Toolbox: Cloud Screening Tab Pane</title>
+                <graphic scale="60" fileref="figures/cloudscreeningtab.png"/>
+            </figure>
+        </para>
+
+        <para>
+            The Cloud Screening tab pane consists of the following components:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    'Use the AATSR forward view when classifying': If his checkbox is selected, the AATSR forward view
+                    is considered in the cloud classification algorithm (otherwise nadir view only).
+                </listitem>
+                <listitem>
+                    'Compute cloud index': If this checkbox is selected, a cloud index is computed and written
+                    as single band 'cloud_index_synergy' to the target product.
+                </listitem>
+                <listitem>
+                    'Compute snow risk flag': If this checkbox is selected, a snow risk flag is computed
+                    and added to a flag band 'cloud_flags_synergy', which is written to the target product.
+                </listitem>
+                <listitem>
+                    'Compute cloud shadow risk flag': If this checkbox is selected, a cloud shadow risk flag is computed
+                    and added to a flag band 'cloud_flags_synergy', which is written to the target product.
+                </listitem>
+            </itemizedlist>
+        </para>
+        <para>
+            See [4] for more details on the computation and physical meaning of the quantities listed above.
+        </para>
+
+    </sect1>
+
+    <sect1 id="sum.toolbox.aerosol">
+        <title>Aerosol Retrieval and Atmospheric Correction</title>
+
+        <para>
+            The Processor for Aerosol Retrieval and Atmospheric Correction is the third of three main modules
+            within the MERIS/(A)ATSR Synergy toolbox.
+            Its purpose is to derive aerosol optical depths over land and/or ocean and (optionally) provide an
+            atmospheric correction by using the derived AODs. The processor also makes use of quantities
+            derived from the cloud screening module. Therefore, the input for the aerosol retrieval must be
+            an output product from the cloud screening.
+        </para>
+
+         <para>
+            The user interface for the Aerosol Retrieval and Atmospheric Correction
+             can be accessed by clicking the 'Aerosol Retrieval and Atmospheric Correction'
+            tab in the 'MERIS/(A)ATSR Synergy Toolbox' dialog.
+            (<xref linkend="figure.toolbox.aerosol" xrefstyle="select: label"/>):
+
+            <figure id="figure.toolbox.aerosol">
+                <title>Synergy Toolbox: Aerosol Retrieval and Atmospheric Correction Tab Pane</title>
+                <graphic scale="60" fileref="figures/aerosolretrievaltab.png"/>
+            </figure>
+        </para>
+
+        <para>
+            The Aerosol Retrieval and Atmospheric Correction tab pane consists of the following components:
+            <itemizedlist mark='bullet'>
+                <listitem>
+                    'Retrieve AODs over ocean': If this checkbox is selected, aerosol optical depths will
+                    be retrieved over ocean. The default is 'true'.
+                </listitem>
+                <listitem>
+                    'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
+                    be retrieved over land. The default is 'true'.
+                </listitem>
+                <listitem>
+                    'Retrieve surface directional reflectances (over land only)': If this checkbox is selected,
+                    SDRs will be retrieved from rescaled AODs. This computation is performed over land only and
+                    requires AOD rescaling (previous checkbox).
+                </listitem>
+                 <listitem>
+                    'N x N average for AOD retrieval': Text field to set
+                    the number of pixels to average over in the aerosol retrieval. The default number is '7',
+                    which corresponds to a square with 3 pixels to each side of a center pixel.
+                </listitem>
+
+                <listitem>
+                    'Soil surface reflectance spectrum': Text field to set the filename containing
+                    the soil surface reflectance spectrum. The default is 'spec_soil.dat',
+                    this file is included in the auxiliary data
+                    (see <xref linkend="sum.installation.auxdata" xrefstyle="select: label"/>)
+                    If the user wants to use a different file, it must be selected via the
+                    file chooser button right to the test field. Note that any user selected file
+                    must exactly follow the format of the default file.
+                </listitem>
+                <listitem>
+                    'Vegetation surface reflectance spectrum': Text field to set the filename containing
+                    the vegetation surface reflectance spectrum. The default is 'veg_soil.dat',
+                    this file is included in the auxiliary data
+                    (see<xref linkend="sum.installation.auxdata" xrefstyle="select: label"/>)
+                    If the user wants to use a different file, it must be selected via the
+                    file chooser button right to the test field. Note that any user selected file
+                    must exactly follow the format of the default file.
+                </listitem>
+
+                 <listitem>
+                     <para>
+                         'Use default land aerosol models (recommended)': If this radio button is selected,
+                         the default land aerosol models are used for aerosol retrieval. This set of
+                         models is included in the 'standard' auxiliary data set
+                         (see<xref linkend="sum.installation.auxdata" xrefstyle="select: label"/>).
+                         No further user action is required. This option is recommended not only for
+                         simplicity, but also because only a small number of models is used.
+                         For most purposes, this option will be sufficient.
+                         A large number of models (which can be specified with the option below)
+                         significantly increases computation time for the aerosol retrieval.
+                     </para>
+                     <para>
+                         For more details on these aerosol models and underlying lookup tables see [3] and [6].
+                     </para>
+                </listitem>
+
+                <listitem>
+                    <para>
+                        'Use specific land aerosol models (for advanced users)': If this radio button is selected,
+                        specific land aerosol models must be entered by a comma-separated list of model indices
+                        in the text field below.
+                        To use this option for aerosol retrieval,
+                        the 'full' auxiliary data set
+                        (see<xref linkend="sum.installation.auxdata" xrefstyle="select: label"/>)
+                        must be downloaded and installed.
+                    </para>
+                    <para>
+                        For more details on these aerosol models and underlying lookup tables see [3] and [6].
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        'List of land aerosol models': Text field to set a comma separated list of the indices of
+                        the aerosol models to be used for the land aerosol retrieval
+                        (<xref linkend="figure.toolbox.aerosol.custommodels" xrefstyle="select: label"/>).
+                        This text field is enabled only if the 'Use specific land aerosol models (for advanced users)'
+                        radio button is selected.
+                        The valid range of indices is [1,40].
+                        In principle, up to all 40 models could be entered. However,
+                        to keep computation time in an acceptable frame, it is recommended to use as few
+                        models as possible.
+                    </para>
+                    <para>
+                        For more details on these aerosol models and underlying lookup tables see [3] and [6].
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </para>
+
+        <figure id="figure.toolbox.aerosol.custommodels">
+            <title>Synergy Toolbox: Selection of aerosol models for land aerosol retrieval</title>
+            <graphic scale="60" fileref="figures/customLandAerosolModels.png"/>
+        </figure>
+    </sect1>
+
+    <sect1 id="sum.toolbox.commandline">
+        <title>Processing from command line</title>
+        Since the MERIS/(A)ATSR Synergy toolbox makes use of the BEAM graph processing framework, it can be
+        used also as a command line tool outside BEAM-VISAT. The graph processing is invoked
+        by the command
+        <itemizedlist mark='bullet'>
+            <listitem>
+                ${BEAM-INSTALL-DIR}/bin/gpt
+            </listitem>
+        </itemizedlist>
+
+        To obtain general help on the graph processing, use the command
+        <itemizedlist mark='bullet'>
+            <listitem>
+                ${BEAM-INSTALL-DIR}/bin/gpt -h
+            </listitem>
+        </itemizedlist>
+
+        Specific help on the MERIS/(A)ATSR Synergy toolbox can be obtained with
+        <itemizedlist mark='bullet'>
+            <listitem>
+                ${BEAM-INSTALL-DIR}/bin/gpt -h synergy.Master
+            </listitem>
+        </itemizedlist>
+        In this case, information on the usage and a list of all available parameters are given
+        (see <xref linkend="figure.toolbox.gpt" xrefstyle="select: label"/>).
+
+
+        <figure id="figure.toolbox.gpt">
+            <title>'Synergy Toolbox: command line processing</title>
+            <graphic scale="40" fileref="figures/synergy_gpt.png"/>
+        </figure>
+
+    </sect1>
+
+</chapter>

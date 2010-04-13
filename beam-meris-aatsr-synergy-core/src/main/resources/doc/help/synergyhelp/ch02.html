@@ -1,5 +1,5 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. Software Installation</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="prev" href="ch01s05.html" title="1.5. References"><link rel="next" href="ch02s02.html" title="2.2. Lookup Tables"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="sum.installation"></a>Chapter 2. Software Installation</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch02.html#sum.installation.plugin">2.1. Aerosol and SDR Retrieval as BEAM plugin</a></span></dt><dt><span class="sect1"><a href="ch02s02.html">2.2. Lookup Tables</a></span></dt><dt><span class="sect1"><a href="ch02s03.html">2.3. Additional Requirements</a></span></dt></dl></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.installation.plugin"></a>2.1. Aerosol and SDR Retrieval as BEAM plugin</h2></div></div></div><p>
-            As a BEAM plugin, the Aerosol and SDR Retrieval processor needs the following software to be installed
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. Software Installation</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="prev" href="ch01s05.html" title="1.5. References"><link rel="next" href="ch02s02.html" title="2.2. Auxiliary Data"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="sum.installation"></a>Chapter 2. Software Installation</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch02.html#sum.installation.plugin">2.1. The MERIS/(A)ATSR Synergy toolbox as BEAM plugin</a></span></dt><dt><span class="sect1"><a href="ch02s02.html">2.2. Auxiliary Data</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02s02.html#sum.installation.auxdata.format">2.2.1. Data Format</a></span></dt><dt><span class="sect2"><a href="ch02s02.html#sum.installation.auxdata.download">2.2.2. Download and Installation</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch02s03.html">2.3. Additional Requirements</a></span></dt></dl></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.installation.plugin"></a>2.1. The MERIS/(A)ATSR Synergy toolbox as BEAM plugin</h2></div></div></div><p>
+            As a BEAM plugin, the MERIS/(A)ATSR Synergy toolbox needs the following software to be installed
             in advance:
             </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
                     BEAM, version 4.7
@@ -7,24 +7,45 @@
             The BEAM software can be obtained from the BEAM download page
             (www.brockmann-consult.de/beam). Note that the MERIS/(A)ATSR Synergy Toolbox software has been
             developed in the frame of BEAM 4.7 and is not compatible with older BEAM versions.
+            Once newer releases of BEAM are published, the MERIS/(A)ATSR Synergy Toolbox software
+            will be updated accordingly if required.
         </p><p>
-            The MERIS/(A)ATSR Synergy Toolbox software delivery consists of four jar files, the modules for
-            aerosol and SDR retrieval, cloud screening
+            The MERIS/(A)ATSR Synergy Toolbox software delivery consists of seven jar files:
+            a core module, the module for AATSR recalibration, the modules for
+            preprocessing, cloud screening, aerosol and SDR retrieval,
             and adjusted BRR (Bottom of Rayleigh Reflectance) and SDR (Surface Directional
             Reflectance) modules, which provide additional Java classes used by the toolbox:
             </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                    synergy-aerosol-retrieval-1.1-SNAPSHOT.jar
+                    beam-meris-aatsr-synergy-core-1.1.jar
                 </li><li style="list-style-type: disc">
-                    synergy-cloud-screening-1.1-SNAPSHOT.jar
+                    beam-meris-aatsr-synergy-aerosol-retrieval-1.1.jar
+                </li><li style="list-style-type: disc">
+                    beam-meris-aatsr-synergy-preprocessing-1.1.jar
+                </li><li style="list-style-type: disc">
+                    beam-meris-aatsr-synergy-cloud-screening-1.1.jar
+                </li><li style="list-style-type: disc">
+                    beam-aatsr-recalibration-1.1.jar
                 </li><li style="list-style-type: disc">
                     beam-meris-brr-2.1-SNAPSHOT.jar
                 </li><li style="list-style-type: disc">
                     beam-meris-sdr-2.3-SNAPSHOT.jar
                 </li></ul></div><p>
-            These files need to be copied into the 'modules' folder of the BEAM
-            installation (<a class="xref" href="ch02.html#figure.installation.beammodules" title="Figure 2.1. Installation of MERIS/(A)ATSR Synergy Toolbox jar files in BEAM modules folder (shown for Windows XP)">Figure 2.1</a>).
-            Note that existing versions of these jar files need to be replaced/overwritten.
-            There should not be more than one jar file for each of these modules in the
+
+            </p><p>
+                These files need to be downloaded from the BEAM plugin page:
+                </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
+                        http://www.brockmann-consult.de/cms/web/beam/plug-ins
+                    </li></ul></div><p>
+                or the Synergy Wiki page:
+                </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
+                        http://www.brockmann-consult.de/beam-wiki/display/SYN/Software
+                    </li></ul></div><p>
+            </p><p>
+            </p><p>
+                The files need to be copied into the 'modules' folder of the BEAM
+                installation (<a class="xref" href="ch02.html#figure.installation.beammodules" title="Figure 2.1. Installation of MERIS/(A)ATSR Synergy Toolbox jar files in BEAM modules folder (shown for Windows XP)">Figure 2.1</a>).
+                Note that existing versions of these jar files need to be replaced/overwritten.
+                There should not be more than one jar file for each of these modules in the
                 'modules' folder!
-            
+            </p><p>
         </p><div class="figure"><a name="figure.installation.beammodules"></a><div class="figure-contents"><div><img src="figures/beammodules.png" alt="Installation of MERIS/(A)ATSR Synergy Toolbox jar files in BEAM modules folder (shown for Windows XP)"></div></div><p class="title"><b>Figure 2.1. Installation of MERIS/(A)ATSR Synergy Toolbox jar files in BEAM modules folder (shown for Windows XP)</b></p></div><br class="figure-break"></div></div></body></html>

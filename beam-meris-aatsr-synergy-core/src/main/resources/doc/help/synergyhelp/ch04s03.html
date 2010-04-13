@@ -1,23 +1,82 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4.3. Processing from command line</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch04.html" title="Chapter 4. The Synergy Preprocessor"><link rel="prev" href="ch04s02.html" title="4.2. Control Buttons"><link rel="next" href="ch05.html" title="Chapter 5. The Cloud Screening Processor"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.preprocessor.gpt"></a>4.3. Processing from command line</h2></div></div></div>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4.3. Aerosol Retrieval and Atmospheric Correction</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch04.html" title="Chapter 4. Processors"><link rel="prev" href="ch04s02.html" title="4.2. Cloudscreening"><link rel="next" href="ch04s04.html" title="4.4. Processing from command line"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.toolbox.aerosol"></a>4.3. Aerosol Retrieval and Atmospheric Correction</h2></div></div></div><p>
+            The Processor for Aerosol Retrieval and Atmospheric Correction is the third of three main modules
+            within the MERIS/(A)ATSR Synergy toolbox.
+            Its purpose is to derive aerosol optical depths over land and/or ocean and (optionally) provide an
+            atmospheric correction by using the derived AODs. The processor also makes use of quantities
+            derived from the cloud screening module. Therefore, the input for the aerosol retrieval must be
+            an output product from the cloud screening.
+        </p><p>
+            The user interface for the Aerosol Retrieval and Atmospheric Correction
+             can be accessed by clicking the 'Aerosol Retrieval and Atmospheric Correction'
+            tab in the 'MERIS/(A)ATSR Synergy Toolbox' dialog.
+            (<a class="xref" href="ch04s03.html#figure.toolbox.aerosol" title="Figure 4.5. Synergy Toolbox: Aerosol Retrieval and Atmospheric Correction Tab Pane">Figure 4.5</a>):
 
-        Since the MERIS/(A)ATSR Synergy toolbox makes use of the BEAM graph processing framework, it can be
-        used also as a command line tool outside BEAM-VISAT. The graph processing is invoked
-        by the command
-        <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                 ${BEAM-INSTALL-DIR}/bin/gpt
-            </li></ul></div>
-
-        To obtain general help on the praph processing, use the command
-        <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                 ${BEAM-INSTALL-DIR}/bin/gpt -h
-            </li></ul></div>
-
-        Specific help on the Synergy Preprocessor can be obtained with
-        <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                 ${BEAM-INSTALL-DIR}/bin/gpt -h synergy.CreateSynergy
-            </li></ul></div>
-        In this case, information on the usage and a list of all available parameters are given
-        (see <a class="xref" href="ch04s03.html#figure.processor.gpt" title="Figure 4.4. 'Synergy Preprocessor: command line processing">Figure 4.4</a>).
-
-
-        <div class="figure"><a name="figure.processor.gpt"></a><div class="figure-contents"><div><img src="figures/preprocessing_gpt.png" alt="'Synergy Preprocessor: command line processing"></div></div><p class="title"><b>Figure 4.4. 'Synergy Preprocessor: command line processing</b></p></div><br class="figure-break"></div></body></html>
+            </p><div class="figure"><a name="figure.toolbox.aerosol"></a><div class="figure-contents"><div><img src="figures/aerosolretrievaltab.png" alt="Synergy Toolbox: Aerosol Retrieval and Atmospheric Correction Tab Pane"></div></div><p class="title"><b>Figure 4.5. Synergy Toolbox: Aerosol Retrieval and Atmospheric Correction Tab Pane</b></p></div><p><br class="figure-break">
+        </p><p>
+            The Aerosol Retrieval and Atmospheric Correction tab pane consists of the following components:
+            </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
+                    'Retrieve AODs over ocean': If this checkbox is selected, aerosol optical depths will
+                    be retrieved over ocean. The default is 'true'.
+                </li><li style="list-style-type: disc">
+                    'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
+                    be retrieved over land. The default is 'true'.
+                </li><li style="list-style-type: disc">
+                    'Retrieve surface directional reflectances (over land only)': If this checkbox is selected,
+                    SDRs will be retrieved from rescaled AODs. This computation is performed over land only and
+                    requires AOD rescaling (previous checkbox).
+                </li><li style="list-style-type: disc">
+                    'N x N average for AOD retrieval': Text field to set
+                    the number of pixels to average over in the aerosol retrieval. The default number is '7',
+                    which corresponds to a square with 3 pixels to each side of a center pixel.
+                </li><li style="list-style-type: disc">
+                    'Soil surface reflectance spectrum': Text field to set the filename containing
+                    the soil surface reflectance spectrum. The default is 'spec_soil.dat',
+                    this file is included in the auxiliary data
+                    (see <a class="xref" href="ch02s02.html" title="2.2. Auxiliary Data">Section 2.2</a>)
+                    If the user wants to use a different file, it must be selected via the
+                    file chooser button right to the test field. Note that any user selected file
+                    must exactly follow the format of the default file.
+                </li><li style="list-style-type: disc">
+                    'Vegetation surface reflectance spectrum': Text field to set the filename containing
+                    the vegetation surface reflectance spectrum. The default is 'veg_soil.dat',
+                    this file is included in the auxiliary data
+                    (see<a class="xref" href="ch02s02.html" title="2.2. Auxiliary Data">Section 2.2</a>)
+                    If the user wants to use a different file, it must be selected via the
+                    file chooser button right to the test field. Note that any user selected file
+                    must exactly follow the format of the default file.
+                </li><li style="list-style-type: disc"><p>
+                         'Use default land aerosol models (recommended)': If this radio button is selected,
+                         the default land aerosol models are used for aerosol retrieval. This set of
+                         models is included in the 'standard' auxiliary data set
+                         (see<a class="xref" href="ch02s02.html" title="2.2. Auxiliary Data">Section 2.2</a>).
+                         No further user action is required. This option is recommended not only for
+                         simplicity, but also because only a small number of models is used.
+                         For most purposes, this option will be sufficient.
+                         A large number of models (which can be specified with the option below)
+                         significantly increases computation time for the aerosol retrieval.
+                     </p><p>
+                         For more details on these aerosol models and underlying lookup tables see [3] and [6].
+                     </p></li><li style="list-style-type: disc"><p>
+                        'Use specific land aerosol models (for advanced users)': If this radio button is selected,
+                        specific land aerosol models must be entered by a comma-separated list of model indices
+                        in the text field below.
+                        To use this option for aerosol retrieval,
+                        the 'full' auxiliary data set
+                        (see<a class="xref" href="ch02s02.html" title="2.2. Auxiliary Data">Section 2.2</a>)
+                        must be downloaded and installed.
+                    </p><p>
+                        For more details on these aerosol models and underlying lookup tables see [3] and [6].
+                    </p></li><li style="list-style-type: disc"><p>
+                        'List of land aerosol models': Text field to set a comma separated list of the indices of
+                        the aerosol models to be used for the land aerosol retrieval
+                        (<a class="xref" href="ch04s03.html#figure.toolbox.aerosol.custommodels" title="Figure 4.6. Synergy Toolbox: Selection of aerosol models for land aerosol retrieval">Figure 4.6</a>).
+                        This text field is enabled only if the 'Use specific land aerosol models (for advanced users)'
+                        radio button is selected.
+                        The valid range of indices is [1,40].
+                        In principle, up to all 40 models could be entered. However,
+                        to keep computation time in an acceptable frame, it is recommended to use as few
+                        models as possible.
+                    </p><p>
+                        For more details on these aerosol models and underlying lookup tables see [3] and [6].
+                    </p></li></ul></div><p>
+        </p><div class="figure"><a name="figure.toolbox.aerosol.custommodels"></a><div class="figure-contents"><div><img src="figures/customLandAerosolModels.png" alt="Synergy Toolbox: Selection of aerosol models for land aerosol retrieval"></div></div><p class="title"><b>Figure 4.6. Synergy Toolbox: Selection of aerosol models for land aerosol retrieval</b></p></div><br class="figure-break"></div></body></html>

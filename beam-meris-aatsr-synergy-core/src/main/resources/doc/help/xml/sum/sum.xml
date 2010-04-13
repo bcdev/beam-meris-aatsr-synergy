@@ -5,9 +5,7 @@
                 <!ENTITY ch01     SYSTEM "ch01-introduction.xml">
                 <!ENTITY ch02     SYSTEM "ch02-installation.xml">
                 <!ENTITY ch03     SYSTEM "ch03-products.xml">
-				<!ENTITY ch04     SYSTEM "ch04-createsynergy.xml">
-				<!ENTITY ch05     SYSTEM "ch05-cloudscreening.xml">
-                <!ENTITY ch06     SYSTEM "ch06-aerosolretrieval.xml">
+				<!ENTITY ch04     SYSTEM "ch04-synergytoolbox.xml">
                 ]>
 
 <book id="sum">
@@ -16,10 +14,10 @@
 	<subtitle>Software User Manual</subtitle>
 
     <bookinfo>
-        <issuenum revision="1">1.0</issuenum>
-        <date>15 March 2010</date>
+        <issuenum revision="1">1.1</issuenum>
+        <date>13 April 2010</date>
 
-        <pubsnumber>1.0</pubsnumber>
+        <pubsnumber>1.1</pubsnumber>
 
         <author>
             <firstname>Olaf</firstname>
@@ -37,7 +35,7 @@
             <email>olaf.danne@brockmann-consult.de</email>
         </author>
 
-        <pubdate>15 March 2010</pubdate>
+        <pubdate>13 April 2010</pubdate>
 
         <copyright>
             <year>2010</year>
@@ -58,6 +56,16 @@
 
         <revhistory>
             <revision>
+                <revnumber>1.1</revnumber>
+                <date>13/04/10</date>
+                <authorinitials>O. Danne</authorinitials>
+                <revdescription>
+                    <para>
+                        Adjusted to GUI modification as decided at final meeting.
+                    </para>
+                </revdescription>
+            </revision>
+            <revision>
                 <revnumber>1.0</revnumber>
                 <date>15/03/10</date>
                 <authorinitials>O. Danne</authorinitials>
@@ -76,8 +84,6 @@
     &ch02;
 	&ch03;
 	&ch04;
-	&ch05;
-	&ch06;
 
 </book>
 

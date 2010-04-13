@@ -2,9 +2,9 @@
     <title>Software Installation</title>
 
     <sect1 id="sum.installation.plugin">
-        <title>Aerosol and SDR Retrieval as BEAM plugin</title>
+        <title>The MERIS/(A)ATSR Synergy toolbox as BEAM plugin</title>
         <para>
-            As a BEAM plugin, the Aerosol and SDR Retrieval processor needs the following software to be installed
+            As a BEAM plugin, the MERIS/(A)ATSR Synergy toolbox needs the following software to be installed
             in advance:
             <itemizedlist mark='bullet'>
                 <listitem>
@@ -14,25 +14,28 @@
             The BEAM software can be obtained from the BEAM download page
             (www.brockmann-consult.de/beam). Note that the MERIS/(A)ATSR Synergy Toolbox software has been
             developed in the frame of BEAM 4.7 and is not compatible with older BEAM versions.
+            Once newer releases of BEAM are published, the MERIS/(A)ATSR Synergy Toolbox software
+            will be updated accordingly if required.
         </para>
 
         <para>
-            The MERIS/(A)ATSR Synergy Toolbox software delivery consists of four jar files, the modules for
-            aerosol and SDR retrieval, cloud screening
+            The MERIS/(A)ATSR Synergy Toolbox software delivery consists of seven jar files:
+            a core module, the module for AATSR recalibration, the modules for
+            preprocessing, cloud screening, aerosol and SDR retrieval,
             and adjusted BRR (Bottom of Rayleigh Reflectance) and SDR (Surface Directional
             Reflectance) modules, which provide additional Java classes used by the toolbox:
             <itemizedlist mark='bullet'>
                 <listitem>
-                    synergy-core-1.1.jar
+                    beam-meris-aatsr-synergy-core-1.1.jar
                 </listitem>
                 <listitem>
-                    synergy-aerosol-retrieval-1.1.jar
+                    beam-meris-aatsr-synergy-aerosol-retrieval-1.1.jar
                 </listitem>
                 <listitem>
-                    synergy-preprocessing-1.1.jar
+                    beam-meris-aatsr-synergy-preprocessing-1.1.jar
                 </listitem>
                 <listitem>
-                    synergy-cloud-screening-1.1.jar
+                    beam-meris-aatsr-synergy-cloud-screening-1.1.jar
                 </listitem>
                 <listitem>
                     beam-aatsr-recalibration-1.1.jar
@@ -44,12 +47,28 @@
                     beam-meris-sdr-2.3-SNAPSHOT.jar
                 </listitem>
             </itemizedlist>
-            These files need to be copied into the 'modules' folder of the BEAM
-            installation (<xref linkend="figure.installation.beammodules" xrefstyle="select: label"/>).
-            Note that existing versions of these jar files need to be replaced/overwritten.
-            There should not be more than one jar file for each of these modules in the
+
+            <para>
+                These files need to be downloaded from the BEAM plugin page:
+                <itemizedlist mark='bullet'>
+                    <listitem>
+                        http://www.brockmann-consult.de/cms/web/beam/plug-ins
+                    </listitem>
+                </itemizedlist>
+                or the Synergy Wiki page:
+                <itemizedlist mark='bullet'>
+                    <listitem>
+                        http://www.brockmann-consult.de/beam-wiki/display/SYN/Software
+                    </listitem>
+                </itemizedlist>
+            </para>
+            <para>
+                The files need to be copied into the 'modules' folder of the BEAM
+                installation (<xref linkend="figure.installation.beammodules" xrefstyle="select: label"/>).
+                Note that existing versions of these jar files need to be replaced/overwritten.
+                There should not be more than one jar file for each of these modules in the
                 'modules' folder!
-            
+            </para>
         </para>
 
         <figure id="figure.installation.beammodules">
@@ -59,23 +78,90 @@
 
     </sect1>
 
-    <sect1 id="sum.installation.luts">
-        <title>Lookup Tables</title>
+    <sect1 id="sum.installation.auxdata">
+        <title>Auxiliary Data</title>
         <para>
             To be able to process all options properly, the MERIS/(A)ATSR Synergy Toolbox processor needs the following
-            lookup tables:
+            auxiliary data:
             <itemizedlist mark='bullet'>
                 <listitem>
-                    Ocean aerosol LUTs (provided by FUB)
+                    Ocean aerosol lookup tables (provided by FUB)
                 </listitem>
                 <listitem>
-                    Land aerosol LUTs (provided by USwansea)
+                    Land aerosol lookup tables (provided by SU)
+                </listitem>
+                <listitem>
+                    Surface reflectance spectra files (provided by SU)
+                </listitem>
+                <listitem>
+                    Lookup tables for Glint algorithm in ocean aerosol retrieval (provided by FUB)
                 </listitem>
             </itemizedlist>
-            Currently, these LUTs are provided by FUB and USwansea on request.
-            Automatic access is in preparation. The LUTs can be deployed anywhere on disk, the path needs
-            to be specified in the User Interface when running the processor. 
         </para>
+
+        <sect2 id="sum.installation.auxdata.format">
+            <title>Data Format</title>
+            <para>
+                The aerosol lookup tables come as separate files for each wavelength and each aerosol model.
+                Overall, there are 40 aerosol models available for both land and ocean aerosol retrieval.
+                </para>
+                    <para>
+                For the land aerosol retrieval, there are LUTs for the 13 MERIS wavelengths 412, 442, 490,
+                510, 560, 620, 665, 681, 708, 753, 778, 865 and 885 nm, and the 4 AATSR wavelengths
+                550, 665, 865 and 1610 nm. Therefore, the full set of land aerosol LUTs comprises
+                680 files. Although these files are in binary format, the total size is more than 6 GB.
+                For more details on the file contents, see [3] and [6].
+            </para>
+            <para>
+                For the ocean aerosol retrieval, there are LUTs for the 4 AATSR wavelengths
+                778, 865, 885 and 1610 nm. Therefore, the full set of ocean aerosol LUTs comprises
+                680 files. These files are provided in NetCDF format, the total size is about 380 MB.
+                For more details on the file contents, see [2] and [6].
+            </para>
+            <para>
+                The default surface reflectance spectra are provided in two small ASCII files.
+                The user can specify own reflectance spectra files as processing parameter.
+                For more details on the file contents, see [3] and [6].
+            </para>
+            <para>
+                The lookup tables for Glint algorithm in ocean aerosol retrieval are provided as
+                two small netCDF files. For more details on the contents of these files, see [2] and [6].
+            </para>
+
+        </sect2>
+        <sect2 id="sum.installation.auxdata.download">
+            <title>Download and Installation</title>
+            <para>
+                Since the full auxiliary dataset is rather large due to the LUTs for land aerosol retrieval,
+                the auxiliary data are provided as a 'standard' and a 'full' bundle. The standard bundle
+                only contains the three land aerosol models required for the retrieval in default mode
+                (see <xref linkend="sum.toolbox.aerosol" xrefstyle="select: label"/>),
+                which reduces the size of the zip archive to below 1 GB. This is sufficient for most use cases.
+                To specify an own list of land aerosol models to be used by the algorithm,
+                advanced users need to download and install the full bundle.
+            </para>
+            <para>
+                The auxdata can be downloaded from the BC ftp site:
+                <itemizedlist mark='bullet'>
+                    <listitem>
+                        ftp.brockmann-consult.de
+                    </listitem>
+                    <listitem>
+                        u: guest; p: welcome@bc
+                    </listitem>
+                    <listitem>
+                        cd to meris-aatsr-synergy/auxdata
+                    </listitem>
+                    <listitem>
+                        download either 'beam-meris-aatsr-synergy-auxdata-stanrard.zip' or
+                        'beam-meris-aatsr-synergy-auxdata-full.zip'
+                    </listitem>
+                    <listitem>
+                        extract the archive into your $(user.home)/.beam folder
+                    </listitem>
+                </itemizedlist>
+            </para>
+        </sect2>
     </sect1>
 
     <sect1 id="sum.installation.addons">
@@ -87,19 +173,26 @@
                 <listitem>
                     MERIS L2 Auxdata module
                 </listitem>
+            </itemizedlist>
+            The MERIS L2 Auxdata can be installed with the
+            BEAM module manager. See BEAM help documentation for details
+            (http://www. brockmann-consult.de/beam/doc/help/visat/ModuleManager.html).
+            Alternatively, you can directly download and install from the BC ftp site as described above:
+            <itemizedlist mark='bullet'>
                 <listitem>
-                    GETASSE30 DEM
+                    again, cd to meris-aatsr-synergy/auxdata
                 </listitem>
                 <listitem>
-                    GETASSE30 DEM reader
+                    download 'beam-meris-l2auxdata.zip' and 'beam-meris-l2auxdata-1.1-SNAPSHOT.jar'
+                </listitem>
+                <listitem>
+                    extract the archive 'beam-meris-l2auxdata.zip' into your $(user.home)/.beam folder
+                </listitem>
+                <listitem>
+                    copy the file 'beam-meris-l2auxdata-1.1-SNAPSHOT.jar' into the 'modules' folder
+                    of your BEAM installation
                 </listitem>
             </itemizedlist>
-            The MERIS L2 Auxdata and the GETASSE30 DEM reader can be installed with the
-            BEAM module manager. See BEAM help documentation for details
-            (http://www.brockmann-consult.de/beam/doc/help/visat/ModuleManager.html).
-            The GETASSE30 DEM can be downloaded from the BEAM download page. See also
-            BEAM help documentation
-            (http://www.brockmann-consult.de/beam/ doc/help/visat/GETASSE30ElevationModel.html).
         </para>
     </sect1>
 

@@ -13,27 +13,22 @@
       <tocitem target="sum.introduction.referenceDocuments" text="References"/>
     </tocitem>
     <tocitem target="sum.installation" text="Software Installation">
-      <tocitem target="sum.installation.plugin" text="Aerosol and SDR Retrieval as BEAM plugin"/>
-      <tocitem target="sum.installation.luts" text="Lookup Tables"/>
+      <tocitem target="sum.installation.plugin" text="The MERIS/(A)ATSR Synergy toolbox as BEAM plugin"/>
+      <tocitem target="sum.installation.auxdata" text="Auxiliary Data">
+        <tocitem target="sum.installation.auxdata.format" text="Data Format"/>
+        <tocitem target="sum.installation.auxdata.download" text="Download and Installation"/>
+      </tocitem>
       <tocitem target="sum.installation.addons" text="Additional Requirements"/>
     </tocitem>
-    <tocitem target="sum.products" text="MERIS/(A)ATSR Synergy Toolbox Products"/>
-    <tocitem target="sum.processor.preprocessor" text="The Synergy Preprocessor">
-      <tocitem target="sum.processor.preprocessor.io" text="I/O Parameters Tab Pane"/>
-      <tocitem target="sum.processor.preprocessor.control" text="Control Buttons"/>
-      <tocitem target="sum.processor.preprocessor.gpt" text="Processing from command line"/>
-    </tocitem>
-    <tocitem target="sum.processor.cloudscreening" text="The Cloud Screening Processor">
-      <tocitem target="sum.processor.cloudscreening.io" text="I/O Parameters Tab Pane"/>
-      <tocitem target="sum.processor.cloudscreening.processing" text="'Processing Parameters' Tab Pane"/>
-      <tocitem target="sum.processor.cloudscreening.control" text="Control Buttons"/>
-      <tocitem target="sum.processor.cloudscreening.gpt" text="Processing from command line"/>
-    </tocitem>
-    <tocitem target="sum.processor.aerosolretrieval" text="The Processor for Aerosol Retrieval and Atmospheric Correction">
-      <tocitem target="sum.processor.aerosolretrieval.io" text="I/O Parameters Tab Pane"/>
-      <tocitem target="sum.processor.aerosolretrieval" text="'Processing Parameters' Tab Pane"/>
-      <tocitem target="sum.processor.aerosolretrieval.control" text="Control Buttons"/>
-      <tocitem target="sum.processor.aerosolretrieval.gpt" text="Processing from command line"/>
+    <tocitem target="sum.products" text="Products"/>
+    <tocitem target="sum.toolbox" text="Processors">
+      <tocitem target="sum.toolbox.io" text="I/O Parameters and Preprocessing">
+        <tocitem target="sum.toolbox.io.io" text="I/O Parameters Tab Pane"/>
+        <tocitem target="sum.toolbox.io.control" text="Control Buttons"/>
+      </tocitem>
+      <tocitem target="sum.toolbox.cloudscreening" text="Cloudscreening"/>
+      <tocitem target="sum.toolbox.aerosol" text="Aerosol Retrieval and Atmospheric Correction"/>
+      <tocitem target="sum.toolbox.commandline" text="Processing from command line"/>
     </tocitem>
   </tocitem>
 </toc>

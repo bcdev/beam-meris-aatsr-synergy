@@ -1,12 +1,56 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2.2. Lookup Tables</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch02.html" title="Chapter 2. Software Installation"><link rel="prev" href="ch02.html" title="Chapter 2. Software Installation"><link rel="next" href="ch02s03.html" title="2.3. Additional Requirements"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.installation.luts"></a>2.2. Lookup Tables</h2></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2.2. Auxiliary Data</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch02.html" title="Chapter 2. Software Installation"><link rel="prev" href="ch02.html" title="Chapter 2. Software Installation"><link rel="next" href="ch02s03.html" title="2.3. Additional Requirements"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.installation.auxdata"></a>2.2. Auxiliary Data</h2></div></div></div><p>
             To be able to process all options properly, the MERIS/(A)ATSR Synergy Toolbox processor needs the following
-            lookup tables:
+            auxiliary data:
             </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                    Ocean aerosol LUTs (provided by FUB)
+                    Ocean aerosol lookup tables (provided by FUB)
                 </li><li style="list-style-type: disc">
-                    Land aerosol LUTs (provided by USwansea)
+                    Land aerosol lookup tables (provided by SU)
+                </li><li style="list-style-type: disc">
+                    Surface reflectance spectra files (provided by SU)
+                </li><li style="list-style-type: disc">
+                    Lookup tables for Glint algorithm in ocean aerosol retrieval (provided by FUB)
                 </li></ul></div><p>
-            Currently, these LUTs are provided by FUB and USwansea on request.
-            Automatic access is in preparation. The LUTs can be deployed anywhere on disk, the path needs
-            to be specified in the User Interface when running the processor. 
-        </p></div></body></html>
+        </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sum.installation.auxdata.format"></a>2.2.1. Data Format</h3></div></div></div><p>
+                The aerosol lookup tables come as separate files for each wavelength and each aerosol model.
+                Overall, there are 40 aerosol models available for both land and ocean aerosol retrieval.
+                </p><p>
+                For the land aerosol retrieval, there are LUTs for the 13 MERIS wavelengths 412, 442, 490,
+                510, 560, 620, 665, 681, 708, 753, 778, 865 and 885 nm, and the 4 AATSR wavelengths
+                550, 665, 865 and 1610 nm. Therefore, the full set of land aerosol LUTs comprises
+                680 files. Although these files are in binary format, the total size is more than 6 GB.
+                For more details on the file contents, see [3] and [6].
+            </p><p>
+                For the ocean aerosol retrieval, there are LUTs for the 4 AATSR wavelengths
+                778, 865, 885 and 1610 nm. Therefore, the full set of ocean aerosol LUTs comprises
+                680 files. These files are provided in NetCDF format, the total size is about 380 MB.
+                For more details on the file contents, see [2] and [6].
+            </p><p>
+                The default surface reflectance spectra are provided in two small ASCII files.
+                The user can specify own reflectance spectra files as processing parameter.
+                For more details on the file contents, see [3] and [6].
+            </p><p>
+                The lookup tables for Glint algorithm in ocean aerosol retrieval are provided as
+                two small netCDF files. For more details on the contents of these files, see [2] and [6].
+            </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sum.installation.auxdata.download"></a>2.2.2. Download and Installation</h3></div></div></div><p>
+                Since the full auxiliary dataset is rather large due to the LUTs for land aerosol retrieval,
+                the auxiliary data are provided as a 'standard' and a 'full' bundle. The standard bundle
+                only contains the three land aerosol models required for the retrieval in default mode
+                (see <a class="xref" href="ch04s03.html" title="4.3. Aerosol Retrieval and Atmospheric Correction">Section 4.3</a>),
+                which reduces the size of the zip archive to below 1 GB. This is sufficient for most use cases.
+                To specify an own list of land aerosol models to be used by the algorithm,
+                advanced users need to download and install the full bundle.
+            </p><p>
+                The auxdata can be downloaded from the BC ftp site:
+                </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
+                        ftp.brockmann-consult.de
+                    </li><li style="list-style-type: disc">
+                        u: guest; p: welcome@bc
+                    </li><li style="list-style-type: disc">
+                        cd to meris-aatsr-synergy/auxdata
+                    </li><li style="list-style-type: disc">
+                        download either 'beam-meris-aatsr-synergy-auxdata-stanrard.zip' or
+                        'beam-meris-aatsr-synergy-auxdata-full.zip'
+                    </li><li style="list-style-type: disc">
+                        extract the archive into your $(user.home)/.beam folder
+                    </li></ul></div><p>
+            </p></div></div></body></html>

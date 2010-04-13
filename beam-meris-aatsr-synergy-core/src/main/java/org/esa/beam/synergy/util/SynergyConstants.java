@@ -24,7 +24,7 @@ public class SynergyConstants {
 //                    + "<li><u>underlined</u>...</ul></html>";
             "For the Synergy aerosol retrieval and atmospheric correction, various \n"
                     + "auxiliary data (such as lookup tables and surface reflectance spectrum files), \n "
-                    + "are required. Please follow the instructions in chapter x.x.x of the Software  \n"
+                    + "are required. Please follow the instructions in chapter 2 of the Software  \n"
                     + "User Manual for download and installation of auxiliary data. ";
 
 //    public static final String AUXDATA_ERROR_MESSAGE =
@@ -39,7 +39,7 @@ public class SynergyConstants {
             "Synergy auxdata are missing or could not be read.\n\n"
                     + "For the Synergy aerosol retrieval and atmospheric correction, various \n"
                     + "auxiliary data (such as lookup tables and surface reflectance spectrum files), \n"
-                    + "are required. Please follow the instructions in chapter x.x.x of the Software  \n"
+                    + "are required. Please follow the instructions in chapter 2 of the Software  \n"
                     + "User Manual or online help for download and installation of auxiliary data. ";
 
     public static final String AEROSOL_MODEL_INFO_MESSAGE =
@@ -48,7 +48,7 @@ public class SynergyConstants {
                        + "However, advanced users may want to specify an own subset from all available\n"
                        + "aerosol models.\n\n "
                        + "To download either the default or the full set of aerosol models, \n"
-                       + "please follow the instructions in chapter x.x.x of the Software  \n"
+                       + "please follow the instructions in chapter 2 of the Software  \n"
                        + "User Manual for download and installation of auxiliary data. \n "
                        + "Note that the full set of models requires approximately 6 GB of disk space. \n\n"
                        + "For more details on these land aerosol models, see the Synergy documentation \n "

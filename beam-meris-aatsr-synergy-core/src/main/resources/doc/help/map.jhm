@@ -11,7 +11,4 @@
     <mapID target="synergyhelpInstall" url="synergyhelp/ch02.html"/>
     <mapID target="synergyhelpProducts" url="synergyhelp/ch03.html"/>
     <mapID target="synergyhelpCreateSynergy" url="synergyhelp/ch04.html"/>
-    <mapID target="synergyhelpCloudscreening" url="synergyhelp/ch05.html"/>
-    <mapID target="synergyhelpAerosolretrieval" url="synergyhelp/ch06.html"/>
-
 </map>

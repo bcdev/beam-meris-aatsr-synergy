@@ -1,10 +1,29 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4.2. Control Buttons</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch04.html" title="Chapter 4. The Synergy Preprocessor"><link rel="prev" href="ch04.html" title="Chapter 4. The Synergy Preprocessor"><link rel="next" href="ch04s03.html" title="4.3. Processing from command line"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.processor.preprocessor.control"></a>4.2. Control Buttons</h2></div></div></div>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4.2. Cloudscreening</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="MERIS/(A)ATSR Synergy Toolbox"><link rel="up" href="ch04.html" title="Chapter 4. Processors"><link rel="prev" href="ch04.html" title="Chapter 4. Processors"><link rel="next" href="ch04s03.html" title="4.3. Aerosol Retrieval and Atmospheric Correction"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sum.toolbox.cloudscreening"></a>4.2. Cloudscreening</h2></div></div></div><p>
+            The Cloud Screening Processor is the second of three main modules within the MERIS/(A)ATSR Synergy toolbox.
+            Its purpose is to add various bands (i.e cloud flags) to the colocated MERIS/(A)ATSR L1b product
+            obtained from the preprocessor. The output product from the cloud screening shall be used as input for the
+            third module (aerosol retrieval and atmospheric correction).
+        </p><p>
+            The user interface for the Cloud Screening Processor can be accessed by clicking the 'Cloud Screening'
+            tab in the 'MERIS/(A)ATSR Synergy Toolbox' dialog.
+            (<a class="xref" href="ch04s02.html#figure.toolbox.cloudscreening" title="Figure 4.4. Synergy Toolbox: Cloud Screening Tab Pane">Figure 4.4</a>):
 
-        From the 'I/O Parameters' tab pane, the following control buttons can be accessed:
-        <div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
-                 'Run': If this button is clicked, the processor will start the computations.
-            </li><li style="list-style-type: disc">
-                 'Close': If this button is clicked, the 'Synergy Aerosol and SDR Retrieval' dialog is closed.
-            </li><li style="list-style-type: disc">
-                 'Help': If this button is clicked, this manual is displayed as online help.
-            </li></ul></div><div class="figure"><a name="figure.processor.preprocessor.controlbuttons"></a><div class="figure-contents"><div><img src="figures/controlbuttons.png" alt="Synergy Preprocessor: control buttons"></div></div><p class="title"><b>Figure 4.3. Synergy Preprocessor: control buttons</b></p></div><br class="figure-break"></div></body></html>
+            </p><div class="figure"><a name="figure.toolbox.cloudscreening"></a><div class="figure-contents"><div><img src="figures/cloudscreeningtab.png" alt="Synergy Toolbox: Cloud Screening Tab Pane"></div></div><p class="title"><b>Figure 4.4. Synergy Toolbox: Cloud Screening Tab Pane</b></p></div><p><br class="figure-break">
+        </p><p>
+            The Cloud Screening tab pane consists of the following components:
+            </p><div class="itemizedlist"><ul type="bullet"><li style="list-style-type: disc">
+                    'Use the AATSR forward view when classifying': If his checkbox is selected, the AATSR forward view
+                    is considered in the cloud classification algorithm (otherwise nadir view only).
+                </li><li style="list-style-type: disc">
+                    'Compute cloud index': If this checkbox is selected, a cloud index is computed and written
+                    as single band 'cloud_index_synergy' to the target product.
+                </li><li style="list-style-type: disc">
+                    'Compute snow risk flag': If this checkbox is selected, a snow risk flag is computed
+                    and added to a flag band 'cloud_flags_synergy', which is written to the target product.
+                </li><li style="list-style-type: disc">
+                    'Compute cloud shadow risk flag': If this checkbox is selected, a cloud shadow risk flag is computed
+                    and added to a flag band 'cloud_flags_synergy', which is written to the target product.
+                </li></ul></div><p>
+        </p><p>
+            See [4] for more details on the computation and physical meaning of the quantities listed above.
+        </p></div></body></html>
