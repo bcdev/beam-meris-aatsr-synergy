@@ -164,21 +164,19 @@ public class SynergyUtils {
 
     public static void logInfoMessage(String msg) {
         if (System.getProperty("synergyToolboxMode") != null && System.getProperty("synergyToolboxMode").equals("GUI")) {
-            JLabel label = new JLabel(msg);
-            JOptionPane.showOptionDialog(null, label, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
+            JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
                                          JOptionPane.INFORMATION_MESSAGE, null, null, null);
         } else {
-            BeamLogManager.getSystemLogger().log(Level.ALL, msg);
+            info(msg);
         }
     }
 
     public static void logErrorMessage(String msg) {
         if (System.getProperty("synergyToolboxMode") != null && System.getProperty("synergyToolboxMode").equals("GUI")) {
-            JLabel label = new JLabel(msg);
-            JOptionPane.showOptionDialog(null, label, "MERIS/(A)ATSR Synergy - Error Message", JOptionPane.DEFAULT_OPTION,
+            JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Error Message", JOptionPane.DEFAULT_OPTION,
                                          JOptionPane.ERROR_MESSAGE, null, null, null);
         } else {
-            BeamLogManager.getSystemLogger().log(Level.ALL, msg);
+            info(msg);
         }
     }
 

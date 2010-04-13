@@ -16,6 +16,7 @@ import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
 
@@ -26,6 +27,11 @@ import java.util.Arrays;
  *
  * @author akheckel
  */
+@OperatorMetadata(alias = "synergy.Median",
+                  version = "1.1",
+                  authors = "Andreas Heckel",
+                  copyright = "(c) 2009 by A. Heckel",
+                  description = "")
 public class MedianOp extends Operator {
 
     @SourceProduct(alias = "source",

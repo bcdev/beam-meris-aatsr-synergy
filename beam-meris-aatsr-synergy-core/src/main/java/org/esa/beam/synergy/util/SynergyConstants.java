@@ -19,38 +19,40 @@ public class SynergyConstants {
     public static final String AUXDATA_PATH_PARAM_LABEL = "Path to auxiliary data for land and ocean aerosol algorithms";
 
     public static final String AUXDATA_INFO_MESSAGE =
-//            "<html>This is how to get:<ul><li><i>italics</i> and "
+//            "<html>This is how to an get html formated message:<ul><li><i>italics</i> and "
 //                    + "<li><b>bold</b> and "
 //                    + "<li><u>underlined</u>...</ul></html>";
-            "<html> "
-                    + "For the Synergy aerosol retrieval and atmospheric correction, various <br>"
-                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), <br> "
-                    + "are required. Please follow the instructions in chapter x.x.x of the Software  <br>"
-                    + "User Manual for download and installation of auxiliary data. "
-                    + "</html>";
+            "For the Synergy aerosol retrieval and atmospheric correction, various \n"
+                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), \n "
+                    + "are required. Please follow the instructions in chapter x.x.x of the Software  \n"
+                    + "User Manual for download and installation of auxiliary data. ";
 
+//    public static final String AUXDATA_ERROR_MESSAGE =
+//            "<html> "
+//                    + "Synergy auxdata are missing or could not be read. <br><br>"
+//                    + "For the Synergy aerosol retrieval and atmospheric correction, various <br>"
+//                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), <br> "
+//                    + "are required. Please follow the instructions in chapter x.x.x of the Software  <br>"
+//                    + "User Manual or online help for download and installation of auxiliary data. "
+//                    + "</html>";
     public static final String AUXDATA_ERROR_MESSAGE =
-            "<html> "
-                    + "Synergy auxdata are missing or could not be read. <br><br>"
-                    + "For the Synergy aerosol retrieval and atmospheric correction, various <br>"
-                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), <br> "
-                    + "are required. Please follow the instructions in chapter x.x.x of the Software  <br>"
-                    + "User Manual or online help for download and installation of auxiliary data. "
-                    + "</html>";
+            "Synergy auxdata are missing or could not be read.\n\n"
+                    + "For the Synergy aerosol retrieval and atmospheric correction, various \n"
+                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), \n"
+                    + "are required. Please follow the instructions in chapter x.x.x of the Software  \n"
+                    + "User Manual or online help for download and installation of auxiliary data. ";
 
     public static final String AEROSOL_MODEL_INFO_MESSAGE =
-               "<html> "
-                       + "For the Synergy land aerosol retrieval, appropriate aerosol models are used. <br>"
-                       + "For most use cases, the default set of models will be sufficient. <br> "
-                       + "However, advanced users may want to specify an own subset from all available<br> "
-                       + "aerosol models.<br><br> "
-                       + "To download either the default or the full set of aerosol models, <br>"
-                       + "please follow the instructions in chapter x.x.x of the Software  <br>"
-                       + "User Manual for download and installation of auxiliary data. <br> "
-                       + "Note that the full set of models requires approximately 6 GB of disk space. <br><br> "
-                       + "For more details on these land aerosol models, see the Synergy documentation <br> "
-                       + "referenced in the Software User Manual <br> "
-                       + "</html>";
+                       "For the Synergy land aerosol retrieval, appropriate aerosol models are used. \n"
+                       + "For most use cases, the default set of models will be sufficient. \n "
+                       + "However, advanced users may want to specify an own subset from all available\n"
+                       + "aerosol models.\n\n "
+                       + "To download either the default or the full set of aerosol models, \n"
+                       + "please follow the instructions in chapter x.x.x of the Software  \n"
+                       + "User Manual for download and installation of auxiliary data. \n "
+                       + "Note that the full set of models requires approximately 6 GB of disk space. \n\n"
+                       + "For more details on these land aerosol models, see the Synergy documentation \n "
+                       + "referenced in the Software User Manual \n";
 
     public static final String preprocessingRadioButtonLabel = "Only create a colocated MERIS/AATSR product";
     public static final String cloudScreeningRadioButtonLabel = "Create a cloud screening product";

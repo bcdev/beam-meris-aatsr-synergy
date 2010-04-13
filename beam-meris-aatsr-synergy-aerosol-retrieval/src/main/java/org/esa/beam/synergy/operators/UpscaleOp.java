@@ -17,6 +17,7 @@ import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
 
@@ -26,6 +27,11 @@ import java.awt.Rectangle;
  *
  * @author akheckel
  */
+@OperatorMetadata(alias = "synergy.Upscale",
+                  version = "1.1",
+                  authors = "Andreas Heckel, Olaf Danne",
+                  copyright = "(c) 2009 by A. Heckel",
+                  description = "AOT upscaling of interpolated data.")
 public class UpscaleOp extends Operator {
 
     @SourceProduct(alias = "aerosol",

@@ -44,7 +44,7 @@ import java.util.Map;
  * @version $Revision: 7988 $ $Date: 2010-01-14 12:51:28 +0100 (Do, 14 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.CreateSynergy",
-        version = "1.0-SNAPSHOT",
+        version = "1.1",
         authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
         copyright = "(c) 2008 by IPL",
         description = "This operator creates the Synergy product.")

@@ -25,8 +25,8 @@ import java.awt.image.renderable.ParameterBlock;
  * @author Andreas Heckel, Olaf Danne
  * @version $Revision: 8111 $ $Date: 2010-01-27 18:54:34 +0100 (Mi, 27 Jan 2010) $
  */
-@OperatorMetadata(alias = "synergy.AotInterpol",
-                  version = "1.0-SNAPSHOT",
+@OperatorMetadata(alias = "synergy.AotBoxcarInterpolation",
+                  version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
                   description = "AOT interpolation of missing data.")

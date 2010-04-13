@@ -21,7 +21,7 @@ import java.util.Map;
 // TODO: press the eclipse 'tasks' button and do the todo's
 
 @OperatorMetadata(alias = "synergy.SynergyCloudScreening",
-                  version = "1.0",
+                  version = "1.1",
                   authors = "Jordi Munyoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2009 IPL-UV",
                   description = "Add cloud flags and index to synergy product.")

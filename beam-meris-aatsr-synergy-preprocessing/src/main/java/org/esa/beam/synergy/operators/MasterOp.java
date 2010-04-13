@@ -14,6 +14,7 @@ import org.esa.beam.synergy.util.SynergyUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.io.File;
 
 /**
  * Master operator for MERIS/AATSR Synergy toolbox.
@@ -22,10 +23,10 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 17:54:34 +0000 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.Master",
-                  version = "1.0-SNAPSHOT",
+                  version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Retrieve Aerosol over ocean and land.")
+                  description = "The master operator for the MERIS/(A)ATSR toolbox.")
 public class MasterOp extends Operator {
 
     @SourceProduct(alias = "MERIS",

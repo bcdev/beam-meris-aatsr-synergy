@@ -39,8 +39,8 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 17:54:34 +0000 (Mi, 27 Jan 2010) $
  * 
  */
-@OperatorMetadata(alias = "synergy.AerosolLand",
-                  version = "1.0-SNAPSHOT",
+@OperatorMetadata(alias = "synergy.RetrieveAerosolLand",
+                  version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
                   description = "Retrieve Aerosol over Land.")
@@ -203,9 +203,17 @@ public class RetrieveAerosolLandOp extends Operator{
 
 
         if (soilSurfSpec == null) {
+            if (soilSpecName.equals(SynergyConstants.SOIL_SPEC_PARAM_DEFAULT)) {
+                soilSpecName = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT  + File.separator +
+                               SynergyConstants.SOIL_SPEC_PARAM_DEFAULT;
+            }
             soilSurfSpec = new SurfaceSpec(soilSpecName, merisWvl).getSpec();
         }
         if (vegSurfSpec == null) {
+            if (vegSpecName.equals(SynergyConstants.VEG_SPEC_PARAM_DEFAULT)) {
+                vegSpecName = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT  + File.separator +
+                               SynergyConstants.VEG_SPEC_PARAM_DEFAULT;
+            }
             vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
         }
         aardvarc.setSpecSoil(soilSurfSpec);

@@ -40,7 +40,7 @@ import java.util.Map;
  * @version $Revision: 8155 $ $Date: 2010-01-29 17:30:33 +0100 (vie, 29 ene 2010) $
  */
 @OperatorMetadata(alias = "synergy.ExtractFeatures",
-                  version = "1.0-SNAPSHOT",
+                  version = "1.1",
                   authors = "Ralf Quast, Olaf Danne, Jordi Munoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2008-09 by Brockmann Consult and IPL-UV",
                   description = "Extracts cloud features from Synergy TOA reflectance products.")

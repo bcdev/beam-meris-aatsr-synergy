@@ -355,8 +355,7 @@ public class SynergyForm extends JTabbedPane {
         final MouseAdapter auxdataInfoAdapter = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 String msg = SynergyConstants.AUXDATA_INFO_MESSAGE;
-                JLabel label = new JLabel(msg);
-                JOptionPane.showOptionDialog(null, label, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
                                              JOptionPane.INFORMATION_MESSAGE, null, null, null);
             }
 
@@ -445,8 +444,7 @@ public class SynergyForm extends JTabbedPane {
         final MouseAdapter aerosolModelInfoAdapter = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 String msg = SynergyConstants.AEROSOL_MODEL_INFO_MESSAGE;
-                JLabel label = new JLabel(msg);
-                JOptionPane.showOptionDialog(null, label, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
                                              JOptionPane.INFORMATION_MESSAGE, null, null, null);
             }
 

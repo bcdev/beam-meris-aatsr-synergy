@@ -34,7 +34,7 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 18:54:34 +0100 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.RetrieveAerosolOcean",
-                  version = "1.0-SNAPSHOT",
+                  version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
                   description = "Retrieve Aerosol over Ocean.")
@@ -102,7 +102,7 @@ public class RetrieveAerosolOceanOp extends Operator {
 
 
     public void initialize() throws OperatorException {
-        System.out.println("starting...");
+//        System.out.println("starting...");
 
         noDataVal = (float) SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE;
 

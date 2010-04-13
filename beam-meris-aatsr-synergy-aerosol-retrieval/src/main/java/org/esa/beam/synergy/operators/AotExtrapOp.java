@@ -27,7 +27,7 @@ import java.util.Map;
  * @author akheckel
  */
 @OperatorMetadata(alias = "synergy.AotExtrap",
-                  version = "1.0-SNAPSHOT",
+                  version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
                   description = "AOT extrapolation of missing data.")

@@ -31,8 +31,8 @@ import java.util.logging.Logger;
  * @author Andreas Heckel
  * @version $Revision: 8034 $ $Date: 2010-01-20 15:47:34 +0100 (Mi, 20 Jan 2010) $
  */
-@OperatorMetadata(alias = "synergy.PerformInterpol",
-                  version = "1.0-SNAPSHOT",
+@OperatorMetadata(alias = "synergy.LaplaceInterpolation",
+                  version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
                   description = "Perform Laplace interpolation of fields")

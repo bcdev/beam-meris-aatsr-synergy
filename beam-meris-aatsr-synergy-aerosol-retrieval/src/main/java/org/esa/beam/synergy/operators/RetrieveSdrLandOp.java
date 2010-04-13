@@ -36,8 +36,8 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 17:54:34 +0000 (Mi, 27 Jan 2010) $
  *
  */
-@OperatorMetadata(alias = "synergy.SdrLand",
-                  version = "1.0-SNAPSHOT",
+@OperatorMetadata(alias = "synergy.RetrieveSdrLand",
+                  version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
                   description = "Retrieve Surface Reflectance over Land.")

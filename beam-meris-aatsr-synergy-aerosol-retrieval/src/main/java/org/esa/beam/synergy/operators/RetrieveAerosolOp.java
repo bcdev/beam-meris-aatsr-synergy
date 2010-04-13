@@ -22,7 +22,7 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 17:54:34 +0000 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.RetrieveAerosol",
-                  version = "1.0-SNAPSHOT",
+                  version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
                   description = "Retrieve Aerosol over ocean and land.")

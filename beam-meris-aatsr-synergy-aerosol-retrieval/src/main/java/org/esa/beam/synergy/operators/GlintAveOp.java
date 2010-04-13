@@ -28,7 +28,7 @@ import java.io.File;
  * @version $Revision: 8111 $ $Date: 2010-01-27 18:54:34 +0100 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.GlintAve",
-                  version = "1.0-SNAPSHOT",
+                  version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
                   description = "Glint Processor for Synergy Ocean Aerosol Retrieval.")

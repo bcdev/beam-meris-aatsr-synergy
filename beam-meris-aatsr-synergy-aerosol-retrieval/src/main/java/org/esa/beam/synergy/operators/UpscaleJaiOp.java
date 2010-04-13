@@ -29,11 +29,11 @@ import java.awt.image.RenderedImage;
  * @author Olaf Danne
  * @version $Revision: 8041 $ $Date: 2010-01-20 17:23:15 +0100 (Mi, 20 Jan 2010) $
  */
-@OperatorMetadata(alias = "synergy.AotUpscale",
-                  version = "1.0-SNAPSHOT",
+@OperatorMetadata(alias = "synergy.UpscaleJai",
+                  version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT upscaling of interpolated data.")
+                  description = "AOT upscaling of interpolated data using JAI.")
 public class UpscaleJaiOp extends Operator {
 
     @SourceProduct(alias = "synergy",

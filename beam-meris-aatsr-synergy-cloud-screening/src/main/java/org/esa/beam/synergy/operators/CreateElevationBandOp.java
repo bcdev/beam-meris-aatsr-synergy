@@ -46,7 +46,7 @@ import java.util.Map;
  * @version $Revision: 7481 $ $Date: 2009-12-11 20:03:20 +0100 (Fr, 11 Dez 2009) $
  */
 @OperatorMetadata(alias = "synergy.CreateElevationBand",
-        version = "1.0-SNAPSHOT",
+        version = "1.1",
         authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
         copyright = "(c) 2008-09 by IPL, University of Valencia",
         description = "This operator creates and elevation band for a product.")
