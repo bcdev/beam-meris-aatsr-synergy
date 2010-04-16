@@ -74,14 +74,17 @@ public class UpscaleOp extends Operator {
         targetRasterHeight = originalProduct.getSceneRasterHeight();
         
         createTargetProduct();
-        targetProduct.setPreferredTileSize(1100, 1100);
+//        targetProduct.setPreferredTileSize(512, 512);
+        // the upscaling seems to work properly only for a 'single' tile
+        // todo: fix
+        targetProduct.setPreferredTileSize(targetRasterWidth+1, targetRasterHeight+1);
         setTargetProduct(targetProduct);
     }
 
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
-        Rectangle tarRec = targetTile.getRectangle();
+        final Rectangle tarRec = targetTile.getRectangle();
 
         int srcX = (tarRec.x - offset) / scalingFactor;
         int srcY = (tarRec.y - offset) / scalingFactor;
@@ -95,7 +98,7 @@ public class UpscaleOp extends Operator {
             srcY = sourceRasterHeight - 2;
             srcHeight = 2;
         }
-        Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
+        final Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
         Band srcBand;
         Tile srcTile;
@@ -170,22 +173,25 @@ public class UpscaleOp extends Operator {
 
     private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec, ProgressMonitor pm) {
         
-        int tarX = tarRec.x;
-        int tarY = tarRec.y;
-        int tarWidth = tarRec.width;
-        int tarHeight = tarRec.height;
+        final int tarX = tarRec.x;
+        final int tarY = tarRec.y;
+        final int tarWidth = tarRec.width;
+        final int tarHeight = tarRec.height;
 
         for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
             int iSrcY = (iTarY - offset) / scalingFactor;
-            if (iSrcY >= sourceRasterHeight - 1) iSrcY = sourceRasterHeight - 2;
+            if (iSrcY >= srcTile.getHeight() - 1) iSrcY = srcTile.getHeight() - 2;
             float yFac = (float) (iTarY - offset) / scalingFactor - iSrcY;
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
                 checkForCancelation(pm);
                 int iSrcX = (iTarX - offset) / scalingFactor;
-                if (iSrcX >= sourceRasterWidth - 1) iSrcX = sourceRasterWidth - 2;
+                if (iSrcX >= srcTile.getWidth() - 1) iSrcX = srcTile.getWidth() - 2;
                 float xFrac = (float) (iTarX - offset) / scalingFactor - iSrcX;
                 float erg = (1.0f - xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX, iSrcY);
                 erg +=        (xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX+1, iSrcY);
+//                System.out.println("srcTile.getWidth(), srcTile.getHeight(), sourceRasterWidth, sourceRasterWidth, " +
+//                        "iSrcX, iSrcY: " + srcTile.getWidth() + "," +  srcTile.getHeight() + "," +  sourceRasterWidth  + "," +
+//                        sourceRasterHeight + "," + iSrcX + "," +  iSrcY);
                 erg += (1.0f - xFrac) *        (yFac) * srcTile.getSampleFloat(iSrcX, iSrcY+1);
                 erg +=        (xFrac) *        (yFac) * srcTile.getSampleFloat(iSrcX+1, iSrcY+1);
                 tarTile.setSample(iTarX, iTarY, erg);
@@ -195,20 +201,20 @@ public class UpscaleOp extends Operator {
 
     private void upscaleTileCopy(Tile srcTile, Tile tarTile, Rectangle tarRec, ProgressMonitor pm) {
 
-        int tarX = tarRec.x;
-        int tarY = tarRec.y;
-        int tarWidth = tarRec.width;
-        int tarHeight = tarRec.height;
+        final int tarX = tarRec.x;
+        final int tarY = tarRec.y;
+        final int tarWidth = tarRec.width;
+        final int tarHeight = tarRec.height;
 
         for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
             int iSrcY = iTarY / scalingFactor;
-            if (iSrcY >= sourceRasterHeight) iSrcY = sourceRasterHeight - 1;
+            if (iSrcY >= srcTile.getHeight()) iSrcY = srcTile.getHeight() - 1;
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
                 if (pm.isCanceled()) {
                     break;
                 }
                 int iSrcX = iTarX / scalingFactor;
-                if (iSrcX >= sourceRasterWidth) iSrcX = sourceRasterWidth - 1;
+                if (iSrcY >= srcTile.getWidth()) iSrcY = srcTile.getWidth() - 1;
                 float erg = srcTile.getSampleFloat(iSrcX, iSrcY);
                 tarTile.setSample(iTarX, iTarY, erg);
             }

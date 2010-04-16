@@ -122,20 +122,11 @@ public class Aardvarc {
                     resid = resid + weight[iwvl] * k * k;
                 }
             }
-/*
-            double llimit = 0.2;
-            double ulimit = 1.5;
-            for (int iview = 0; iview < 2; iview++) {
-                if (p[nAatsrChannels+iview] < llimit) resid = resid + (p[nAatsrChannels+iview]-llimit) * (p[nAatsrChannels+iview]-llimit) * 1000;
-                if (p[nAatsrChannels+iview] > ulimit) resid = resid + (p[nAatsrChannels+iview]-ulimit) * (p[nAatsrChannels+iview]-ulimit) * 1000;
-            }
-*/
+
             // Will Greys constraints from aatsr_aardvarc_4d
             if (p[0] < 0.01) resid=resid+(0.01-p[0])*(0.01-p[0])*1000.0;
             if (p[1] < 0.01) resid=resid+(0.01-p[1])*(0.01-p[1])*1000.0;
-//            if (p[4] < 0.45 ) resid=resid+(0.2 -p[4])*(0.2 -p[4])*1000.0;
             if (p[5] < 0.2 ) resid=resid+(0.2 -p[5])*(0.2 -p[5])*1000.0;
-//            if (p[4] > 0.55 ) resid=resid+(0.6 -p[4])*(0.6 -p[4])*1000.0;
 
             if (dump) dumpAatsrModelSpec(resid, p, mval);
 
@@ -158,7 +149,6 @@ public class Aardvarc {
 
         public double f(double[] p) {
             double[] mval = new double[nMerisChannels];
-            //double[] weight = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
             double[] weight = {1.0, 1.0, 1.0, 1.0, 0.2, 1.0, 1.0, 1.0, 0.05, 0.05, 0.05, 0.05, 0.05};
             weight = normalize(weight);
             double k;
@@ -266,8 +256,6 @@ public class Aardvarc {
 
             final float llimit = 5e-6f;
             final float penalty = 1000f;
-            //final float llimit = 0f;
-            //final float penalty = 10000f;
             for (int iwvl = 0; iwvl < nMerisChannels; iwvl++) {
                 if (surfReflMeris[iwvl] < llimit) {
                     fmin += (surfReflMeris[iwvl]-llimit) * (surfReflMeris[iwvl]-llimit) * penalty;
@@ -304,7 +292,7 @@ public class Aardvarc {
          * @return float
          */
         public double f(double tau) {
-            float[] weight = {angularWeight, 1.0f - angularWeight};
+            final float[] weight = {angularWeight, 1.0f - angularWeight};
 
             if (tau < 1e-3) tau=1e-3;
             float fminAng = emodAngTau((float) tau);
@@ -316,19 +304,19 @@ public class Aardvarc {
 
 
     private float calcRetrievalErr() {
-        double[] x0 = {1, 1, 1};
-        double[] x1 = {0.8*optAOT, optAOT, 0.6*optAOT};
-        double[] x2 = {x1[0]*x1[0], x1[1]*x1[1], x1[2]*x1[2]};
+        final double[] x0 = {1, 1, 1};
+        final double[] x1 = {0.8*optAOT, optAOT, 0.6*optAOT};
+        final double[] x2 = {x1[0]*x1[0], x1[1]*x1[1], x1[2]*x1[2]};
 
         double optErrLow = new emodSyn().f(x1[0]);
         double optErrHigh = new emodSyn().f(x1[2]);
-        double[][] y = {{optErrLow}, {optErr}, {optErrHigh}};
-        double[][] xArr = {{x2[0], x1[0], x0[0]},{x2[1], x1[1], x0[1]},{x2[2], x1[2], x0[2]}};
+        final double[][] y = {{optErrLow}, {optErr}, {optErrHigh}};
+        final double[][] xArr = {{x2[0], x1[0], x0[0]},{x2[1], x1[1], x0[1]},{x2[2], x1[2], x0[2]}};
         Matrix A = new Matrix(xArr);
         Matrix c = new Matrix(y);
         Matrix result = A.solve(c);
-        double[][] resultArr = result.getArray();
-        double a = resultArr[0][0]; // curvature term of parabola
+        final double[][] resultArr = result.getArray();
+        final double a = resultArr[0][0]; // curvature term of parabola
 
         double retrievalError;
         if (a < 0) {
@@ -427,32 +415,6 @@ public class Aardvarc {
 
         return albDim[j] + (albDim[j+1]-albDim[j]) / (toaAtTau[j+1]-toaAtTau[j]) * (toaRefl - toaAtTau[j]);
     }
-/*
-    private float invInterpol(float[][] lutRefl, float tau, float toaRefl) {
-        float[] a = new float[albDim.length];
-
-        if ((tau > aotDim[aotDim.length-1]) || (tau < aotDim[0])) {
-            return -1000.0f;
-        }
-
-        int iAot = aotDim.length - 1;
-        while ((iAot >= 0) && (aotDim[iAot] >= tau)) iAot--;
-        if (iAot == -1) iAot++; //happens only if tau == aotDim[0]
-        for (int j = 0; j < albDim.length; j++) {
-            a[j] = lutRefl[j][iAot] + (lutRefl[j][iAot+1] - lutRefl[j][iAot])
-                      / (aotDim[iAot+1] - aotDim[iAot]) * (tau - aotDim[iAot]);
-        }
-
-        if ((a[albDim.length-1] < toaRefl) || (a[0] > toaRefl)) {
-            return -1000.0f;
-        }
-        int j = albDim.length - 1;
-        while ((j >= 0) && (a[j] >= toaRefl)) j--;
-        if (j == -1) j++; //happens only if toaRefl == a[0]
-
-        return albDim[j] + (albDim[j+1]-albDim[j]) / (a[j+1]-a[j]) * (toaRefl - a[j]);
-    }
-*/
 
     /**
      * This method computes for MERIS the surface reflectance spectrum from the TOA reflectance spectrum
@@ -515,7 +477,7 @@ public class Aardvarc {
         setAngularWeight();
         failed = false;
         
-        Brent b = new Brent(0.0, 0.1, 2.0, new emodSyn(), 5e-4);
+        final Brent b = new Brent(0.0, 0.1, 2.0, new emodSyn(), 5e-4);
         optAOT = (float) b.getXmin();
         optErr = (float) b.getFx();
         retrievalErr = calcRetrievalErr();
@@ -529,8 +491,8 @@ public class Aardvarc {
             this.angularWeight = 0.0f;
         }
         else {
-            float llimit = 0.1f;
-            float ulimit = 0.7f;
+            final float llimit = 0.1f;
+            final float ulimit = 0.7f;
             if (ndvi < llimit || ndvi > 1.0) {
                 this.angularWeight = 1.0f;
             }
@@ -627,7 +589,7 @@ public class Aardvarc {
 
     public void dumpParameter(String fname, float aot) {
         setAngularWeight();
-        double f = new emodSyn().f(aot);
+        final double f = new emodSyn().f(aot);
         optAOT = aot;
         optErr = (float) f;
         retrievalErr = calcRetrievalErr();
@@ -713,8 +675,8 @@ public class Aardvarc {
     public float[] calcErrorMetric(float aot) {
         setAngularWeight();
         optAOT = aot;
-        float fmin = (float)(new emodSyn(true).f(aot));
-        float[] f = {aot, fmin, calcRetrievalErr()};
+        final float fmin = (float)(new emodSyn(true).f(aot));
+        final float[] f = {aot, fmin, calcRetrievalErr()};
         return f;
     }
 

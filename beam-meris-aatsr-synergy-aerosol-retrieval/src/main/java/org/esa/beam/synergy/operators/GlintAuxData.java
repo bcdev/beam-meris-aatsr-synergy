@@ -6,8 +6,8 @@ import com.bc.jnn.JnnNet;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.GlintHelpers;
 import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyLookupTable;
 import org.esa.beam.util.math.IntervalPartition;
-import org.esa.beam.util.math.LookupTable;
 import ucar.ma2.Array;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -98,11 +98,11 @@ public class GlintAuxData {
      * @param lutPath - path to lookup table
      * @throws IOException
      */
-    public LookupTable[] readGaussParsLuts(String lutPath) throws IOException {
-        LookupTable[] gaussParsLuts = new LookupTable[5];
+    public SynergyLookupTable[] readGaussParsLuts(String lutPath) throws IOException {
+        SynergyLookupTable[] gaussParsLuts = new SynergyLookupTable[5];
         try {
             final NetcdfFile netcdfFile = NetcdfFile.open(lutPath + File.separator + SynergyConstants.GAUSS_PARS_LUT_FILE_NAME);
-            List variables = netcdfFile.getVariables();
+            final List variables = netcdfFile.getVariables();
 
             // the variables in the netcdf file are defined like this (as obtained from an ncdump):
             //       float P(P_dimension_4=5, P_dimension_3=13, P_dimension_2=11, P_dimension_1=15);
@@ -110,35 +110,35 @@ public class GlintAuxData {
             //       float NRE(NRE_dimension_1=11);
             //       float COS_SUN(COS_SUN_dimension_1=13);
 
-            Variable p = (Variable) variables.get(0);
-            Variable wsp = (Variable) variables.get(1);
-            Variable nre = (Variable) variables.get(2);
-            Variable cosSun = (Variable) variables.get(3);
+            final Variable p = (Variable) variables.get(0);
+            final Variable wsp = (Variable) variables.get(1);
+            final Variable nre = (Variable) variables.get(2);
+            final Variable cosSun = (Variable) variables.get(3);
 
 
-            Array wspArrayNc = wsp.read();
-            int wspSize = (int) wspArrayNc.getSize();
+            final Array wspArrayNc = wsp.read();
+            final int wspSize = (int) wspArrayNc.getSize();
             Object storage = wspArrayNc.getStorage();
             float[] wspArray = new float[wspSize];
             System.arraycopy(storage, 0, wspArray, 0, wspSize);
 
-            Array nreArrayNc = nre.read();
-            int nreSize = (int) nreArrayNc.getSize();
+            final Array nreArrayNc = nre.read();
+            final int nreSize = (int) nreArrayNc.getSize();
             storage = nreArrayNc.getStorage();
             float[] nreArray = new float[nreSize];
             System.arraycopy(storage, 0, nreArray, 0, nreSize);
 
-            Array cosSunArrayNc = cosSun.read();
-            int cosSunSize = (int) cosSunArrayNc.getSize();
+            final  Array cosSunArrayNc = cosSun.read();
+            final int cosSunSize = (int) cosSunArrayNc.getSize();
             storage = cosSunArrayNc.getStorage();
             float[] cosSunArray = new float[cosSunSize];
             for (int i = 0; i < cosSunArray.length; i++) {
-                float[] storageArray = (float[]) storage;
+                final float[] storageArray = (float[]) storage;
                 cosSunArray[i] = -storageArray[i];  // take negative value to get increasing sequence for LUT creation
             }
 
-            Array pArrayNc = p.read();
-            int pSize = p.getDimension(1).getLength() *
+            final Array pArrayNc = p.read();
+            final int pSize = p.getDimension(1).getLength() *
                         p.getDimension(2).getLength() *
                         p.getDimension(3).getLength();
             storage = pArrayNc.getStorage();
@@ -152,7 +152,7 @@ public class GlintAuxData {
                     cosSunArray, nreArray, wspArray);
 
             for (int i = 0; i < 5; i++) {
-                gaussParsLuts[i] = new LookupTable(pArray[i], dimensions);
+                gaussParsLuts[i] = new SynergyLookupTable(pArray[i], dimensions);
             }
 
         } catch (UnsupportedEncodingException e) {

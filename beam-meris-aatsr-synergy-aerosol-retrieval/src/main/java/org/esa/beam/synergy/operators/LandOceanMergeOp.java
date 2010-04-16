@@ -66,8 +66,6 @@ public class LandOceanMergeOp extends Operator {
 
         ProductUtils.copyGeoCoding(synergyProduct, targetProduct);
         ProductUtils.copyMetadata(synergyProduct, targetProduct);
-        //AerosolHelpers.copyDownscaledTiePointGrids(synergyProduct, targetProduct, aveBlock);
-        //AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, aveBlock);
 
         BandMathsOp bandArithmeticOp =
                 BandMathsOp.createBooleanExpressionBand(LAND_EXPRESSION, oceanProduct);
@@ -139,12 +137,6 @@ public class LandOceanMergeOp extends Operator {
             else if (targetBand.getName().equals(SynergyConstants.aerosolFlagCodingName)) {
                 landTile = getSourceTile(landProduct.getBand(SynergyConstants.aerosolFlagCodingName), rectangle, pm);
                 mergeFlagTile(targetTile, isLand, landTile);
-                /*
-                int oceanFlag = SynergyPreprocessingConstants.oceanMask;
-                oceanFlag |= SynergyPreprocessingConstants.successMask;
-                boolean isOceanConst = true;
-                mergeTileInt(targetTile, isLand, landTile, isOceanConst, oceanFlag);
-                */
             }
             else {
                 oceanTile = getSourceTile(oceanProduct.getBand(targetBand.getName()), rectangle, pm);
@@ -213,7 +205,7 @@ public class LandOceanMergeOp extends Operator {
     }
 
     private void mergeFlagTile(Tile targetTile, Tile isLand, Tile landTile) {
-        Rectangle rectangle = isLand.getRectangle();
+        final Rectangle rectangle = isLand.getRectangle();
         int oceanValue = SynergyConstants.oceanMask;
         oceanValue |= SynergyConstants.successMask;
         int coastValue = SynergyConstants.coastMask;
@@ -239,7 +231,7 @@ public class LandOceanMergeOp extends Operator {
 
     private boolean testCoast(Tile isLand, int x, int y) {
         boolean isCoast = false;
-        boolean isLandPixel = isLand.getSampleBoolean(x, y);
+        final boolean isLandPixel = isLand.getSampleBoolean(x, y);
         for (int dy = y - 1; dy <= y + 1; dy++) {
             for (int dx = x - 1; dx <= x + 1; dx++) {
                 if (dx >= isLand.getMinX() && dx <= isLand.getMaxX()

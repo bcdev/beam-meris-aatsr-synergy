@@ -147,7 +147,10 @@
                         ftp.brockmann-consult.de
                     </listitem>
                     <listitem>
-                        u: guest; p: welcome@bc
+                        username: synergy
+                    </listitem>
+                    <listitem>
+                        password: MER_ATS_SYN
                     </listitem>
                     <listitem>
                         cd to meris-aatsr-synergy/auxdata

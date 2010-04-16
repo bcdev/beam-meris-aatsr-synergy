@@ -4,7 +4,7 @@ import com.bc.jnn.JnnException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.esa.beam.util.math.LookupTable;
+import org.esa.beam.synergy.util.SynergyLookupTable;
 import ucar.ma2.Array;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
@@ -74,7 +74,7 @@ public class RetrieveAerosolTest
         final double[] dimension = new double[]{0, 1};
         final double[] values = new double[]{0, 1};
 
-        final LookupTable lut = new LookupTable(values, dimension);
+        final SynergyLookupTable lut = new SynergyLookupTable(values, dimension);
         assertEquals(1, lut.getDimensionCount());
 
         assertEquals(0.0, lut.getDimension(0).getMin(), 0.0);
@@ -90,7 +90,7 @@ public class RetrieveAerosolTest
         final double[][] dimensions = new double[][]{{0, 1}, {0, 1}};
         final double[] values = new double[]{0, 1, 2, 3};
 
-        final LookupTable lut = new LookupTable(values, dimensions);
+        final SynergyLookupTable lut = new SynergyLookupTable(values, dimensions);
         assertEquals(2, lut.getDimensionCount());
 
         assertEquals(0.0, lut.getDimension(0).getMin(), 0.0);
@@ -112,7 +112,7 @@ public class RetrieveAerosolTest
         final double[][] dimensions = new double[][]{{0, 1}, {0, 1}, {0, 1}};
         final double[] values = new double[]{0, 1, 1, 2, 1, 2, 2, 3};
 
-        final LookupTable lut = new LookupTable(values, dimensions);
+        final SynergyLookupTable lut = new SynergyLookupTable(values, dimensions);
         assertEquals(3, lut.getDimensionCount());
 
         assertEquals(0.0, lut.getDimension(0).getMin(), 0.0);
@@ -199,7 +199,7 @@ public class RetrieveAerosolTest
         float[] wvl = new float[]{778.0f};
         int[] wvlIndex = new int[]{0};
 
-        LookupTable[][] aerosolLookupTables;
+        SynergyLookupTable[][] aerosolLookupTables;
         try {
             aerosolLookupTables = AerosolAuxData.getInstance().createAerosolOceanLookupTables(lutPath, modelIndices, wvl, wvlIndex);
             assertNotNull(aerosolLookupTables);

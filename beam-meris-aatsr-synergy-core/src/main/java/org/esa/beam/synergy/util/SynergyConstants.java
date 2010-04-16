@@ -23,7 +23,7 @@ public class SynergyConstants {
 //                    + "<li><b>bold</b> and "
 //                    + "<li><u>underlined</u>...</ul></html>";
             "For the Synergy aerosol retrieval and atmospheric correction, various \n"
-                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), \n "
+                    + "auxiliary data (such as lookup tables and surface reflectance spectrum files), \n"
                     + "are required. Please follow the instructions in chapter 2 of the Software  \n"
                     + "User Manual for download and installation of auxiliary data. ";
 
@@ -44,15 +44,23 @@ public class SynergyConstants {
 
     public static final String AEROSOL_MODEL_INFO_MESSAGE =
                        "For the Synergy land aerosol retrieval, appropriate aerosol models are used. \n"
-                       + "For most use cases, the default set of models will be sufficient. \n "
+                       + "For most use cases, the default set of models will be sufficient. \n"
                        + "However, advanced users may want to specify an own subset from all available\n"
-                       + "aerosol models.\n\n "
+                       + "aerosol models.\n\n"
                        + "To download either the default or the full set of aerosol models, \n"
                        + "please follow the instructions in chapter 2 of the Software  \n"
-                       + "User Manual for download and installation of auxiliary data. \n "
+                       + "User Manual for download and installation of auxiliary data. \n"
                        + "Note that the full set of models requires approximately 6 GB of disk space. \n\n"
-                       + "For more details on these land aerosol models, see the Synergy documentation \n "
+                       + "For more details on these land aerosol models, see the Synergy documentation \n"
                        + "referenced in the Software User Manual \n";
+
+    public static final String ATM_CORR_INFO_MESSAGE =
+                       "Due to the nature of the algorithm, the retrieval of surface directional \n"
+                       + "reflectances requires much more computation time than the pure aerosol retrieval. \n"
+                       + "If you are interested in aerosol quantities only, it is recommended to keep \n"
+                       + "this option unselected. For the computation of surface directional reflectances \n"
+                       + "on larger datasets, it is further recommended to create in advance subsets of \n"
+                       + "the input data which just cover the regions of interest. \n";
 
     public static final String preprocessingRadioButtonLabel = "Only create a colocated MERIS/AATSR product";
     public static final String cloudScreeningRadioButtonLabel = "Create a cloud screening product";
@@ -65,7 +73,8 @@ public class SynergyConstants {
 
     public static final String computeOceanCheckboxLabel = "Retrieve AODs over ocean";
     public static final String computeLandCheckboxLabel = "Retrieve AODs over land";
-    public static final String computeSurfaceReflectancesCheckboxLabel = "Retrieve surface directional reflectances (over land only)";
+    public static final String computeSurfaceReflectancesCheckboxLabel =
+            "Retrieve surface directional reflectances over land (time consuming!)";
 
     public static final String defaultLandAerosolButtonLabel = "Use default land aerosol models (recommended)";
     public static final String customLandAerosolButtonLabel = "Use specific land aerosol models (for advanced users)";

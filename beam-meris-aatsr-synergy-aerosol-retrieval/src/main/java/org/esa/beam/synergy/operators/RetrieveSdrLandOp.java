@@ -90,19 +90,9 @@ public class RetrieveSdrLandOp extends Operator {
     private float[] aatsrWvl;
     private float[] merisBandWidth;
     private float[] aatsrBandWidth;
-    private float[] merisToaReflec;
-    private float[][] aatsrToaReflec;
 
-    private Aardvarc aardvarc;
     private float[] soilSurfSpec;
     private float[] vegSurfSpec;
-
-    private ReflectanceBinLUT toaLut;
-    private float[] lutAlbedo;
-    private float[] lutAot;
-    private float[][][] lutSubsecMeris;
-    private float[][][][] lutSubsecAatsr;
-    private List<ReflectanceBinLUT> toaLutList;
 
     private int rasterWidth;
     private int rasterHeight;
@@ -128,9 +118,6 @@ public class RetrieveSdrLandOp extends Operator {
         merisGeometryBandList = new ArrayList<RasterDataNode>();
         aatsrGeometryBandList = new ArrayList<RasterDataNode>();
 
-        toaLut = null;
-        toaLutList = new ArrayList<ReflectanceBinLUT>();
-
         AerosolHelpers.getSpectralBandList(synergyProduct, SynergyConstants.INPUT_BANDS_PREFIX_MERIS,
                 SynergyConstants.INPUT_BANDS_SUFFIX_MERIS,
                 SynergyConstants.EXCLUDE_INPUT_BANDS_MERIS, merisBandList);
@@ -147,8 +134,7 @@ public class RetrieveSdrLandOp extends Operator {
         aatsrWvl = new float[aatsrBandListNad.size()];
         merisBandWidth = new float[merisBandList.size()];
         aatsrBandWidth = new float[aatsrBandListNad.size()];
-        merisToaReflec = new float[merisBandList.size()];
-        aatsrToaReflec = new float[2][aatsrBandListNad.size()];
+
         sdrMerisBandNames = new String[merisBandList.size()];
         sdrAatsrBandNames = new String[2][aatsrBandListNad.size()];
 
@@ -161,11 +147,8 @@ public class RetrieveSdrLandOp extends Operator {
         if (vegSurfSpec == null) {
             vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
         }
-        aardvarc = new Aardvarc(aatsrWvl, merisWvl);
-        aardvarc.setSpecSoil(soilSurfSpec);
-        aardvarc.setSpecVeg(vegSurfSpec);
 
-        BandMathsOp validBandOp = BandMathsOp.createBooleanExpressionBand(validFlagExpression, aerosolProduct);
+        final BandMathsOp validBandOp = BandMathsOp.createBooleanExpressionBand(validFlagExpression, aerosolProduct);
         validBand = validBandOp.getTargetProduct().getBandAt(0);
 
         createTargetProduct();
@@ -178,37 +161,53 @@ public class RetrieveSdrLandOp extends Operator {
         System.out.printf("   SDR Retrieval @ Tile %s\n", targetRectangle.toString());
 
         // read source tiles
-        Tile[] merisTiles = getSpecTiles(merisBandList, targetRectangle);
+        final Tile[] merisTiles = getSpecTiles(merisBandList, targetRectangle);
 
         Tile[][] aatsrTiles = new Tile[2][0];
         aatsrTiles[0] = getSpecTiles(aatsrBandListNad, targetRectangle);
         aatsrTiles[1] = getSpecTiles(aatsrBandListFwd, targetRectangle);
 
-        Tile[] geometryTiles = getGeometryTiles(merisGeometryBandList, aatsrGeometryBandList, targetRectangle);
+        final Tile[] geometryTiles = getGeometryTiles(merisGeometryBandList, aatsrGeometryBandList, targetRectangle);
 
-        Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid(SynergyConstants.INPUT_PRESSURE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
-        Tile ozoneTile = getSourceTile(synergyProduct.getTiePointGrid(SynergyConstants.INPUT_OZONE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
-        Tile aotTile = getSourceTile(aerosolProduct.getBand(SynergyConstants.OUTPUT_AOT_BAND_NAME+"_filter"), targetRectangle, ProgressMonitor.NULL);
-        Tile aeroModelTile = getSourceTile(aerosolProduct.getBand(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME+"_filled"), targetRectangle, ProgressMonitor.NULL);
-        Tile validPixelTile = getSourceTile(validBand, targetRectangle, ProgressMonitor.NULL);
+        final Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid(SynergyConstants.INPUT_PRESSURE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
+        final Tile ozoneTile = getSourceTile(synergyProduct.getTiePointGrid(SynergyConstants.INPUT_OZONE_BAND_NAME), targetRectangle, ProgressMonitor.NULL);
+        final Tile aotTile = getSourceTile(aerosolProduct.getBand(SynergyConstants.OUTPUT_AOT_BAND_NAME+"_filter"), targetRectangle, ProgressMonitor.NULL);
+        final Tile aeroModelTile = getSourceTile(aerosolProduct.getBand(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME+"_filled"), targetRectangle, ProgressMonitor.NULL);
+        final Tile validPixelTile = getSourceTile(validBand, targetRectangle, ProgressMonitor.NULL);
+
+        float[] merisToaReflec;
+        float[][] aatsrToaReflec;
+
+        final Aardvarc aardvarc = new Aardvarc(aatsrWvl, merisWvl);
+        aardvarc.setSpecSoil(soilSurfSpec);
+        aardvarc.setSpecVeg(vegSurfSpec);
+
+        List<ReflectanceBinLUT> toaLutList = new ArrayList<ReflectanceBinLUT>();
+
 
         for (int iY = targetRectangle.y; iY < targetRectangle.y + targetRectangle.height; iY++) {
             for (int iX = targetRectangle.x; iX < targetRectangle.x + targetRectangle.width; iX++) {
                 checkForCancelation(pm);
-                int aeroModel = aeroModelTile.getSampleInt(iX, iY);
+                final int aeroModel = aeroModelTile.getSampleInt(iX, iY);
 
                 if (validPixelTile.getSampleBoolean(iX, iY) &&  isValidAeroModel(aeroModel)) {
-                    float[] geometry = getGeometries(geometryTiles, iX, iY);
+                    final float[] geometry = getGeometries(geometryTiles, iX, iY);
 
                     merisToaReflec = getSpectra(merisTiles, iX, iY);
                     aatsrToaReflec = getSpectra(aatsrTiles, iX, iY);
-                    setToaLut(aeroModel);
 
-                    float aveMerisPressure = pressureTile.getSampleFloat(iX, iY);
-                    float aveMerisOzone = ozoneTile.getSampleFloat(iX, iY);
+                    ReflectanceBinLUT toaLut = setToaLut(aeroModel, toaLutList);
+                    final float[] lutAlbedo = toaLut.getAlbDim();
+                    final float[] lutAot = toaLut.getAotDim();
+
+                    float[][][] lutSubsecMeris = new float[merisWvl.length][lutAlbedo.length][lutAot.length];
+                    float[][][][] lutSubsecAatsr = new float[2][aatsrWvl.length][lutAlbedo.length][lutAot.length];
+
+                    final float aveMerisPressure = pressureTile.getSampleFloat(iX, iY);
+                    final float aveMerisOzone = ozoneTile.getSampleFloat(iX, iY);
 
                     // this setup is the same as for pure AOD retrieval
-                    int iSza = 0; int iSaa = 1; int iVza = 2; int iVaa = 3;
+                    final int iSza = 0; int iSaa = 1; int iVza = 2; int iVaa = 3;
                     int offset = 0; // MERIS geometry
                     toaLut.subsecLUT("meris", aveMerisPressure, aveMerisOzone, geometry[iVza + offset], geometry[iVaa + offset],
                             geometry[iSza + offset], geometry[iSaa + offset], merisWvl, lutSubsecMeris);
@@ -282,7 +281,6 @@ public class RetrieveSdrLandOp extends Operator {
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyTiePointGrids(aerosolProduct, targetProduct);
-//        ProductUtils.copyFlagCodings(aerosolProduct, targetProduct);
         ProductUtils.copyBitmaskDefsAndOverlays(aerosolProduct, targetProduct);
         ProductUtils.copyFlagBands(aerosolProduct, targetProduct);
         for (Band srcBand : aerosolProduct.getBands()) {
@@ -294,8 +292,7 @@ public class RetrieveSdrLandOp extends Operator {
         }
 
         createTargetProductBands();
-
-        targetProduct.setPreferredTileSize(1100,1100);
+        targetProduct.setPreferredTileSize(128, 128);
         setTargetProduct(targetProduct);
 
     }
@@ -329,7 +326,6 @@ public class RetrieveSdrLandOp extends Operator {
                 targetBand.setNoDataValue(SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE);
                 targetBand.setNoDataValueUsed(SynergyConstants.OUTPUT_SDR_BAND_NODATAVALUE_USED);
                 targetBand.setValidPixelExpression(sdrAatsrBandNames[iView][iWL] + ">= 0 AND " + sdrAatsrBandNames[iView][iWL] + "<= 1");
-                //targetBand.setSpectralBandIndex(iWL);
                 targetBand.setSpectralBandwidth(aatsrBandWidth[iWL]);
                 targetBand.setSpectralWavelength(aatsrWvl[iWL]);
                 targetProduct.addBand(targetBand);
@@ -341,8 +337,9 @@ public class RetrieveSdrLandOp extends Operator {
         return (modelNumber >= 1 && modelNumber <= 40);
     }
 
-    private void setToaLut(int aeroModel) {
+    private ReflectanceBinLUT setToaLut(int aeroModel, List<ReflectanceBinLUT> toaLutList) {
         boolean lutExists = false;
+        ReflectanceBinLUT toaLut = null;
         for (ReflectanceBinLUT lut:toaLutList) {
             if (lut.getAerosolModel() == aeroModel) {
                 toaLut = lut;
@@ -354,11 +351,8 @@ public class RetrieveSdrLandOp extends Operator {
             toaLut = new ReflectanceBinLUT(auxdataPath, aeroModel, merisWvl, aatsrWvl);
             toaLutList.add(toaLut);
         }
-        lutAlbedo = toaLut.getAlbDim();
-        lutAot = toaLut.getAotDim();
 
-        lutSubsecMeris = new float[merisWvl.length][lutAlbedo.length][lutAot.length];
-        lutSubsecAatsr = new float[2][aatsrWvl.length][lutAlbedo.length][lutAot.length];
+        return toaLut;
     }
 
     private float[] getGeometries(Tile[] geometryTiles, int iX, int iY) {
@@ -385,35 +379,6 @@ public class RetrieveSdrLandOp extends Operator {
         return getGeometries(specTiles, iTarX, iTarY);
     }
 
-/*
-    private void getGeometryBandList(Product inputProduct, String instr, ArrayList<RasterDataNode> bandList) {
-        String[] viewArr = {"nadir", "fward"};
-        int nView = viewArr.length;
-        String[] bodyArr = {"sun", "view"};
-        String[] angArr = {"elev", "azimuth"};
-        String bandName;
-
-        if (instr.equals("MERIS")) {
-            angArr[0] = "zenith";
-            nView = 1;
-        }
-        for (int iView = 0; iView < nView; iView++) {
-            for (String body : bodyArr) {
-                for(String ang : angArr) {
-                    if (instr.equals("AATSR")) {
-                        bandName = body + "_" + ang + "_" + viewArr[iView] + "_" +
-                                SynergyPreprocessingConstants.INPUT_BANDS_SUFFIX_AATSR;
-                        bandList.add(inputProduct.getBand(bandName));
-                    } else {
-                        bandName = body + "_" + ang;
-                        bandList.add(inputProduct.getRasterDataNode(bandName));
-                    }
-                }
-            }
-        }
-    }
-*/
-
     private Tile[] getGeometryTiles(ArrayList<RasterDataNode> merisGeometryBandList, ArrayList<RasterDataNode> aatsrGeometryBandList, Rectangle rec) {
         ArrayList<RasterDataNode> bandList = new ArrayList<RasterDataNode>();
         bandList.addAll(merisGeometryBandList);
@@ -433,27 +398,6 @@ public class RetrieveSdrLandOp extends Operator {
         }
         return sourceTiles;
     }
-
-/*
-    private void getSpectralBandList(Product inputProduct, String bandNamePrefix,  String bandNameSuffix,
-            int[] excludeBandIndices, ArrayList<Band> bandList) {
-
-        String[] bandNames = inputProduct.getBandNames();
-        Comparator<Band> byWavelength = new WavelengthComparator();
-        for (String name : bandNames) {
-            if (name.startsWith(bandNamePrefix) && name.endsWith(bandNameSuffix)) {
-                boolean exclude = false;
-                if (excludeBandIndices != null) {
-                    for (int i : excludeBandIndices) {
-                        exclude = exclude || (i == inputProduct.getBand(name).getSpectralBandIndex()+1);
-                    }
-                }
-                if (!exclude) bandList.add(inputProduct.getBand(name));
-            }
-        }
-        Collections.sort(bandList,byWavelength);
-    }
-*/
 
     private void readWavelengthBandw(ArrayList<Band> bandList, float[] wvl, float[] bwidth) {
         for (int i = 0; i < bandList.size(); i++) {

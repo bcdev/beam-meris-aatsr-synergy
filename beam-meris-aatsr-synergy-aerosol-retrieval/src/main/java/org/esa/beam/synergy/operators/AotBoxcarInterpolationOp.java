@@ -61,10 +61,10 @@ public class AotBoxcarInterpolationOp extends Operator {
         for (Band band:sourceProduct.getBands()) {
             if (!band.isFlagBand()) {
 
-                RenderedImage sourceImage = band.getSourceImage();
+                final RenderedImage sourceImage = band.getSourceImage();
                 System.out.printf("Source, size: %d x %d\n", sourceImage.getWidth(), sourceImage.getHeight());
 
-                RenderedOp extSourceImage = getImageWithZeroBorderExtension(sourceImage, boxDimension);
+                final RenderedOp extSourceImage = getImageWithZeroBorderExtension(sourceImage, boxDimension);
                 System.out.printf("Extended Source, size: %d x %d\n", extSourceImage.getWidth(), extSourceImage.getHeight());
 
                 double[] low, high, map;
@@ -89,7 +89,7 @@ public class AotBoxcarInterpolationOp extends Operator {
                 // upscale
                 System.out.printf("Dst, size: %d x %d\n", dstImage.getWidth(), dstImage.getHeight());
 
-                RenderedOp boxImage = JAI.create("boxfilter", dstImage,
+                final RenderedOp boxImage = JAI.create("boxfilter", dstImage,
                                             boxWidth, boxHeight,
                                             boxWidth / 2, boxHeight / 2);
                 System.out.printf("Boximage, size: %d x %d\n", boxImage.getWidth(), boxImage.getHeight());

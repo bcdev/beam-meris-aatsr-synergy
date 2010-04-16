@@ -81,23 +81,22 @@ public class LaplaceInterpolationOp extends Operator {
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
-        int aveBlock = 100;
-        Rectangle targetRectangle = targetTile.getRectangle();
-        Rectangle big = new Rectangle(targetRectangle.x-aveBlock,targetRectangle.y-aveBlock,targetRectangle.width+2*aveBlock,targetRectangle.height+2*aveBlock);
+        final int aveBlock = 100;
+        final Rectangle targetRectangle = targetTile.getRectangle();
+        final Rectangle big = new Rectangle(targetRectangle.x-aveBlock,targetRectangle.y-aveBlock,targetRectangle.width+2*aveBlock,targetRectangle.height+2*aveBlock);
 
-        int x1 = targetRectangle.x;
-        int x2 = targetRectangle.x + targetRectangle.width - 1;
-        int y1 = targetRectangle.y;
-        int y2 = targetRectangle.y + targetRectangle.height - 1;
+        final int x1 = targetRectangle.x;
+        final int x2 = targetRectangle.x + targetRectangle.width - 1;
+        final int y1 = targetRectangle.y;
+        final int y2 = targetRectangle.y + targetRectangle.height - 1;
 
-        int end = targetBand.getName().indexOf("_intp");
-        String srcBandName = targetBand.getName().substring(0, end);
-        System.out.println(srcBandName);
+        final int end = targetBand.getName().indexOf("_intp");
+        final String srcBandName = targetBand.getName().substring(0, end);
         final Band sourceBand = sourceProduct.getBand(srcBandName);
-        Tile sT = getSourceTile(sourceBand, big, ProgressMonitor.NULL);
+        final Tile sT = getSourceTile(sourceBand, big, ProgressMonitor.NULL);
 
-        double[][] dataArr = new double[big.height][big.width];
-        double noDataValue = sT.getRasterDataNode().getNoDataValue();
+        final double[][] dataArr = new double[big.height][big.width];
+        final double noDataValue = sT.getRasterDataNode().getNoDataValue();
 
         for (int iy=0; iy<big.height; iy++) {
             for (int ix=0; ix<big.width; ix++) {

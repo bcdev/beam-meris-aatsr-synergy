@@ -97,18 +97,14 @@ public class RetrieveAerosolLandOp extends Operator{
     private ArrayList<RasterDataNode> aatsrGeometryBandList;
     private float[] merisWvl;
     private float[] aatsrWvl;
-    private float[] merisToaReflec;
-    private float[][] aatsrToaReflec;
-    private Aardvarc aardvarc;
     private float[] soilSurfSpec;
     private float[] vegSurfSpec;
-    private ReflectanceBinLUT toaLut;
+
     private float[] lutAlbedo;
     private float[] lutAot;
     private float[][][] lutSubsecMeris;
     private float[][][][] lutSubsecAatsr;
     
-    private boolean validPixel;
     //private int minNAve;
     //private float noDataVal;
     private Product synergyProduct;
@@ -152,8 +148,6 @@ public class RetrieveAerosolLandOp extends Operator{
         aatsrBandListFwd = new ArrayList<Band>();
         merisGeometryBandList = new ArrayList<RasterDataNode>();
         aatsrGeometryBandList = new ArrayList<RasterDataNode>();
-        toaLut = null;
-        validPixel = true;
 
         scalingFactor = aveBlock;
         aveBlock /= 2;
@@ -191,16 +185,9 @@ public class RetrieveAerosolLandOp extends Operator{
 
         merisWvl = new float[merisBandList.size()];
         aatsrWvl = new float[aatsrBandListNad.size()];
-        merisToaReflec = new float[merisBandList.size()];
-        aatsrToaReflec = new float[2][aatsrBandListNad.size()];
 
         readWavelength(merisBandList, merisWvl);
         readWavelength(aatsrBandListNad, aatsrWvl);
-
-        aardvarc = new Aardvarc(aatsrWvl, merisWvl);
-        aardvarc.setDoAATSR(true);
-        aardvarc.setDoMERIS(true);
-
 
         if (soilSurfSpec == null) {
             if (soilSpecName.equals(SynergyConstants.SOIL_SPEC_PARAM_DEFAULT)) {
@@ -216,11 +203,6 @@ public class RetrieveAerosolLandOp extends Operator{
             }
             vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
         }
-        aardvarc.setSpecSoil(soilSurfSpec);
-        aardvarc.setSpecVeg(vegSurfSpec);
-
-
-
     }
 
     @Override
@@ -230,33 +212,33 @@ public class RetrieveAerosolLandOp extends Operator{
         System.out.printf("   Aerosol Retrieval @ Tile %s\n", targetRectangle.toString());
 
         // define bigger Rectangle for binning of source tiles
-        int bigWidth = (int) ((2*aveBlock+1)*targetRectangle.getWidth());
-        int bigHeight = (int) ((2*aveBlock+1)*targetRectangle.getHeight());
-        int bigX = (int) ((2*aveBlock+1)*targetRectangle.getX());
-        int bigY = (int) ((2*aveBlock+1)*targetRectangle.getY());
-        Rectangle big = new Rectangle(bigX, bigY, bigWidth, bigHeight);
+        final int bigWidth = (int) ((2*aveBlock+1)*targetRectangle.getWidth());
+        final int bigHeight = (int) ((2*aveBlock+1)*targetRectangle.getHeight());
+        final int bigX = (int) ((2*aveBlock+1)*targetRectangle.getX());
+        final int bigY = (int) ((2*aveBlock+1)*targetRectangle.getY());
+        final Rectangle big = new Rectangle(bigX, bigY, bigWidth, bigHeight);
 
         // read source tiles
-        Tile[] merisTiles = getSpecTiles(merisBandList, big);
+        final Tile[] merisTiles = getSpecTiles(merisBandList, big);
 
         Tile[][] aatsrTiles = new Tile[2][0];
         aatsrTiles[0] = getSpecTiles(aatsrBandListNad, big);
         aatsrTiles[1] = getSpecTiles(aatsrBandListFwd, big);
         
-        Tile[] geometryTiles = getGeometryTiles(merisGeometryBandList, aatsrGeometryBandList, big);
+        final Tile[] geometryTiles = getGeometryTiles(merisGeometryBandList, aatsrGeometryBandList, big);
         
-        Tile pressureTile = getSourceTile(
+        final Tile pressureTile = getSourceTile(
                                 synergyProduct.getTiePointGrid(SynergyConstants.INPUT_PRESSURE_BAND_NAME),
                                 big,
                                 SubProgressMonitor.create(pm, 1));
-        Tile ozoneTile = getSourceTile(
+        final Tile ozoneTile = getSourceTile(
                                 synergyProduct.getTiePointGrid(SynergyConstants.INPUT_OZONE_BAND_NAME),
                                 big,
                                 SubProgressMonitor.create(pm, 1));
 
-        Tile isValidTile = getSourceTile(isValidBand, big, SubProgressMonitor.create(pm, 1));
-        Tile isLandTile = getSourceTile(isLandBand, big, SubProgressMonitor.create(pm, 1));
-        Tile isCloudyTile = getSourceTile(isCloudyBand, big, SubProgressMonitor.create(pm, 1));
+        final Tile isValidTile = getSourceTile(isValidBand, big, SubProgressMonitor.create(pm, 1));
+        final Tile isLandTile = getSourceTile(isLandBand, big, SubProgressMonitor.create(pm, 1));
+        final Tile isCloudyTile = getSourceTile(isCloudyBand, big, SubProgressMonitor.create(pm, 1));
 
         // define target tiles
         Tile vNdviTile = getSourceTile(synergyProduct.getBand(virtNdviName), big, SubProgressMonitor.create(pm, 1));
@@ -265,6 +247,17 @@ public class RetrieveAerosolLandOp extends Operator{
         Tile aerosolModelTile = targetTiles.get(targetProduct.getBand(SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME));
         Tile aerosolErrTile = targetTiles.get(targetProduct.getBand(SynergyConstants.OUTPUT_AOTERR_BAND_NAME));
         Tile aerosolFlagTile = targetTiles.get(targetProduct.getBand(aerosolFlagCodingName));
+
+        float[] merisToaReflec = new float[merisBandList.size()];
+        float[][] aatsrToaReflec = new float[2][aatsrBandListNad.size()];
+
+        ReflectanceBinLUT toaLut = null;
+
+        final Aardvarc aardvarc = new Aardvarc(aatsrWvl, merisWvl);
+        aardvarc.setDoAATSR(true);
+        aardvarc.setDoMERIS(true);
+        aardvarc.setSpecSoil(soilSurfSpec);
+        aardvarc.setSpecVeg(vegSurfSpec);
 
         double[][] minErr = new double[targetRectangle.height][targetRectangle.width];
 
@@ -280,7 +273,7 @@ public class RetrieveAerosolLandOp extends Operator{
 
         for (int iAM = 0; iAM < aerosolModels.size(); iAM++) {
             
-            int aeroModel = aerosolModels.get(iAM).intValue();
+            final int aeroModel = aerosolModels.get(iAM).intValue();
 
             if ((toaLut == null) || (toaLut.getAerosolModel() != aeroModel)) {
                 // provide complete LUT:
@@ -292,22 +285,23 @@ public class RetrieveAerosolLandOp extends Operator{
                 lutSubsecAatsr = new float[2][aatsrWvl.length][lutAlbedo.length][lutAot.length];
             }
 
+            boolean validPixel = true;
             for (int iY = targetRectangle.y; iY < targetRectangle.y + targetRectangle.height; iY++) {
                 for (int iX = targetRectangle.x; iX < targetRectangle.x + targetRectangle.width; iX++) {
                     checkForCancelation(pm);
-                    int iSrcX = (2*aveBlock+1)*iX + aveBlock;
-                    int iSrcY = (2*aveBlock+1)*iY + aveBlock;
+                    final int iSrcX = (2*aveBlock+1)*iX + aveBlock;
+                    final int iSrcY = (2*aveBlock+1)*iY + aveBlock;
 
                     int flagPixel = 0;
-                    boolean isBorder = (iSrcY+aveBlock >= rasterHeight || iSrcX+aveBlock >= rasterWidth);
+                    final boolean isBorder = (iSrcY+aveBlock >= rasterHeight || iSrcX+aveBlock >= rasterWidth);
                     if (isBorder) flagPixel |= borderMask;
                     
-                    boolean isLand = evaluateFlagPixel(isLandTile, iSrcX, iSrcY, true);
-                    boolean isCloudy = evaluateFlagPixel(isCloudyTile, iSrcX, iSrcY, false);
+                    final boolean isLand = evaluateFlagPixel(isLandTile, iSrcX, iSrcY, true);
+                    final boolean isCloudy = evaluateFlagPixel(isCloudyTile, iSrcX, iSrcY, false);
                     if (!isLand)  flagPixel |= oceanMask;
                     if (isCloudy) flagPixel |= cloudyMask;
                     // keep previous success
-                    boolean prevSuccess = aerosolFlagTile.getSampleBit(iX, iY, 2);
+                    final boolean prevSuccess = aerosolFlagTile.getSampleBit(iX, iY, 2);
                     if (prevSuccess) flagPixel |= successMask;
                     
                     validPixel = isLand && !isCloudy;
@@ -318,18 +312,18 @@ public class RetrieveAerosolLandOp extends Operator{
                     float aveNdvi = 0;
 
                     if (validPixel) {
-                        geometry = getAvePixel(geometryTiles, iSrcX, iSrcY, isValidTile);
+                        geometry = getAvePixel(geometryTiles, iSrcX, iSrcY, isValidTile, validPixel);
 
-                        merisToaReflec = getAvePixel(merisTiles, iSrcX, iSrcY, isValidTile);
-                        aatsrToaReflec = getAvePixel(aatsrTiles, iSrcX, iSrcY, isValidTile);
+                        merisToaReflec = getAvePixel(merisTiles, iSrcX, iSrcY, isValidTile, validPixel);
+                        aatsrToaReflec = getAvePixel(aatsrTiles, iSrcX, iSrcY, isValidTile, validPixel);
 
-                        aveMerisPressure = getAvePixel(pressureTile, iSrcX, iSrcY, isValidTile);
-                        aveMerisOzone = getAvePixel(ozoneTile, iSrcX, iSrcY, isValidTile);
-                        aveNdvi = getAvePixel(vNdviTile, iSrcX, iSrcY, isValidTile);
+                        aveMerisPressure = getAvePixel(pressureTile, iSrcX, iSrcY, isValidTile, validPixel);
+                        aveMerisOzone = getAvePixel(ozoneTile, iSrcX, iSrcY, isValidTile, validPixel);
+                        aveNdvi = getAvePixel(vNdviTile, iSrcX, iSrcY, isValidTile, validPixel);
                     }
                     if (validPixel) {
 
-                        int iSza = 0; int iSaa = 1; int iVza = 2; int iVaa = 3;
+                        final int iSza = 0; int iSaa = 1; int iVza = 2; int iVaa = 3;
                         int offset = 0; // MERIS geometry
                         toaLut.subsecLUT("meris", aveMerisPressure, aveMerisOzone, geometry[iVza+offset], geometry[iVaa+offset],
                                           geometry[iSza+offset], geometry[iSaa+offset], merisWvl, lutSubsecMeris);
@@ -358,16 +352,16 @@ public class RetrieveAerosolLandOp extends Operator{
 
                         // and these are the retrieval results:
                         boolean retrievalFailed = aardvarc.isFailed();
-                        float aot = aardvarc.getOptAOT();    // AOT (tau_550)
-                        float errMetric = aardvarc.getOptErr();    // E
-                        float retrievalError = aardvarc.getRetrievalErr();
+                        final float aot = aardvarc.getOptAOT();    // AOT (tau_550)
+                        final float errMetric = aardvarc.getOptErr();    // E
+                        final float retrievalError = aardvarc.getRetrievalErr();
                         retrievalFailed = retrievalFailed || aot < 1e-3 || (aot > 0.1 && (retrievalError/aot) > 5);
                         if (!retrievalFailed) flagPixel |= successMask;
                         if (aardvarc.isFailed()) flagPixel |= negMetricMask;
                         if (aot < 1e-5) flagPixel |= aotLowMask;
                         if (aot > 0.1 && (retrievalError/aot) > 5) flagPixel |= errHighMask;
 
-                        double errTemp = minErr[iY-targetRectangle.y][iX-targetRectangle.x];
+                        final double errTemp = minErr[iY-targetRectangle.y][iX-targetRectangle.x];
                         if ( (Double.compare(errTemp, SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE) == 0
                             || errMetric < errTemp)) {
 
@@ -404,8 +398,8 @@ public class RetrieveAerosolLandOp extends Operator{
                 iIR = bandList.indexOf(b);
             }
         }
-        String redName = bandList.get(iRED).getName();
-        String irName = bandList.get(iIR).getName();
+        final String redName = bandList.get(iRED).getName();
+        final String irName = bandList.get(iIR).getName();
 
         return "(" + irName + " - " + redName + ")/(" + irName + " + " + redName + ")";
     }
@@ -426,7 +420,7 @@ public class RetrieveAerosolLandOp extends Operator{
 
         createTargetProductBands();
         
-        targetProduct.setPreferredTileSize(100, 100);
+        targetProduct.setPreferredTileSize(128,128);
         setTargetProduct(targetProduct);
         
     }
@@ -478,10 +472,10 @@ public class RetrieveAerosolLandOp extends Operator{
         return flag;
     }
 
-    private float getAvePixel(Tile inputTile, int iTarX, int iTarY, Tile flags) {
+    private float getAvePixel(Tile inputTile, int iTarX, int iTarY, Tile flags, boolean validPixel) {
 
         double value = 0;
-        double noDataValue = inputTile.getRasterDataNode().getNoDataValue();
+        final double noDataValue = inputTile.getRasterDataNode().getNoDataValue();
         int n = 0;
         int minNAve = (iTarY + aveBlock >= rasterHeight) ? (rasterHeight - iTarY - aveBlock) : (int) scalingFactor;
         minNAve *= (iTarX+aveBlock >= rasterWidth) ? (rasterWidth-iTarX-aveBlock) : (int) scalingFactor;
@@ -510,21 +504,21 @@ public class RetrieveAerosolLandOp extends Operator{
         return (float) value;
     }
 
-    private float[] getAvePixel(Tile[] tileArr, int iTarX, int iTarY, Tile flags) {
+    private float[] getAvePixel(Tile[] tileArr, int iTarX, int iTarY, Tile flags, boolean validPixel) {
         
         float[] valueArr = new float[tileArr.length];
         
         for (int i = 0; i < valueArr.length; i++) {
-            valueArr[i] = getAvePixel(tileArr[i], iTarX, iTarY, flags);
+            valueArr[i] = getAvePixel(tileArr[i], iTarX, iTarY, flags, validPixel);
         }
         
         return valueArr;
     }
 
-    private float[][] getAvePixel(Tile[][] tileArr2, int iTarX, int iTarY, Tile flags) {
+    private float[][] getAvePixel(Tile[][] tileArr2, int iTarX, int iTarY, Tile flags, boolean validPixel) {
         float[][] valueArr2 = new float[2][0];
-        valueArr2[0] = getAvePixel(tileArr2[0], iTarX, iTarY, flags);
-        valueArr2[1] = getAvePixel(tileArr2[1], iTarX, iTarY, flags);
+        valueArr2[0] = getAvePixel(tileArr2[0], iTarX, iTarY, flags, validPixel);
+        valueArr2[1] = getAvePixel(tileArr2[1], iTarX, iTarY, flags, validPixel);
 
         return valueArr2;
     }

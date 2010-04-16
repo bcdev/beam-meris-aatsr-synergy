@@ -66,24 +66,24 @@ public class MedianOp extends Operator {
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
-        Rectangle tarRec = targetTile.getRectangle();
+        final Rectangle tarRec = targetTile.getRectangle();
         pm.beginTask("filter aot", tarRec.width*tarRec.height + 1);
 
         if (targetBand.getName().equals(tarBandName)) {
-            int srcX = tarRec.x - medBoxHalf;
-            int srcY = tarRec.y - medBoxHalf;
-            int srcWidth = tarRec.width + 2 * medBoxHalf;
-            int srcHeight = tarRec.height + 2 * medBoxHalf;
-            Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
+            final int srcX = tarRec.x - medBoxHalf;
+            final int srcY = tarRec.y - medBoxHalf;
+            final int srcWidth = tarRec.width + 2 * medBoxHalf;
+            final int srcHeight = tarRec.height + 2 * medBoxHalf;
+            final Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
-            Band srcBand = sourceProduct.getBand(srcBandName);
-            Tile srcTile = getSourceTile(srcBand, srcRec, SubProgressMonitor.create(pm, 1));
-            double noDataValue = srcTile.getRasterDataNode().getNoDataValue();
+            final Band srcBand = sourceProduct.getBand(srcBandName);
+            final Tile srcTile = getSourceTile(srcBand, srcRec, SubProgressMonitor.create(pm, 1));
+            final double noDataValue = srcTile.getRasterDataNode().getNoDataValue();
 
-            int tarX = tarRec.x;
-            int tarY = tarRec.y;
-            int tarWidth = tarRec.width;
-            int tarHeight = tarRec.height;
+            final int tarX = tarRec.x;
+            final int tarY = tarRec.y;
+            final int tarWidth = tarRec.width;
+            final int tarHeight = tarRec.height;
             for (int iTarY = tarY; iTarY < tarHeight; iTarY++) {
                 for (int iTarX = tarX; iTarX < tarWidth; iTarX++) {
                     checkForCancelation(pm);
@@ -100,8 +100,8 @@ public class MedianOp extends Operator {
             }
         }
         else {
-            Band srcBand = sourceProduct.getBand(targetBand.getName());
-            Tile srcTile = getSourceTile(srcBand, tarRec, SubProgressMonitor.create(pm, 1));
+            final Band srcBand = sourceProduct.getBand(targetBand.getName());
+            final Tile srcTile = getSourceTile(srcBand, tarRec, SubProgressMonitor.create(pm, 1));
             targetTile.setRawSamples(srcTile.getRawSamples());
             pm.worked(tarRec.width*tarRec.height);
         }
@@ -132,7 +132,7 @@ public class MedianOp extends Operator {
     }
 
     private void createTargetProductBands() {
-        Band srcBand = sourceProduct.getBand(srcBandName);
+        final Band srcBand = sourceProduct.getBand(srcBandName);
         Band targetBand = new Band(tarBandName, srcBand.getDataType(), rasterWidth, rasterHeight);
         targetBand.setDescription(srcBand.getDescription());
         targetBand.setNoDataValue(srcBand.getNoDataValue());
@@ -142,7 +142,7 @@ public class MedianOp extends Operator {
 
     private float getMedianPixel(Tile inputTile, int iTarX, int iTarY) {
 
-        double noDataValue = inputTile.getRasterDataNode().getNoDataValue();
+        final double noDataValue = inputTile.getRasterDataNode().getNoDataValue();
         double median;
         double[] tmp = new double[9];
         int n = 0;

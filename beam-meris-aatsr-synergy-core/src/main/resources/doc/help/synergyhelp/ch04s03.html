@@ -20,11 +20,18 @@
                 </li><li style="list-style-type: disc">
                     'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
                     be retrieved over land. The default is 'true'.
-                </li><li style="list-style-type: disc">
-                    'Retrieve surface directional reflectances (over land only)': If this checkbox is selected,
-                    SDRs will be retrieved from rescaled AODs. This computation is performed over land only and
-                    requires AOD rescaling (previous checkbox).
-                </li><li style="list-style-type: disc">
+                </li><li style="list-style-type: disc"><p>
+                        'Retrieve surface directional reflectances over land (time consuming!)':
+                        If this checkbox is selected,
+                        SDRs will be retrieved from rescaled AODs. This computation is performed over land only.
+                    </p><p>
+                       Due to the nature of the algorithm, the retrieval of surface directional
+                       reflectances requires much more computation time than the pure aerosol retrieval.
+                       If you are interested in aerosol quantities only, it is recommended to keep
+                       this option unselected. For the computation of surface directional reflectances
+                       on larger datasets, it is further recommended to create in advance subsets of
+                       the input data which just cover the regions of interest.
+                    </p></li><li style="list-style-type: disc">
                     'N x N average for AOD retrieval': Text field to set
                     the number of pixels to average over in the aerosol retrieval. The default number is '7',
                     which corresponds to a square with 3 pixels to each side of a center pixel.

@@ -4,7 +4,7 @@ import com.bc.jnn.JnnException;
 import com.bc.jnn.JnnNet;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.GlintHelpers;
-import org.esa.beam.util.math.LookupTable;
+import org.esa.beam.synergy.util.SynergyLookupTable;
 import org.esa.beam.util.math.MathUtils;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class GlintRetrieval {
 
     private JnnNet neuralNetWindspeed;
 
-    private LookupTable[] gaussParsLuts;
+    private SynergyLookupTable[] gaussParsLuts;
     private HashMap<double[], Double>[] gaussParsMaps;
 
     public GlintRetrieval() {
@@ -182,18 +182,8 @@ public class GlintRetrieval {
         final double minRadianceDiffInLUT = GlintHelpers.getMinimumValueInDoubleArray(radianceDiffs);
         final double windspeed = lut[0][startIndex+minRadianceDiffIndexInLUT];
 
-//        final double[] nnIn = new double[3];
-//        final double[] gaussPars = new double[4];
-//
-//        // apply FUB NN...
-//        nnIn[0] = windspeed;
-//        nnIn[1] = refractiveIndexReal088;
-//        nnIn[2] = Math.cos(Math.toRadians(merisSunZenith));  // angle in degree!
-
         if (minRadianceDiffInLUT <= maximumAcceptableDiff) {
             radianceResult[0] = (float) windspeed;
-//            applyNeuralNetWindspeed(nnIn, gaussPars);
-//            radianceResult[1] = applyGauss2DRecall(merisViewZenith, merisAzimuthDifference, gaussPars);
             radianceResult[1] = calcGlintAnalytical(merisSunZenith, merisViewZenith, merisAzimuthDifference, refractiveIndexReal088,
                                                     windspeed,  rhoFoam088);
         }
@@ -259,33 +249,33 @@ public class GlintRetrieval {
     public static float calcGlintAnalytical(float sunZenith, float viewZenith,
                                      float azimuthDifference, double refractiveIndex,
                                      double windspeed, double rhoFoam) {
-        double rhoGlint = calcGlintReflectionAnalytical(sunZenith, viewZenith, azimuthDifference, refractiveIndex, windspeed);
-        double foamPortion = 2.95 * 1.E-6 * Math.pow(windspeed, 3.25); // Koepke 1985
-        double rhoSurface = (1.0 - foamPortion) * rhoGlint + foamPortion * rhoFoam;
-        double sunZenithRad = MathUtils.DTOR * sunZenith;
-        double rhoSurfaceNormalized = rhoSurface / Math.PI * Math.cos(sunZenithRad);
+        final double rhoGlint = calcGlintReflectionAnalytical(sunZenith, viewZenith, azimuthDifference, refractiveIndex, windspeed);
+        final double foamPortion = 2.95 * 1.E-6 * Math.pow(windspeed, 3.25); // Koepke 1985
+        final double rhoSurface = (1.0 - foamPortion) * rhoGlint + foamPortion * rhoFoam;
+        final double sunZenithRad = MathUtils.DTOR * sunZenith;
+        final double rhoSurfaceNormalized = rhoSurface / Math.PI * Math.cos(sunZenithRad);
         return (float) rhoSurfaceNormalized;
     }
 
     public static float calcGlintReflectionAnalytical(float sunZenith, float viewZenith,
                                                float azimuthDifference, double refractiveIndex,
                                                double windspeed) {
-        float azimuthDifferenceShifted = 180.0f - azimuthDifference;
-        double sunZenithRad = MathUtils.DTOR * sunZenith;
-        double viewZenithRad = MathUtils.DTOR * viewZenith;
-        double azimuthDifferenceShiftedRad = MathUtils.DTOR * azimuthDifferenceShifted;
+        final float azimuthDifferenceShifted = 180.0f - azimuthDifference;
+        final double sunZenithRad = MathUtils.DTOR * sunZenith;
+        final double viewZenithRad = MathUtils.DTOR * viewZenith;
+        final double azimuthDifferenceShiftedRad = MathUtils.DTOR * azimuthDifferenceShifted;
 
-        double cos2refl = Math.cos(viewZenithRad) * Math.cos(sunZenithRad) +
+        final double cos2refl = Math.cos(viewZenithRad) * Math.cos(sunZenithRad) +
                 Math.sin(viewZenithRad) * Math.sin(sunZenithRad) * Math.cos(azimuthDifferenceShiftedRad);
-        double reflAngleRad = Math.acos(cos2refl) / 2.0;
-        double cosNorm = (Math.cos(viewZenithRad) + Math.cos(sunZenithRad)) / (2.0 * Math.cos(reflAngleRad));
-        double transAngleRad = Math.asin(Math.sin(reflAngleRad) / refractiveIndex);
-        double rho = 0.5 * Math.pow(Math.sin(reflAngleRad - transAngleRad) / Math.sin(reflAngleRad + transAngleRad), 2.0) +
+        final double reflAngleRad = Math.acos(cos2refl) / 2.0;
+        final double cosNorm = (Math.cos(viewZenithRad) + Math.cos(sunZenithRad)) / (2.0 * Math.cos(reflAngleRad));
+        final double transAngleRad = Math.asin(Math.sin(reflAngleRad) / refractiveIndex);
+        final double rho = 0.5 * Math.pow(Math.sin(reflAngleRad - transAngleRad) / Math.sin(reflAngleRad + transAngleRad), 2.0) +
                 0.5 * Math.pow(Math.tan(reflAngleRad - transAngleRad) / Math.tan(reflAngleRad + transAngleRad), 2.0);
-        double normAngleRad = Math.acos(cosNorm);
-        double sig2 = 0.003 + 0.00512 * windspeed; // m/s
-        double prob = Math.exp(-Math.atan(normAngleRad) * Math.atan(normAngleRad) / sig2) / (Math.PI * sig2);
-        double brdf = Math.PI * rho * prob / (4.0 * Math.cos(viewZenithRad) * Math.cos(sunZenithRad) * Math.pow(cosNorm, 4.0));
+        final double normAngleRad = Math.acos(cosNorm);
+        final double sig2 = 0.003 + 0.00512 * windspeed; // m/s
+        final double prob = Math.exp(-Math.atan(normAngleRad) * Math.atan(normAngleRad) / sig2) / (Math.PI * sig2);
+        final double brdf = Math.PI * rho * prob / (4.0 * Math.cos(viewZenithRad) * Math.cos(sunZenithRad) * Math.pow(cosNorm, 4.0));
         return (float) brdf;
     }
 
@@ -304,7 +294,7 @@ public class GlintRetrieval {
                                       float azimuthDifference, float refractiveIndex, float windspeed) {
 
         final float mCosMerisSunZenith = (float) -Math.cos(Math.toRadians(sunZenith));
-        double[] gaussPars = getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex,  windspeed);
+        final double[] gaussPars = getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex,  windspeed);
         // compute the glint:
         return gauss2DFullRecall(viewZenith, azimuthDifference, gaussPars);
     }
@@ -312,7 +302,7 @@ public class GlintRetrieval {
     public double[] getGaussParsFromLUT(float mCosMerisSunZenith, float refractiveIndex,  float windspeed) {
         double[] gaussPars = new double[4];
 
-        double[] gaussParsLutInput = new double[]{mCosMerisSunZenith, refractiveIndex, windspeed};
+        final double[] gaussParsLutInput = new double[]{mCosMerisSunZenith, refractiveIndex, windspeed};
 
         gaussPars[0] = gaussParsLuts[0].getValue(gaussParsLutInput);
         gaussPars[1] = gaussParsLuts[1].getValue(gaussParsLutInput);

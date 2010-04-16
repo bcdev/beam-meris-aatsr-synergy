@@ -7,7 +7,7 @@ package org.esa.beam.synergy.operators;
 
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.SynergyConstants;
-import org.esa.beam.util.math.LookupTable;
+import org.esa.beam.synergy.util.SynergyLookupTable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,8 +25,8 @@ import java.util.logging.Logger;
  * @version $Revision: 8034 $ $Date: 2010-01-20 14:47:34 +0000 (Mi, 20 Jan 2010) $
  */
 public class ReflectanceBinLUT {
-    private LookupTable[] toaMERIS;
-    private LookupTable[] toaAATSR;
+    private SynergyLookupTable[] toaMERIS;
+    private SynergyLookupTable[] toaAATSR;
     private float[] szaDim;
     private float[] raziDim;
     private float[] vzaDim;
@@ -56,7 +56,7 @@ public class ReflectanceBinLUT {
         
         // read the actual LUT (simulated Top Of Atmosphere Radiances)
         // for all wavelength
-        toaMERIS = new LookupTable[merisWvl.length];
+        toaMERIS = new SynergyLookupTable[merisWvl.length];
         for (String ws : SynergyConstants.LUT_LAND_MERIS_WAVELEN) {
             lutFileName = lutFileNameStub.replaceAll("%WVLSTR%", ws);
             lutWvl = Float.valueOf(ws);
@@ -72,7 +72,7 @@ public class ReflectanceBinLUT {
         
         // read the actual LUT (simulated Top Of Atmosphere Radiances)
         // for all wavelength
-        toaAATSR = new LookupTable[aatsrWvl.length];
+        toaAATSR = new SynergyLookupTable[aatsrWvl.length];
         for (String ws : SynergyConstants.LUT_LAND_AATSR_WAVELEN) {
             lutFileName = lutFileNameStub.replaceAll("%WVLSTR%", ws);
             lutWvl = Float.valueOf(ws);
@@ -107,11 +107,11 @@ public class ReflectanceBinLUT {
         return szaDim;
     }
 
-    public LookupTable[] getToaAATSR() {
+    public SynergyLookupTable[] getToaAATSR() {
         return toaAATSR;
     }
 
-    public LookupTable[] getToaMERIS() {
+    public SynergyLookupTable[] getToaMERIS() {
         return toaMERIS;
     }
 
@@ -124,17 +124,17 @@ public class ReflectanceBinLUT {
     }
 
     public void subsecLUT(String instr, float pres, float o3, float vza, float vaa, float sza, float saa, float[] wvl, float[][][] a) {
-        int nWl = wvl.length;
-        int nAot = aotDim.length;
-        int nAlb = albDim.length;
-        boolean isAatsr = instr.equals("aatsr");
-        boolean isMeris = instr.equals("meris");
+        final int nWl = wvl.length;
+        final int nAot = aotDim.length;
+        final int nAlb = albDim.length;
+        final boolean isAatsr = instr.equals("aatsr");
+        final boolean isMeris = instr.equals("meris");
         
         float relAzi = Math.abs(saa - vaa);
         relAzi = (relAzi > 180.0f) ? 180 - (360 - relAzi) : 180 - relAzi;
         
-        double geomAMF = (1/Math.cos(Math.toRadians(sza))+1/Math.cos(Math.toRadians(vza)))/2;
-        double rad2rfl = Math.PI / Math.cos(Math.toRadians(sza));
+        final double geomAMF = (1/Math.cos(Math.toRadians(sza))+1/Math.cos(Math.toRadians(vza)))/2;
+        final double rad2rfl = Math.PI / Math.cos(Math.toRadians(sza));
         double o3Corr = 1.0;
         double wvCorr = 1.0;
         final double wvCol = 2.0; // constant water vapour column g/cm^2
@@ -223,17 +223,17 @@ public class ReflectanceBinLUT {
         }
     }
 
-    private LookupTable readToaRad(String lutFileName) throws OperatorException {
+    private SynergyLookupTable readToaRad(String lutFileName) throws OperatorException {
         ObjectInputStream toaFile = null;
-        LookupTable lut = null;
+        SynergyLookupTable lut = null;
         try {
 
             toaFile = new ObjectInputStream(new FileInputStream(lutFileName));
 
-            int n = presDim.length*vzaDim.length*raziDim.length*szaDim.length*aotDim.length*albDim.length;
-            float[] a = (float[]) toaFile.readObject();
+            final int n = presDim.length*vzaDim.length*raziDim.length*szaDim.length*aotDim.length*albDim.length;
+            final float[] a = (float[]) toaFile.readObject();
             if (a.length != n) throw new OperatorException("Size of LUT array not equal size of Dimensions.");
-            lut = new LookupTable(a, logPresDim, vzaDim, raziDim, szaDim, aotDim, albDim);
+            lut = new SynergyLookupTable(a, logPresDim, vzaDim, raziDim, szaDim, aotDim, albDim);
         } catch (Exception ex1) {
             String mess = "Could not open LUT file: \n" + ex1.getMessage();
             throw new OperatorException(mess, ex1);

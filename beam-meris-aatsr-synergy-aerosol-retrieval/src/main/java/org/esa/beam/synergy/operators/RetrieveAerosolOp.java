@@ -182,6 +182,7 @@ public class RetrieveAerosolOp extends Operator {
             surfaceReflectanceParams.put("dumpPixelY", dumpPixelY);
             surfaceReflectanceProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(RetrieveSdrLandOp.class), surfaceReflectanceParams, surfaceReflectanceInput);
 
+//            surfaceReflectanceProduct = landOceanUpscaledProduct;
         } else {
             surfaceReflectanceProduct = landOceanUpscaledProduct;
         }

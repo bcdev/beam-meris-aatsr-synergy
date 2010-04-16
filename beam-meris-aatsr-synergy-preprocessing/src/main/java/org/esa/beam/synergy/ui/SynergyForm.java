@@ -338,10 +338,33 @@ public class SynergyForm extends JTabbedPane {
         panel.add(computeLandCheckBox, new TableLayout.Cell(rowIndex, 0));
         rowIndex++;
 
-        layout.setCellColspan(rowIndex, 0, 2);
+//        layout.setCellColspan(rowIndex, 0, 2);
+//        layout.setCellWeightX(rowIndex, 0, 1.0);
+//        panel.add(computeSurfaceReflectancesCheckBox, new TableLayout.Cell(rowIndex, 0));
+//        rowIndex++;
+
+
         layout.setCellWeightX(rowIndex, 0, 1.0);
+        layout.setCellPadding(rowIndex, 1, new Insets(0, 24, 0, 0));
         panel.add(computeSurfaceReflectancesCheckBox, new TableLayout.Cell(rowIndex, 0));
+
+        final MouseAdapter atmCorrInfoAdapter = new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                String msg = SynergyConstants.ATM_CORR_INFO_MESSAGE;
+                JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
+                                             JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            }
+
+        };
+
+        JLabel atmCorrInfoLabel= new JLabel();
+        atmCorrInfoLabel.setIcon(infoIcon);
+        panel.add(atmCorrInfoLabel, new TableLayout.Cell(rowIndex, 1));
+        atmCorrInfoLabel.addMouseListener(atmCorrInfoAdapter);
         rowIndex++;
+
+
+
 
         layout.setCellPadding(rowIndex, 0, new Insets(0, 12, 40, 0));
         layout.setCellPadding(rowIndex, 1, new Insets(0, 36, 40, 0));

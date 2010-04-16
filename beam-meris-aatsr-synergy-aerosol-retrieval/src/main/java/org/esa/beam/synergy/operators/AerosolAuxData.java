@@ -2,8 +2,8 @@ package org.esa.beam.synergy.operators;
 
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.SynergyConstants;
+import org.esa.beam.synergy.util.SynergyLookupTable;
 import org.esa.beam.util.math.IntervalPartition;
-import org.esa.beam.util.math.LookupTable;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
@@ -94,15 +94,15 @@ public class AerosolAuxData {
             //       float GGS(GGS_dimension_1=40, GGS_dimension_2=2);
             //       float WOS(WOS_dimension_1=40, WOS_dimension_2=2);
 
-            Variable model = netcdfFile.findVariable("MODEL");
-            Variable ang = netcdfFile.findVariable("ANG");
-            Variable ggs = netcdfFile.findVariable("GGS");
-            Variable wos = netcdfFile.findVariable("WOS");
+            final Variable model = netcdfFile.findVariable("MODEL");
+            final Variable ang = netcdfFile.findVariable("ANG");
+            final Variable ggs = netcdfFile.findVariable("GGS");
+            final Variable wos = netcdfFile.findVariable("WOS");
 
 
-            int[] modelShape = model.getShape();
-            int[] modelOrigin = new int[2];
-            int[] modelSize = new int[] {modelShape[0], modelShape[1]};
+            final int[] modelShape = model.getShape();
+            final int[] modelOrigin = new int[2];
+            final int[] modelSize = new int[] {modelShape[0], modelShape[1]};
             Array modelArray;
             try {
                 modelArray = model.read(modelOrigin, modelSize);
@@ -120,11 +120,11 @@ public class AerosolAuxData {
             }
             aerosolModelTable.setModelArray(modelJavaArray);
 
-            float[][] angArray = getJavaFloat2DFromNetcdfVariable(ang);
+            final float[][] angArray = getJavaFloat2DFromNetcdfVariable(ang);
             aerosolModelTable.setAngArray(angArray);
-            float[][] ggsArray = getJavaFloat2DFromNetcdfVariable(ggs);
+            final float[][] ggsArray = getJavaFloat2DFromNetcdfVariable(ggs);
             aerosolModelTable.setGgsArray(ggsArray);
-            float[][] wosArray = getJavaFloat2DFromNetcdfVariable(wos);
+            final float[][] wosArray = getJavaFloat2DFromNetcdfVariable(wos);
             aerosolModelTable.setWosArray(wosArray);
 
 
@@ -138,7 +138,7 @@ public class AerosolAuxData {
     /**
      *
      * This method reads all LUT files for ocean aerosol retrieval and creates
-     * corresponding {@link LookupTable} objects.
+     * corresponding {@link SynergyLookupTable} objects.
      *
      * @param inputPath - file input path
      * @param modelIndices - aerosol model indices
@@ -147,19 +147,19 @@ public class AerosolAuxData {
      * @return  LookupTable[][]
      * @throws IOException
      */
-    public LookupTable[][] createAerosolOceanLookupTables(String inputPath, List<Integer> modelIndices, float[] wvl, int[] wvlIndex) throws IOException {
+    public SynergyLookupTable[][] createAerosolOceanLookupTables(String inputPath, List<Integer> modelIndices, float[] wvl, int[] wvlIndex) throws IOException {
 
-        DecimalFormat df2 = new DecimalFormat("00");
-        DecimalFormat df5 = new DecimalFormat("00000");
+        final DecimalFormat df2 = new DecimalFormat("00");
+        final DecimalFormat df5 = new DecimalFormat("00000");
 
-        int nModels = modelIndices.size();
-        int nWvl = wvlIndex.length;
-        LookupTable[][] aerosolLookupTables = new LookupTable[nModels][nWvl];
+        final int nModels = modelIndices.size();
+        final int nWvl = wvlIndex.length;
+        SynergyLookupTable[][] aerosolLookupTables = new SynergyLookupTable[nModels][nWvl];
         for (int i=0; i<nModels; i++) {
             for (int j=0; j<nWvl; j++) {
-                String sb2=(df2.format((long)modelIndices.get(i)));
-                String sb5=(df5.format((long)wvl[wvlIndex[j]]));
-                String inputFileString = "aer" + sb2 + "_wvl" + sb5 + ".nc";
+                final String sb2=(df2.format((long)modelIndices.get(i)));
+                final String sb5=(df5.format((long)wvl[wvlIndex[j]]));
+                final String inputFileString = "aer" + sb2 + "_wvl" + sb5 + ".nc";
 
                 try {
                     final NetcdfFile netcdfFile = NetcdfFile.open(inputPath + File.separator + inputFileString);
@@ -174,31 +174,31 @@ public class AerosolAuxData {
                     //       float DATA(ANG_dimension_1=3, ANG_dimension_2=9, ANG_dimension_3=8,
                     //                  ANG_dimension_4=14, ANG_dimension_5=11, ANG_dimension_6=19);
 
-                    Variable prs = netcdfFile.findVariable("PRS");
-                    Variable tau = netcdfFile.findVariable("TAU");
-                    Variable wsp = netcdfFile.findVariable("WSP");
-                    Variable sun = netcdfFile.findVariable("SUN");
-                    Variable vie = netcdfFile.findVariable("VIE");
-                    Variable azi = netcdfFile.findVariable("AZI");
-                    Variable data = netcdfFile.findVariable("DATA");
+                    final Variable prs = netcdfFile.findVariable("PRS");
+                    final Variable tau = netcdfFile.findVariable("TAU");
+                    final Variable wsp = netcdfFile.findVariable("WSP");
+                    final Variable sun = netcdfFile.findVariable("SUN");
+                    final Variable vie = netcdfFile.findVariable("VIE");
+                    final Variable azi = netcdfFile.findVariable("AZI");
+                    final Variable data = netcdfFile.findVariable("DATA");
 
-                    float[] prsArray = getJavaFloat1DFromNetcdfVariable(prs);
+                    final float[] prsArray = getJavaFloat1DFromNetcdfVariable(prs);
                     for (int k=0; k<prsArray.length; k++) {
                         // take negative value to get increasing sequence for LUT creation
                         prsArray[k] = -prsArray[k];
                     }
-                    float[] tauArray = getJavaFloat1DFromNetcdfVariable(tau);
-                    float[] wspArray = getJavaFloat1DFromNetcdfVariable(wsp);
-                    float[] sunArray = getJavaFloat1DFromNetcdfVariable(sun);
-                    float[] vieArray = getJavaFloat1DFromNetcdfVariable(vie);
-                    float[] aziArray = getJavaFloat1DFromNetcdfVariable(azi);
+                    final float[] tauArray = getJavaFloat1DFromNetcdfVariable(tau);
+                    final float[] wspArray = getJavaFloat1DFromNetcdfVariable(wsp);
+                    final float[] sunArray = getJavaFloat1DFromNetcdfVariable(sun);
+                    final float[] vieArray = getJavaFloat1DFromNetcdfVariable(vie);
+                    final float[] aziArray = getJavaFloat1DFromNetcdfVariable(azi);
 
-                    Array dataArrayNc = data.read();
+                    final Array dataArrayNc = data.read();
                     int dataSize = 1;
                     for (int k=0; k<6; k++) {
                         dataSize *= data.getDimension(k).getLength();
                     }
-                    Object storage = dataArrayNc.getStorage();
+                    final Object storage = dataArrayNc.getStorage();
                     float[] dataArray = new float[dataSize];
                     System.arraycopy(storage, 0, dataArray, 0, dataSize);
 
@@ -206,7 +206,7 @@ public class AerosolAuxData {
                     final IntervalPartition[] dimensions = IntervalPartition.createArray(
                             aziArray, vieArray, sunArray, wspArray, tauArray, prsArray);
 
-                    aerosolLookupTables[i][j] = new LookupTable(dataArray, dimensions);
+                    aerosolLookupTables[i][j] = new SynergyLookupTable(dataArray, dimensions);
                 } catch (UnsupportedEncodingException e) {
                     throw new OperatorException("Failed to read aerosol properties from netcdf file.\n");
                 }
@@ -217,10 +217,10 @@ public class AerosolAuxData {
     }
 
     private float[] getJavaFloat1DFromNetcdfVariable(Variable f) throws IOException {
-        Array fArrayNc = f.read();
-        int fSize = (int) fArrayNc.getSize();
-        Object storage = fArrayNc.getStorage();
-        float[] fArray = new float[fSize];
+        final Array fArrayNc = f.read();
+        final int fSize = (int) fArrayNc.getSize();
+        final Object storage = fArrayNc.getStorage();
+        final float[] fArray = new float[fSize];
         System.arraycopy(storage, 0, fArray, 0, fSize);
 
         return fArray;
@@ -229,10 +229,10 @@ public class AerosolAuxData {
     private float[][] getJavaFloat2DFromNetcdfVariable(Variable f) throws IOException {
         float[][] result;
 
-        int[] fShape = f.getShape();
-        int[] fOrigin = new int[2];
-        int[] fSize = new int[] {fShape[0], fShape[1]};
-        Array fArray;
+        final int[] fShape = f.getShape();
+        final int[] fOrigin = new int[2];
+        final int[] fSize = new int[] {fShape[0], fShape[1]};
+        final Array fArray;
         try {
             fArray = f.read(fOrigin, fSize);
         } catch (InvalidRangeException e) {
@@ -328,7 +328,7 @@ public class AerosolAuxData {
 
         public List<Integer> getMaritimeIndices() {
             List<Integer> maritimeIndexList = new ArrayList<Integer>();
-            String[] models = getModelArray();
+            final String[] models = getModelArray();
             for (int i=0; i<models.length; i++) {
                 if (models[i].toLowerCase().startsWith("maritime")) {
                     maritimeIndexList.add(new Integer(i));
@@ -340,7 +340,7 @@ public class AerosolAuxData {
 
         public List<Integer> getMaritimeAndDesertIndices() {
             List<Integer> maritimeAndDesertIndexList = new ArrayList<Integer>();
-            String[] models = getModelArray();
+            final String[] models = getModelArray();
             for (int i=0; i<models.length; i++) {
                 if (models[i].toLowerCase().startsWith("maritime") ||
                         models[i].toLowerCase().startsWith("desert") ||

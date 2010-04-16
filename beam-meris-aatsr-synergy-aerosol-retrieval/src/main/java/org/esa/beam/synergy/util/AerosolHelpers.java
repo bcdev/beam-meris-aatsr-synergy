@@ -49,10 +49,10 @@ public class AerosolHelpers {
      * @param bandList
      */
     public static void getGeometryBandList(Product inputProduct, String instr, ArrayList<RasterDataNode> bandList) {
-        String[] viewArr = {"nadir", "fward"};
+        final String[] viewArr = {"nadir", "fward"};
         int nView = viewArr.length;
-        String[] bodyArr = {"sun", "view"};
-        String[] angArr = {"elev", "azimuth"};
+        final String[] bodyArr = {"sun", "view"};
+        final String[] angArr = {"elev", "azimuth"};
         String bandName;
 
         if (instr.equals("MERIS")) {
@@ -78,7 +78,7 @@ public class AerosolHelpers {
     public static void getSpectralBandList(Product inputProduct, String bandNamePrefix, String bandNameSuffix,
             int[] excludeBandIndices, ArrayList<Band> bandList) {
 
-        String[] bandNames = inputProduct.getBandNames();
+        final String[] bandNames = inputProduct.getBandNames();
         Comparator<Band> byWavelength = new WavelengthComparator();
         for (String name : bandNames) {
             if (name.startsWith(bandNamePrefix) && name.endsWith(bandNameSuffix)) {
@@ -132,7 +132,7 @@ public class AerosolHelpers {
      * @return AngstroemParameters[] - the model pairs
      */
     public AngstroemParameters[] getAngstroemParameters(float[] angArray, int nAng) {
-        float[] minMaxVector = AerosolHelpers.getMinMaxVector(angArray, nAng);
+        final float[] minMaxVector = AerosolHelpers.getMinMaxVector(angArray, nAng);
         AngstroemParameters[] angstroemParameters = new AngstroemParameters[minMaxVector.length];
 
         for (int i = 0; i < minMaxVector.length; i++) {
@@ -300,34 +300,34 @@ public class AerosolHelpers {
      * @param targetProduct - the target product
      */
     public static void copySynergyFlagBands(Product synergyProduct, Product targetProduct) {
-        Band aatsrConfidFlagNadirBand = targetProduct.addBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band aatsrConfidFlagFwardBand = targetProduct.addBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band aatsrCloudFlagNadirBand = targetProduct.addBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band aatsrCloudFlagFwardBand = targetProduct.addBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
-        Band merisL1FlagsBand = targetProduct.addBand(SynergyConstants.L1_FLAGS_MERIS, ProductData.TYPE_INT16);
-        Band merisCloudFlagBand = targetProduct.addBand(SynergyConstants.CLOUD_FLAG_MERIS, ProductData.TYPE_INT16);
+        final Band aatsrConfidFlagNadirBand = targetProduct.addBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
+        final Band aatsrConfidFlagFwardBand = targetProduct.addBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
+        final Band aatsrCloudFlagNadirBand = targetProduct.addBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
+        final Band aatsrCloudFlagFwardBand = targetProduct.addBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
+        final Band merisL1FlagsBand = targetProduct.addBand(SynergyConstants.L1_FLAGS_MERIS, ProductData.TYPE_INT16);
+        final Band merisCloudFlagBand = targetProduct.addBand(SynergyConstants.CLOUD_FLAG_MERIS, ProductData.TYPE_INT16);
 
-        FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
+        final FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrConfidNadirFlagCoding, targetProduct);
         aatsrConfidFlagNadirBand.setSampleCoding(aatsrConfidNadirFlagCoding);
 
-        FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
+        final FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrConfidFwardFlagCoding, targetProduct);
         aatsrConfidFlagFwardBand.setSampleCoding(aatsrConfidFwardFlagCoding);
 
-        FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
+        final FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrCloudNadirFlagCoding, targetProduct);
         aatsrCloudFlagNadirBand.setSampleCoding(aatsrCloudNadirFlagCoding);
 
-        FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
+        final FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrCloudFwardFlagCoding, targetProduct);
         aatsrCloudFlagFwardBand.setSampleCoding(aatsrCloudFwardFlagCoding);
 
-        FlagCoding merisL1FlagsCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.L1_FLAGS_MERIS);
+        final FlagCoding merisL1FlagsCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.L1_FLAGS_MERIS);
         ProductUtils.copyFlagCoding(merisL1FlagsCoding, targetProduct);
         merisL1FlagsBand.setSampleCoding(merisL1FlagsCoding);
 
-        FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FLAG_MERIS);
+        final FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FLAG_MERIS);
         ProductUtils.copyFlagCoding(merisCloudFlagCoding, targetProduct);
         merisCloudFlagBand.setSampleCoding(merisCloudFlagCoding);
     }
@@ -341,17 +341,17 @@ public class AerosolHelpers {
      */
     public static void copyDownscaledTiePointGrids(Product sourceProduct, Product targetProduct, float scalingFactor) {
         // Add tie point grids for sun/view zenith/azimuths. Get data from AATSR bands.
-        Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band latitudeBand = sourceProduct.getBand("latitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band longitudeBand = sourceProduct.getBand("longitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band altitudeBand = sourceProduct.getBand("altitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band latitudeBand = sourceProduct.getBand("latitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band longitudeBand = sourceProduct.getBand("longitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band altitudeBand = sourceProduct.getBand("altitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
 
-        Band szaDownscaledBand = downscaleBand(szaBand, scalingFactor);
-        Band saaDownscaledBand = downscaleBand(saaBand, scalingFactor);
-        Band latitudeDownscaledBand = downscaleBand(latitudeBand, scalingFactor);
-        Band longitudeDownscaledBand = downscaleBand(longitudeBand, scalingFactor);
-        Band altitudeDownscaledBand = downscaleBand(altitudeBand, scalingFactor);
+        final Band szaDownscaledBand = downscaleBand(szaBand, scalingFactor);
+        final Band saaDownscaledBand = downscaleBand(saaBand, scalingFactor);
+        final Band latitudeDownscaledBand = downscaleBand(latitudeBand, scalingFactor);
+        final Band longitudeDownscaledBand = downscaleBand(longitudeBand, scalingFactor);
+        final Band altitudeDownscaledBand = downscaleBand(altitudeBand, scalingFactor);
 
         addTpg(targetProduct, szaDownscaledBand, "sun_zenith");
         addTpg(targetProduct, saaDownscaledBand, "sun_azimuth");
@@ -374,21 +374,21 @@ public class AerosolHelpers {
     public static void copyRescaledTiePointGrids(Product sourceProduct, Product targetProduct,
                                                  int xScalingFactor, int yScalingFactor) {
         // Add tie point grids for sun/view zenith/azimuths. Get data from AATSR bands.
-        Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band latitudeBand = sourceProduct.getBand("latitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band longitudeBand = sourceProduct.getBand("longitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
-        Band altitudeBand = sourceProduct.getBand("altitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band szaBand = sourceProduct.getBand("sun_elev_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band saaBand = sourceProduct.getBand("sun_azimuth_nadir_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band latitudeBand = sourceProduct.getBand("latitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band longitudeBand = sourceProduct.getBand("longitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
+        final Band altitudeBand = sourceProduct.getBand("altitude_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR);
 
-        TiePointGrid szaTpg = getRescaledTpgFromBand(szaBand, xScalingFactor, yScalingFactor);
+        final TiePointGrid szaTpg = getRescaledTpgFromBand(szaBand, xScalingFactor, yScalingFactor);
         targetProduct.addTiePointGrid(szaTpg);
-        TiePointGrid saaTpg = getRescaledTpgFromBand(saaBand, xScalingFactor, yScalingFactor);
+        final TiePointGrid saaTpg = getRescaledTpgFromBand(saaBand, xScalingFactor, yScalingFactor);
         targetProduct.addTiePointGrid(saaTpg);
-        TiePointGrid latTpg = getRescaledTpgFromBand(latitudeBand, xScalingFactor, yScalingFactor);
+        final TiePointGrid latTpg = getRescaledTpgFromBand(latitudeBand, xScalingFactor, yScalingFactor);
         targetProduct.addTiePointGrid(latTpg);
-        TiePointGrid lonTpg = getRescaledTpgFromBand(longitudeBand, xScalingFactor, yScalingFactor);
+        final TiePointGrid lonTpg = getRescaledTpgFromBand(longitudeBand, xScalingFactor, yScalingFactor);
         targetProduct.addTiePointGrid(lonTpg);
-        TiePointGrid altTpg = getRescaledTpgFromBand(altitudeBand, xScalingFactor, yScalingFactor);
+        final TiePointGrid altTpg = getRescaledTpgFromBand(altitudeBand, xScalingFactor, yScalingFactor);
         targetProduct.addTiePointGrid(altTpg);
 
     }
@@ -416,7 +416,7 @@ public class AerosolHelpers {
      * @return TiePointGrid
      */
     public static TiePointGrid getTpgFromBand(Band band) {
-        DataBuffer dataBuffer = band.getSourceImage().getData().getDataBuffer();
+        final DataBuffer dataBuffer = band.getSourceImage().getData().getDataBuffer();
         float[] tpgData = new float[dataBuffer.getSize()];
         for (int i = 0; i < dataBuffer.getSize(); i++) {
             tpgData[i] = dataBuffer.getElemFloat(i);
@@ -438,7 +438,7 @@ public class AerosolHelpers {
      * @return TiePointGrid
      */
     public static TiePointGrid getRescaledTpgFromBand(Band band, int rescaledWidth, int rescaledHeight) {
-        DataBuffer dataBuffer = band.getSourceImage().getData().getDataBuffer();
+        final DataBuffer dataBuffer = band.getSourceImage().getData().getDataBuffer();
         float[] tpgData = new float[rescaledWidth * rescaledHeight];
         if (rescaledWidth * rescaledHeight > band.getSceneRasterWidth() * band.getSceneRasterHeight()) {
             throw new OperatorException("Cannot create TPG - width*height too large.");
@@ -468,8 +468,8 @@ public class AerosolHelpers {
      * @return Band - the downscaled band
      */
     public static Band downscaleBand(Band inputBand, float scalingFactor) {
-        RenderedImage sourceImage = inputBand.getSourceImage();
-        RenderedOp downscaledImage = ScaleDescriptor.create(sourceImage,
+        final RenderedImage sourceImage = inputBand.getSourceImage();
+        final RenderedOp downscaledImage = ScaleDescriptor.create(sourceImage,
                                                             1.0f / scalingFactor,
                                                             1.0f / scalingFactor,
                                                             0.0f, 0.0f,

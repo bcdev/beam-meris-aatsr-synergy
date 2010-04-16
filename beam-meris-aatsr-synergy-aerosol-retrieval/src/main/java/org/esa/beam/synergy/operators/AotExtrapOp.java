@@ -61,7 +61,7 @@ public class AotExtrapOp extends Operator {
         aveParam.put("aveBlock", 3);
         aveAotProd = GPF.createProduct(OperatorSpi.getOperatorAlias(BoxAveOp.class), aveParam, aveInputProd);
 
-        int[] aveBlocks = {3,3,3,3,3,5,7,9,11,13,15,17,19,21};
+        final int[] aveBlocks = {3,3,3,3,3,5,7,9,11,13,15,17,19,21};
         for (int i=0; i<aveBlocks.length; i++) {
             aveInputProd.put("source", aveAotProd);
             aveParam.put("aveBlock", aveBlocks[i]);
