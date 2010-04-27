@@ -14,7 +14,6 @@ import org.esa.beam.synergy.util.SynergyUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.io.File;
 
 /**
  * Master operator for MERIS/AATSR Synergy toolbox.
@@ -123,8 +122,10 @@ public class MasterOp extends Operator {
         SynergyUtils.validateMerisProduct(merisSourceProduct);
         SynergyUtils.validateAatsrProduct(aatsrSourceProduct);
 
-        if (!SynergyUtils.validateAuxdata(useCustomLandAerosol, customLandAerosol)) {
-            return;
+        if (createAerosolProduct) {
+            if (!SynergyUtils.validateAuxdata(useCustomLandAerosol, customLandAerosol)) {
+                return;
+            }
         }
 
         // get the colocated 'preprocessing' product...
