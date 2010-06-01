@@ -41,9 +41,6 @@
         <module>beam-collocation</module>
     </dependency>
     <dependency>
-        <module>aatsr-recalibration-recalibrate</module>
-    </dependency>
-    <dependency>
         <module>beam-meris-aatsr-synergy-core</module>
     </dependency>
 

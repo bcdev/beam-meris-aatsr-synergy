@@ -26,6 +26,7 @@ import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
+import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.gpf.operators.standard.SubsetOp;
@@ -93,11 +94,11 @@ public class CreateSynergyOp extends Operator {
 //    boolean createDEMelevation;
     boolean createDEMelevation = false;
 
-//    @Parameter(defaultValue = "true",
-//               description = "Crop MERIS/AATSR non-overlapping areas",
-//               label = "Crop MERIS/AATSR non-overlapping areas")
-//    boolean subsetOvAreas;
-    boolean subsetOvAreas = true;
+    @Parameter(defaultValue = "true",
+               description = "Crop MERIS/AATSR non-overlapping areas",
+               label = "Crop MERIS/AATSR non-overlapping areas")
+    boolean subsetOvAreas;
+//    boolean subsetOvAreas = true;
 
     @Override
     public void initialize() throws OperatorException {

@@ -6,7 +6,7 @@
     <name>Synergy</name>
     <groupId>org.esa.beam.synergy</groupId>
     <artifactId>beam-meris-aatsr-synergy</artifactId>
-    <version>1.1</version>
+    <version>1.1.1</version>
 
     <packaging>pom</packaging>
 
@@ -71,25 +71,25 @@
             <dependency>
                 <groupId>com.bc.ceres</groupId>
                 <artifactId>ceres-launcher</artifactId>
-                <version>0.10</version>
+                <version>0.10.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.bc.ceres</groupId>
                 <artifactId>ceres-core</artifactId>
-                <version>0.10</version>
+                <version>0.10.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.bc.ceres</groupId>
                 <artifactId>ceres-binding</artifactId>
-                <version>0.10</version>
+                <version>0.10.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.bc.ceres</groupId>
                 <artifactId>ceres-ui</artifactId>
-                <version>0.10</version>
+                <version>0.10.2</version>
             </dependency>
 
             <!-- BEAM System Level Modules ############################################# -->
@@ -97,32 +97,32 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-core</artifactId>
-                <version>4.7</version>
+                <version>4.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-ui</artifactId>
-                <version>4.7</version>
+                <version>4.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-visat</artifactId>
-                <version>4.7</version>
+                <version>4.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-bootstrap</artifactId>
-                <version>4.7</version>
+                <version>4.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-gpf</artifactId>
-                <version>4.7</version>
+                <version>4.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-collocation</artifactId>
-                <version>1.0.100</version>
+                <version>1.1</version>
             </dependency>
 
             <dependency>
@@ -134,27 +134,27 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-meris-brr</artifactId>
-                <version>2.1-SNAPSHOT</version>
+                <version>2.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-meris-sdr</artifactId>
-                <version>2.3-SNAPSHOT</version>
+                <version>2.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam.synergy</groupId>
                 <artifactId>beam-meris-aatsr-synergy-cloud-screening</artifactId>
-                <version>1.1</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam.synergy</groupId>
                 <artifactId>beam-meris-aatsr-synergy-aerosol-retrieval</artifactId>
-                <version>1.1</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam.synergy</groupId>
                 <artifactId>beam-meris-aatsr-synergy-core</artifactId>
-                <version>1.1</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam.aatsr-recalibration</groupId>
