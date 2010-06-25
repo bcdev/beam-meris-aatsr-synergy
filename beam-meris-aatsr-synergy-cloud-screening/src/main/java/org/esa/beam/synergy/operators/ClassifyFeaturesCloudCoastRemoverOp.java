@@ -6,8 +6,8 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
-import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.OperatorSpi;
+import org.esa.beam.framework.gpf.Tile;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
@@ -27,7 +27,7 @@ import java.util.Map;
         version = "1.1",
         authors = "Jordi Munyoz-Mari, Luis Gomez-Chova",
         copyright = "(c) 2009 IPL-UV",
-        description = "Remove false positives due to coastlines.")
+        description = "Remove false positives due to coastlines.", internal=true)
 
 public class ClassifyFeaturesCloudCoastRemoverOp extends Operator {
 

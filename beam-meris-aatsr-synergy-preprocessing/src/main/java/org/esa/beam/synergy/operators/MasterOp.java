@@ -25,7 +25,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "The master operator for the MERIS/(A)ATSR toolbox.")
+                  description = "The master operator for the MERIS/(A)ATSR Synergy Toolbox.")
 public class MasterOp extends Operator {
 
     @SourceProduct(alias = "MERIS",

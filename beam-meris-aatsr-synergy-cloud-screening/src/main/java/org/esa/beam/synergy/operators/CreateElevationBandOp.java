@@ -49,7 +49,7 @@ import java.util.Map;
         version = "1.1",
         authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
         copyright = "(c) 2008-09 by IPL, University of Valencia",
-        description = "This operator creates and elevation band for a product.")
+        description = "This operator creates and elevation band for a product.", internal=true)
 
 public class CreateElevationBandOp extends Operator {
 

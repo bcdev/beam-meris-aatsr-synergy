@@ -35,7 +35,7 @@ import java.util.logging.Logger;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "Perform Laplace interpolation of fields")
+                  description = "Perform Laplace interpolation of fields", internal=true)
 public class LaplaceInterpolationOp extends Operator {
 
     @SourceProduct(alias = "source",

@@ -40,7 +40,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "Retrieve Surface Reflectance over Land.")
+                  description = "Retrieve Surface Reflectance over Land.", internal=true)
 public class RetrieveSdrLandOp extends Operator {
 
     @SourceProduct(alias = "aerosol",

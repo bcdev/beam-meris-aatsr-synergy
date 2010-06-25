@@ -29,7 +29,7 @@ import java.awt.Rectangle;
                   version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Retrieve Aerosol over ocean and land.")
+                  description = "Retrieve Aerosol over ocean and land.", internal=true)
 public class LandOceanMergeOp extends Operator {
 
     private static final String LAND_EXPRESSION = "l1_flags" + "_" +

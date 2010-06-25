@@ -29,9 +29,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import static java.lang.Math.*;
 import java.util.ArrayList;
 import java.util.Map;
+
+import static java.lang.Math.*;
 
 /**
  * Operator for extracting cloud features from TOA reflectances.
@@ -43,7 +44,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Ralf Quast, Olaf Danne, Jordi Munoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2008-09 by Brockmann Consult and IPL-UV",
-                  description = "Extracts cloud features from Synergy TOA reflectance products.")
+                  description = "Extracts cloud features from Synergy TOA reflectance products.", internal=true)
 public class ExtractFeaturesOp extends Operator {
 
 	private static final double INVERSE_SCALING_FACTOR = 10000.0;

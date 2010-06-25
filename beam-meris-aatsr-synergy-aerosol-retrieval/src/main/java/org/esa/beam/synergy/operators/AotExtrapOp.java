@@ -30,7 +30,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT extrapolation of missing data.")
+                  description = "AOT extrapolation of missing data.", internal=true)
 public class AotExtrapOp extends Operator {
 
     @SourceProduct(alias = "synergy",

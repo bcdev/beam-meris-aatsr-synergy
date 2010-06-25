@@ -33,7 +33,7 @@ import java.awt.image.RenderedImage;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT upscaling of interpolated data using JAI.")
+                  description = "AOT upscaling of interpolated data using JAI.", internal=true)
 public class UpscaleJaiOp extends Operator {
 
     @SourceProduct(alias = "synergy",

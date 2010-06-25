@@ -37,7 +37,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Retrieve Aerosol over Ocean.")
+                  description = "Retrieve Aerosol over Ocean." , internal=true)
 public class RetrieveAerosolOceanOp extends Operator {
 
     @SourceProduct(alias = "source",

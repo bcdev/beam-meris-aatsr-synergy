@@ -71,7 +71,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Ralf Quast, Olaf Danne, Jordi Munyoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2008 by Brockmann Consult and IPL-UV",
-                  description = "Classifies features extracted from Synergy TOA reflectance products.")
+                  description = "Classifies features extracted from Synergy TOA reflectance products.", internal=true)
                   
 public class ClassifyFeaturesOp extends Operator {
 	@SourceProduct(alias = "source",

@@ -24,7 +24,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Jordi Munyoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2009 IPL-UV",
-                  description = "Add cloud flags and index to synergy product.")
+                  description = "Performs cloud screening on a MERIS/AATSR Synergy product.")
 
 public class SynergyCloudScreeningOp extends Operator {
     

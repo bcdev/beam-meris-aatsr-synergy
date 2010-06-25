@@ -29,7 +29,7 @@ import java.awt.image.renderable.ParameterBlock;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT interpolation of missing data.")
+                  description = "AOT interpolation of missing data.", internal=true)
 public class AotBoxcarInterpolationOp extends Operator {
 
     @SourceProduct(alias = "source",

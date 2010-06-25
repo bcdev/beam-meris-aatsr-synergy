@@ -34,7 +34,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "boxcar Averaging excluding NoDataPixel")
+                  description = "boxcar Averaging excluding NoDataPixel", internal=true)
 public class BoxAveOp extends Operator {
 
     @SourceProduct(alias = "source",

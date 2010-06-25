@@ -46,7 +46,7 @@ import java.util.Map;
         version = "1.1",
         authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
         copyright = "(c) 2008-90 by IPL",
-        description = "This operator prepares the AATRS product.")
+        description = "This operator prepares the AATRS product.", internal=true)
 
 public class CreateAatsrOp extends Operator {
 

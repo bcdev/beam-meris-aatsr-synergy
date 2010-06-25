@@ -25,7 +25,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Retrieve Aerosol over ocean and land.")
+                  description = "Retrieves aerosol over ocean and land.")
 public class RetrieveAerosolOp extends Operator {
 
     @SourceProduct(alias = "source",

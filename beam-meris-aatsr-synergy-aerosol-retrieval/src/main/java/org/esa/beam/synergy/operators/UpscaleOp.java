@@ -14,10 +14,10 @@ import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.Tile;
+import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.util.ProductUtils;
 
@@ -31,7 +31,7 @@ import java.awt.Rectangle;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT upscaling of interpolated data.")
+                  description = "AOT upscaling of interpolated data.", internal=true)
 public class UpscaleOp extends Operator {
 
     @SourceProduct(alias = "aerosol",

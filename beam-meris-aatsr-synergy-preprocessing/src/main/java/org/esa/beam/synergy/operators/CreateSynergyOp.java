@@ -48,7 +48,7 @@ import java.util.Map;
         version = "1.1",
         authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
         copyright = "(c) 2008 by IPL",
-        description = "This operator creates the Synergy product.")
+        description = "Creates a MERIS/AATSR colocated ('Synergy') product.")
 
 public class CreateSynergyOp extends Operator {
 

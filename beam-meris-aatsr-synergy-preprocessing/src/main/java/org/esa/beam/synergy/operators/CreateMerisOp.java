@@ -51,7 +51,7 @@ import java.util.Map;
         version = "1.1",
         authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
         copyright = "(c) 2008-09 by IPL",
-        description = "This operator calls a chain of operators to prepare the MERIS product.")
+        description = "This operator calls a chain of operators to prepare the MERIS product.", internal=true)
 
 public class CreateMerisOp extends Operator {
 

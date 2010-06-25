@@ -43,7 +43,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "Retrieve Aerosol over Land.")
+                  description = "Retrieve Aerosol over Land.", internal=true)
 public class RetrieveAerosolLandOp extends Operator{
     @SourceProduct(alias = "source",
                    label = "Name (Collocated MERIS AATSR product)",

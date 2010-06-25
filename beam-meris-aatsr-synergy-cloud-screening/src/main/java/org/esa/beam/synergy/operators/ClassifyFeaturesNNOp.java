@@ -32,7 +32,7 @@ import java.util.Map;
                   version = "1.1",
                   authors = "Jordi Munyoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2008 by Brockmann Consult and IPL-UV",
-                  description = "Internal neural network classifier for synergy products.")
+                  description = "Internal neural network classifier for synergy products.", internal=true)
 
 public class ClassifyFeaturesNNOp extends Operator {
 

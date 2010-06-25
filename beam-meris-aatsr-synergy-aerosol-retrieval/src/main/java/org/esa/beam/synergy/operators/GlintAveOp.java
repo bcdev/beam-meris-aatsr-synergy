@@ -31,7 +31,7 @@ import java.io.File;
                   version = "1.1",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Glint Processor for Synergy Ocean Aerosol Retrieval.")
+                  description = "Glint Processor for Synergy Ocean Aerosol Retrieval.", internal=true)
 public class GlintAveOp extends Operator {
     @SourceProduct(alias = "l1bSynergy",
                    description = "MERIS/AATSR synergy product.")
