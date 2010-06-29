@@ -3,7 +3,10 @@
     <symbolicName>beam-meris-aatsr-synergy-aerosol-retrieval</symbolicName>
     <version>1.1.1</version>
     <name>Synergy Aerosol Retrieval</name>
-    <description>Synergy Aerosol Retrieval</description>
+    <description>
+        This module provides the aerosol retrieval and atmospheric correction
+        within the MERIS/AATSR Synergy Toolbox.
+    </description>
 
     <vendor>Brockmann Consult GmbH</vendor>
     <contactAddress>

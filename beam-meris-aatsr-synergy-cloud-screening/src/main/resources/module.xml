@@ -3,8 +3,9 @@
     <symbolicName>beam-meris-aatsr-synergy-cloud-screening</symbolicName>
     <version>1.1.1</version>
     <name>Synergy Cloud Screening</name>
-    <description>Synergy Cloud Screening</description>
-
+    <description>This module provides the cloud screening within the MERIS/AATSR Synergy
+        Toolbox.
+    </description>
     <vendor>Brockmann Consult GmbH</vendor>
     <contactAddress>
         Max Planck Str.2, 21502 Geesthacht (Germany)

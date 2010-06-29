@@ -3,8 +3,9 @@
     <symbolicName>beam-meris-aatsr-synergy-core</symbolicName>
     <version>1.1.1</version>
     <name>Synergy Core</name>
-    <description>Synergy Core Module</description>
-
+    <description>
+        This module provides core functionalities for the MERIS/AATSR Synergy Toolbox.
+    </description>
     <vendor>Brockmann Consult GmbH</vendor>
     <contactAddress>
         Max Planck Str.2, 21502 Geesthacht (Germany)
