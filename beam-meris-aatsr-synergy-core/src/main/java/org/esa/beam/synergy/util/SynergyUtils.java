@@ -7,10 +7,8 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.util.logging.BeamLogManager;
 import ucar.nc2.NetcdfFile;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Rectangle;
 import java.io.BufferedReader;
@@ -24,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 
 /**
  * Utility class for whole Synergy project
@@ -163,7 +160,7 @@ public class SynergyUtils {
     }
 
     public static void logInfoMessage(String msg) {
-        if (System.getProperty("synergyToolboxMode") != null && System.getProperty("synergyToolboxMode").equals("GUI")) {
+        if (System.getProperty("gpfMode") != null && System.getProperty("gpfMode").equals("GUI")) {
             JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Info Message", JOptionPane.DEFAULT_OPTION,
                                          JOptionPane.INFORMATION_MESSAGE, null, null, null);
         } else {
@@ -172,7 +169,7 @@ public class SynergyUtils {
     }
 
     public static void logErrorMessage(String msg) {
-        if (System.getProperty("synergyToolboxMode") != null && System.getProperty("synergyToolboxMode").equals("GUI")) {
+        if (System.getProperty("gpfMode") != null && System.getProperty("gpfMode").equals("GUI")) {
             JOptionPane.showOptionDialog(null, msg, "MERIS/(A)ATSR Synergy - Error Message", JOptionPane.DEFAULT_OPTION,
                                          JOptionPane.ERROR_MESSAGE, null, null, null);
         } else {

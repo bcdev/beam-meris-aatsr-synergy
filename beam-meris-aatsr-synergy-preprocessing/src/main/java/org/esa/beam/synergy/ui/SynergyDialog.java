@@ -61,7 +61,7 @@ public class SynergyDialog extends SingleTargetProductDialog {
         this.operatorName = operatorName;
         targetProductNameSuffix = "";
 
-        System.setProperty("synergyToolboxMode", "GUI");
+        System.setProperty("gpfMode", "GUI");
 
         final OperatorSpi operatorSpi = GPF.getDefaultInstance().getOperatorSpiRegistry().getOperatorSpi(operatorName);
         if (operatorSpi == null) {
