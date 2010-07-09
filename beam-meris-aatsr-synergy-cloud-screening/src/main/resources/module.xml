@@ -2,7 +2,7 @@
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-cloud-screening</symbolicName>
     <version>1.1.1</version>
-    <name>Synergy Cloud Screening</name>
+    <name>MERIS/AATSR Synergy Cloud Screening</name>
     <description>This module provides the cloud screening within the MERIS/AATSR Synergy
         Toolbox.
     </description>

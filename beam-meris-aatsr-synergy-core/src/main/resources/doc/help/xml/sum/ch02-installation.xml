@@ -8,7 +8,7 @@
             in advance:
             <itemizedlist mark='bullet'>
                 <listitem>
-                    BEAM, version 4.7
+                    BEAM, version 4.7.1
                 </listitem>
             </itemizedlist>
             The BEAM software can be obtained from the BEAM download page
@@ -26,30 +26,35 @@
             Reflectance) modules, which provide additional Java classes used by the toolbox:
             <itemizedlist mark='bullet'>
                 <listitem>
-                    beam-meris-aatsr-synergy-core-1.1.jar
+                    beam-meris-aatsr-synergy-core-1.1.1.jar
                 </listitem>
                 <listitem>
-                    beam-meris-aatsr-synergy-aerosol-retrieval-1.1.jar
+                    beam-meris-aatsr-synergy-aerosol-retrieval-1.1.1.jar
                 </listitem>
                 <listitem>
-                    beam-meris-aatsr-synergy-preprocessing-1.1.jar
+                    beam-meris-aatsr-synergy-preprocessing-1.1.1.jar
                 </listitem>
                 <listitem>
-                    beam-meris-aatsr-synergy-cloud-screening-1.1.jar
+                    beam-meris-aatsr-synergy-cloud-screening-1.1.1.jar
                 </listitem>
                 <listitem>
-                    beam-aatsr-recalibration-1.1.jar
+                    beam-aatsr-recalibration-1.1.1.jar
                 </listitem>
                 <listitem>
-                    beam-meris-brr-2.1-SNAPSHOT.jar
+                    beam-meris-brr-2.2.jar
                 </listitem>
                 <listitem>
-                    beam-meris-sdr-2.3-SNAPSHOT.jar
+                    beam-meris-sdr-2.2.jar
                 </listitem>
             </itemizedlist>
 
             <para>
-                These files need to be downloaded from the BEAM plugin page:
+                These files can be installed with the
+                BEAM module manager. This is the usual and recommended way. See BEAM help documentation for details
+                (http://www. brockmann-consult.de/beam/doc/help/visat/ModuleManager.html).
+            </para>
+            <para>
+                Alternatively, the files can be downloaded from the BEAM plugin page:
                 <itemizedlist mark='bullet'>
                     <listitem>
                         http://www.brockmann-consult.de/cms/web/beam/plug-ins
@@ -61,9 +66,8 @@
                         http://www.brockmann-consult.de/beam-wiki/display/SYN/Software
                     </listitem>
                 </itemizedlist>
-            </para>
-            <para>
-                The files need to be copied into the 'modules' folder of the BEAM
+
+                In this case, the files need to be copied manually into the 'modules' folder of the BEAM
                 installation (<xref linkend="figure.installation.beammodules" xrefstyle="select: label"/>).
                 Note that existing versions of these jar files need to be replaced/overwritten.
                 There should not be more than one jar file for each of these modules in the
@@ -156,7 +160,7 @@
                         cd to meris-aatsr-synergy/auxdata
                     </listitem>
                     <listitem>
-                        download either 'beam-meris-aatsr-synergy-auxdata-stanrard.zip' or
+                        download either 'beam-meris-aatsr-synergy-auxdata-standard.zip' or
                         'beam-meris-aatsr-synergy-auxdata-full.zip'
                     </listitem>
                     <listitem>
@@ -178,25 +182,30 @@
                 </listitem>
             </itemizedlist>
             The MERIS L2 Auxdata can be installed with the
-            BEAM module manager. See BEAM help documentation for details
+            BEAM module manager. This is the usual and recommended way. See BEAM help documentation for details
             (http://www. brockmann-consult.de/beam/doc/help/visat/ModuleManager.html).
-            Alternatively, you can directly download and install from the BC ftp site as described above:
+            In case of failure, you can alternatively download and install from the BC ftp site as described above:
             <itemizedlist mark='bullet'>
                 <listitem>
                     again, cd to meris-aatsr-synergy/auxdata
                 </listitem>
                 <listitem>
-                    download 'beam-meris-l2auxdata.zip' and 'beam-meris-l2auxdata-1.1-SNAPSHOT.jar'
+                    download 'beam-meris-l2auxdata.zip' and 'beam-meris-l2auxdata-1.1.jar'
                 </listitem>
                 <listitem>
                     extract the archive 'beam-meris-l2auxdata.zip' into your $(user.home)/.beam folder
                 </listitem>
                 <listitem>
-                    copy the file 'beam-meris-l2auxdata-1.1-SNAPSHOT.jar' into the 'modules' folder
+                    copy the file 'beam-meris-l2auxdata-1.1.jar' into the 'modules' folder
                     of your BEAM installation
                 </listitem>
             </itemizedlist>
         </para>
+        <para>
+            IMPORTANT:
+            Note that it is MANDATORY to install the MERIS L2 Auxdata module, otherwise the MERIS/(A)ATSR Synergy Toolbox
+            (and possibly many other tools) will not appear in the BEAM Visat 'Tools' menu!
+            </para>
     </sect1>
 
 </chapter>

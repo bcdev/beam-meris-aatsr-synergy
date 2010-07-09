@@ -2,7 +2,7 @@
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-aerosol-retrieval</symbolicName>
     <version>1.1.1</version>
-    <name>Synergy Aerosol Retrieval</name>
+    <name>MERIS/AATSR Synergy Aerosol Retrieval</name>
     <description>
         This module provides the aerosol retrieval and atmospheric correction
         within the MERIS/AATSR Synergy Toolbox.
