@@ -2,7 +2,7 @@
   <parent>
     <artifactId>beam-meris-aatsr-synergy</artifactId>
     <groupId>org.esa.beam.synergy</groupId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
   </parent>
   
   <packaging>jar</packaging>
@@ -11,7 +11,6 @@
   <groupId>org.esa.beam.synergy</groupId>
   <artifactId>beam-meris-aatsr-synergy-aerosol-retrieval</artifactId>
   <name>Synergy Aerosol Retrieval</name>
-  <version>1.1.1</version>
   <description>Synergy Aerosol Retrieval</description>
   <url>http://maven.apache.org</url>
 
@@ -48,17 +47,17 @@
 		<dependency>
 			<groupId>org.esa.beam</groupId>
 			<artifactId>beam-meris-brr</artifactId>
-			<version>2.2</version>
+			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esa.beam</groupId>
 			<artifactId>beam-meris-sdr</artifactId>
-			<version>2.2</version>
+			<version>2.2.1</version>
 		</dependency>
         <dependency>
 			<groupId>org.esa.beam.synergy</groupId>
 			<artifactId>beam-meris-aatsr-synergy-core</artifactId>
-			<version>1.1.1</version>
+			<version>${pom.version}</version>
 		</dependency>
         <dependency>
             <groupId>ucar.netcdf</groupId>

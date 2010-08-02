@@ -2,7 +2,7 @@
   <parent>
     <artifactId>beam-meris-aatsr-synergy</artifactId>
     <groupId>org.esa.beam.synergy</groupId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
   </parent>
   
   <packaging>jar</packaging>
@@ -11,7 +11,6 @@
   <groupId>org.esa.beam.synergy</groupId>
   <artifactId>beam-meris-aatsr-synergy-core</artifactId>
   <name>Synergy Core</name>
-  <version>1.1.1</version>
   <description>Synergy Core Module</description>
   <url>http://maven.apache.org</url>
 
