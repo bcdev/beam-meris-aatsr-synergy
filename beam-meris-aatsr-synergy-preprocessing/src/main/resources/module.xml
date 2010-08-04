@@ -4,8 +4,28 @@
     <version>1.1.2</version>
     <name>MERIS/AATSR Synergy Preprocessing</name>
     <description>
-        This module is the preprocessing part of the MERIS/AATSR Synergy Toolbox, 
-        i.e., a colocated MERIS/AATSR product is generated from the original L1b input products.
+        <![CDATA[
+            <p>This module is the preprocessing part of the MERIS/AATSR Synergy Toolbox,
+            i.e., a colocated MERIS/AATSR product is generated from the original L1b input products.</p>
+
+            <p>The MERIS/AATSR Synergy Toolbox provides processing schemes for improved cloud screening, global aerosol
+            retrieval and land atmospheric correction using the combined multi-spectral and multi-angle information from
+            geo-located and geo-registered MERIS and AATSR measurements.</p>
+
+            <p>Algorithms: P. North et al. from Swansea University, J. Fischer et al. from Free University of Berlin, L. Gomez-Chova et al. from University of Valencia</p>
+            <p>Software: O.Danne/R.Quast of Brockmann Consult, L.Gomez-Chova of University of Valencia, A.Heckel of Swansea University</p>
+
+            <Documentation:</p>
+
+            <ul>
+                <li><a href="http://github.com/downloads/bcdev/beam-meris-aatsr-synergy/synergy-cloud-atbd.pdf">Cloud screening ATBD</a></li>
+                <li><a href="http://github.com/downloads/bcdev/beam-meris-aatsr-synergy/synergy-land_aerosol-atbd.pdf">Land aerosol and surface reflectance ATBD</a></li>
+                <li><a href="http://github.com/downloads/bcdev/beam-meris-aatsr-synergy/synergy-ocean_aerosol-atbd.pdf">Ocean aerosol ATBD</a></li>
+                <li><a href="http://github.com/downloads/bcdev/beam-meris-aatsr-synergy/synergy-dpm.pdf">Detailed Processing Model (DPM)</a></li>
+                <li><a href="http://github.com/downloads/bcdev/beam-meris-aatsr-synergy/synergy-iodd.pdf">Input/Output Data Description (IODD)</a></li>
+                <li><a href="http://github.com/downloads/bcdev/beam-meris-aatsr-synergy/synergy-sum.pdf">Software User Manual (SUM)</a></li>
+            </ul>
+        ]]>
     </description>
 
     <vendor>Brockmann Consult GmbH</vendor>
