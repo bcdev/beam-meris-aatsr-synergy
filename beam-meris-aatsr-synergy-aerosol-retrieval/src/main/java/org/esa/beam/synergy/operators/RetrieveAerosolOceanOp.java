@@ -302,7 +302,7 @@ public class RetrieveAerosolOceanOp extends Operator {
 
                     final int iTarX = (int) (scalingFactor*iX + aveBlock);
                     final int iTarY = (int) (scalingFactor*iY + aveBlock);
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
 
                     final float aatsrViewElevationNadir = getAvePixel(veAatsrNadirTile, iTarX, iTarY);
                     final float aatsrSunElevationNadir = getAvePixel(seAatsrNadirTile, iTarX, iTarY);

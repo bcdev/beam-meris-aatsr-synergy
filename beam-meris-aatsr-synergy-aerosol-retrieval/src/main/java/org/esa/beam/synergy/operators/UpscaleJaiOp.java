@@ -159,7 +159,7 @@ public class UpscaleJaiOp extends Operator {
 
         for (int y = rectangle.y; y < Math.min(yMax, rectangle.y + rectangle.height); y++) {
             for (int x = rectangle.x; x < Math.min(xMax, rectangle.x + rectangle.width); x++) {
-                checkForCancelation(pm);
+                checkForCancellation(pm);
                 if (targetBand.getName().equals(SynergyConstants.CONFID_NADIR_FLAGS_AATSR)) {
                     for (int i=0; i<aatsrConfidNadirFlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, aatsrConfidFlagNadirTile.getSampleBit(x, y, i));

@@ -272,13 +272,16 @@ public class ClassifyFeaturesNNOp extends Operator {
                         getSourceTile(featProduct.getBand(SynergyConstants.F_555_1600_NDSI), targetRectangle, pm));
             tileMap.put(SynergyConstants.F_870_670_RATIO,
                         getSourceTile(featProduct.getBand(SynergyConstants.F_870_670_RATIO), targetRectangle, pm));
-            
-            //System.out.println(this + " targetRect " + targetRectangle);
-            
+
+            Map<String, JnnNet> nnMapClone = new HashMap<String, JnnNet>(nnMap.size());
+            for (Map.Entry<String, JnnNet> entry : nnMap.entrySet()) {
+                nnMapClone.put(entry.getKey(), entry.getValue().clone());
+            }
+
             for (int y=targetRectangle.y; y<targetRectangle.y + targetRectangle.height; y++) {                
                 for (int x=targetRectangle.x; x<targetRectangle.x + targetRectangle.width; x++) {
                     
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
                     
                     //System.out.println(this +" x " + x + " y " + y);
                     
@@ -306,7 +309,7 @@ public class ClassifyFeaturesNNOp extends Operator {
                             if (!computeCOT && nnName.startsWith("index")) continue;
                             // Process NN 
                         	final double out = nnProcess(nnName, x, y,
-                        	                             srcMeris, srcAatsrNadir, srcAatsrFward, tileMap);
+                        	                             srcMeris, srcAatsrNadir, srcAatsrFward, tileMap, nnMapClone);
                         	// Change 'land' and 'ocean' by 'local
                         	if (nnName.contains("land")) nnName = nnName.replace("land", "local");
                         	if (nnName.contains("ocean")) nnName = nnName.replace("ocean", "local");
@@ -320,7 +323,7 @@ public class ClassifyFeaturesNNOp extends Operator {
                             if (isLand && nnName.contains("ocean")) continue;
                             // Process NN 
                             final double out = nnSIProcess(nnName, x, y,
-                                                           srcMeris, srcAatsrNadir, srcAatsrFward, tileMap);
+                                                           srcMeris, srcAatsrNadir, srcAatsrFward, tileMap, nnMapClone);
                         	// Change 'land' and 'ocean' by 'local
                         	if (nnName.contains("land")) nnName = nnName.replace("land", "local");
                         	if (nnName.contains("ocean")) nnName = nnName.replace("ocean", "local");
@@ -448,11 +451,12 @@ public class ClassifyFeaturesNNOp extends Operator {
      * @param tAatsrFward: aatsr fward tiles
      * @param tileMap:     map of tiles containing several features
      * 
+     * @param nnMap
      * @return             the NN output
      */
     private double nnProcess(final String nnName, final int x, final int y,
-            final Tile[] tMeris, final Tile[] tAatsrNadir, final Tile[] tAatsrFward,
-            HashMap<String,Tile> tileMap) {
+                             final Tile[] tMeris, final Tile[] tAatsrNadir, final Tile[] tAatsrFward,
+                             HashMap<String, Tile> tileMap, Map<String, JnnNet> nnMap) {
         
         final Double[] nnIn;
         final double[] nnOut = new double[1];
@@ -513,8 +517,8 @@ public class ClassifyFeaturesNNOp extends Operator {
      *   The same as {@nnProcess} but for SI (single instrument) neural networks.
      */
     private double nnSIProcess(final String nnName, final int x, final int y,
-            final Tile[] tMeris, final Tile[] tAatsrNadir, final Tile[] tAatsrFward,
-            final HashMap<String,Tile> tileMap) {
+                               final Tile[] tMeris, final Tile[] tAatsrNadir, final Tile[] tAatsrFward,
+                               final HashMap<String, Tile> tileMap, Map<String, JnnNet> nnMap) {
         
         final Double[] nnIn;
         final double[] nnOut = new double[1];

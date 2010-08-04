@@ -288,7 +288,7 @@ public class RetrieveAerosolLandOp extends Operator{
             boolean validPixel = true;
             for (int iY = targetRectangle.y; iY < targetRectangle.y + targetRectangle.height; iY++) {
                 for (int iX = targetRectangle.x; iX < targetRectangle.x + targetRectangle.width; iX++) {
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
                     final int iSrcX = (2*aveBlock+1)*iX + aveBlock;
                     final int iSrcY = (2*aveBlock+1)*iY + aveBlock;
 

@@ -1,6 +1,5 @@
 package org.esa.beam.synergy.operators;
 
-import com.bc.jnn.JnnException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -27,23 +26,16 @@ import java.util.List;
 /**
  * Unit test for simple App.
  */
-public class RetrieveAerosolTest
-        extends TestCase {
-    private GlintRetrieval glintGeometricalConversionUnderTest;
+public class RetrieveAerosolTest extends TestCase {
+
     private String lutPath;
 
     protected void setUp() {
-
-        glintGeometricalConversionUnderTest = new GlintRetrieval();
         try {
-            glintGeometricalConversionUnderTest.loadGlintAuxData();
             final URL url = GlintRetrieval.class.getResource("");
             lutPath = URLDecoder.decode(url.getPath(), "UTF-8");
-            glintGeometricalConversionUnderTest.loadGaussParsLut(lutPath);
         } catch (IOException e) {
             fail("Auxdata cloud not be loaded: " + e.getMessage());
-        } catch (JnnException e) {
-            fail("Neural net cloud not be loaded: " + e.getMessage());
         }
     }
 
@@ -217,194 +209,5 @@ public class RetrieveAerosolTest
         } catch (IOException e) {
             fail(e.getMessage());
         }
-    }
-
-    public void testComputeGlintFromLUT() {
-        float merisSunZenith = 24.1335f;
-        float merisViewZenith = 7.43065f;
-        float aatsrAzimuthDifference = 17.5067f;
-        float refractiveIndex = 1.329f;
-        float windspeed = 1.95333f;
-
-        double glint = glintGeometricalConversionUnderTest.computeGlintFromLUT(merisSunZenith, merisViewZenith,
-                                                                               aatsrAzimuthDifference, refractiveIndex, windspeed);
-
-        assertEquals(0.0209641, glint, 0.0001);
-    }
-
-    public void testGetValueLUT() {
-        // p_i(ws_index=0, ri_index=0, cSun_index=0)
-        float mCosMerisSunZenith = -0.999062f;
-        float refractiveIndex = 1.3f;
-        float windspeed = 1.0f;
-
-        double[] values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.787f, values[0], 0.001);        // p_0(0)
-        assertEquals(0.1277f, values[1], 0.001);
-        assertEquals(0.1278f, values[2], 0.001);
-        assertEquals(0.0448f, values[3], 0.001);
-
-        // p_i(ws_index=0, ri_index=0, cSun_index=1)
-        mCosMerisSunZenith = -0.9926098f;
-        refractiveIndex = 1.3f;
-        windspeed = 1.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.78137f, values[0], 0.001);            // p_0(1*11*15)
-
-        // p_i(ws_index=0, ri_index=1, cSun_index=0)
-        mCosMerisSunZenith = -0.999062f;
-        refractiveIndex = 1.31f;
-        windspeed = 1.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.7304095f, values[0], 0.001);     // p_0(1*1*15)  !!!!
-
-        // p_i(ws_index=1, ri_index=0, cSun_index=0)
-        mCosMerisSunZenith = -0.999062f;
-        refractiveIndex = 1.30f;
-        windspeed = 2.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-2.2743595f, values[0], 0.001);     // p_0(2*1*1)
-
-        // p_i(ws_index=1, ri_index=1, cSun_index=0)
-        mCosMerisSunZenith = -0.999062f;
-        refractiveIndex = 1.31f;
-        windspeed = 2.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-2.2174518f, values[0], 0.001);     // p_0(1 + 1*1*15)
-
-        // p_i(ws_index=1, ri_index=1, cSun_index=1)
-        mCosMerisSunZenith = -0.9926098f;
-        refractiveIndex = 1.31f;
-        windspeed = 2.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-2.21098566, values[0], 0.001);     // p_0(1 + 15 + 1*11*15)
-
-
-        // p_i(ws_index=0, ri_index=1, cSun_index=1)
-        mCosMerisSunZenith = -0.9926098f;
-        refractiveIndex = 1.31f;
-        windspeed = 1.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.7244766, values[0], 0.001);         // p_0(15 + 1*11*15)
-
-
-        // interpolation tsets:
-
-        // p_i(ws_index=0, ri_index=0.5, cSun_index=0)
-        mCosMerisSunZenith = -0.999062f;
-        refractiveIndex = 1.305f;
-        windspeed = 1.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.758f, values[0], 0.001);   // 0.5*(p_0(0) + p_0(1*1*15))
-
-        // p_i(ws_index=0, ri_index=0, cSun_index=0.5)
-        mCosMerisSunZenith = -0.9958f;
-        refractiveIndex = 1.30f;
-        windspeed = 1.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.7842f, values[0], 0.001);   // 0.5*(p_0(0) + p_0(1*11*15))
-
-        // p_i(ws_index=0.5, ri_index=0, cSun_index=0)
-        mCosMerisSunZenith = -0.999062f;
-        refractiveIndex = 1.30f;
-        windspeed = 1.5f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        double expected = 0.5 * (-1.7873033 - 2.2743595);
-        assertEquals(expected, values[0], 0.001);   // 0.5*(p_0(0) + p_0(1*1*2))
-
-        // p_i(ws_index=0.5, ri_index=0.5, cSun_index=0)
-        mCosMerisSunZenith = -0.999062f;
-        refractiveIndex = 1.305f;
-        windspeed = 1.5f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-2.0024, values[0], 0.001);
-
-        // p_i(ws_index=0.5, ri_index=0, cSun_index=0.5)
-        mCosMerisSunZenith = -0.9958f;
-        refractiveIndex = 1.30f;
-        windspeed = 1.5f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-2.02775, values[0], 0.001);
-
-        // p_i(ws_index=0, ri_index=0.5, cSun_index=0.5)
-        mCosMerisSunZenith = -0.9958f;
-        refractiveIndex = 1.305f;
-        windspeed = 1.0f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.75589, values[0], 0.001);
-
-        // p_i(ws_index=0.5, ri_index=0.5, cSun_index=0.5)
-        mCosMerisSunZenith = -0.9958f;
-        refractiveIndex = 1.305f;
-        windspeed = 1.5f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.99930, values[0], 0.001);
-
-        // 'real' values:
-        mCosMerisSunZenith = -0.912595f;
-        refractiveIndex = 1.329f;
-        windspeed = 1.95333f;
-
-        values = glintGeometricalConversionUnderTest.
-                getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-
-        assertEquals(-1.98064, values[0], 0.001);
-    }
-
-    public void testGetValueLUTEfficieny() {
-        // p_i(ws_index=0, ri_index=0, cSun_index=0)
-        float mCosMerisSunZenith = -0.912595f;
-        float refractiveIndex = 1.329f;
-        float windspeed = 1.95333f;
-
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 1121 * 1137; i++) {
-            double[] values = glintGeometricalConversionUnderTest.
-                    getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex, windspeed);
-        }
-
-        long t1 = System.currentTimeMillis();
-        System.out.println("interpol time: " + (t1 - t0));
     }
 }

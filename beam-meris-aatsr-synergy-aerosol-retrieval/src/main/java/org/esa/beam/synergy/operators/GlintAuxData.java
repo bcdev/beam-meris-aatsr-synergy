@@ -1,24 +1,12 @@
 package org.esa.beam.synergy.operators;
 
-import com.bc.jnn.Jnn;
-import com.bc.jnn.JnnException;
-import com.bc.jnn.JnnNet;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.GlintHelpers;
-import org.esa.beam.synergy.util.SynergyConstants;
-import org.esa.beam.synergy.util.SynergyLookupTable;
-import org.esa.beam.util.math.IntervalPartition;
-import ucar.ma2.Array;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -53,113 +41,12 @@ public class GlintAuxData {
     private static final String H_COEFF_1600_FILE_NAME = "ck_flex_cd_AATSR_sfp1000_01600.00.h2o.4.ck.koeff.d";
     private static final String H_WEIGHT_1600_FILE_NAME = "ck_flex_cd_AATSR_sfp1000_01600.00.h2o.4.ck.weight.d";
 
-    public static final String NEURAL_NET_WV_OCEAN_MERIS_FILE_NAME = "wv_ocean_meris.nna";
-    public static final String NEURAL_NET_WINDSPEED_FILE_NAME = "cm_ws_to_gauss2d.nna";
-
-    
-
-
     public static GlintAuxData getInstance() {
         if (instance == null) {
             instance = new GlintAuxData();
         }
 
         return instance;
-    }
-
-    /**
-     * This method reads a neural net file.
-     *
-     * @param filename  - NN file
-     * @return JnnNet - the NN object (see {@link JnnNet})
-     * @throws IOException
-     * @throws JnnException
-     */
-    public JnnNet loadNeuralNet(String filename) throws IOException, JnnException {
-        InputStream inputStream = getClass().getResourceAsStream(filename);
-        final InputStreamReader reader = new InputStreamReader(inputStream);
-
-        JnnNet neuralNet= null;
-
-        try {
-            Jnn.setOptimizing(true);
-            neuralNet = Jnn.readNna(reader);
-        } finally {
-            reader.close();
-        }
-
-        return neuralNet;
-    }
-
-    /**
-     * This method reads the Gaussian parameters LUT for Glint retrieval.
-     *
-     * @return LookupTable
-     * @param lutPath - path to lookup table
-     * @throws IOException
-     */
-    public SynergyLookupTable[] readGaussParsLuts(String lutPath) throws IOException {
-        SynergyLookupTable[] gaussParsLuts = new SynergyLookupTable[5];
-        try {
-            final NetcdfFile netcdfFile = NetcdfFile.open(lutPath + File.separator + SynergyConstants.GAUSS_PARS_LUT_FILE_NAME);
-            final List variables = netcdfFile.getVariables();
-
-            // the variables in the netcdf file are defined like this (as obtained from an ncdump):
-            //       float P(P_dimension_4=5, P_dimension_3=13, P_dimension_2=11, P_dimension_1=15);
-            //       float WSP(WSP_dimension_1=15);
-            //       float NRE(NRE_dimension_1=11);
-            //       float COS_SUN(COS_SUN_dimension_1=13);
-
-            final Variable p = (Variable) variables.get(0);
-            final Variable wsp = (Variable) variables.get(1);
-            final Variable nre = (Variable) variables.get(2);
-            final Variable cosSun = (Variable) variables.get(3);
-
-
-            final Array wspArrayNc = wsp.read();
-            final int wspSize = (int) wspArrayNc.getSize();
-            Object storage = wspArrayNc.getStorage();
-            float[] wspArray = new float[wspSize];
-            System.arraycopy(storage, 0, wspArray, 0, wspSize);
-
-            final Array nreArrayNc = nre.read();
-            final int nreSize = (int) nreArrayNc.getSize();
-            storage = nreArrayNc.getStorage();
-            float[] nreArray = new float[nreSize];
-            System.arraycopy(storage, 0, nreArray, 0, nreSize);
-
-            final  Array cosSunArrayNc = cosSun.read();
-            final int cosSunSize = (int) cosSunArrayNc.getSize();
-            storage = cosSunArrayNc.getStorage();
-            float[] cosSunArray = new float[cosSunSize];
-            for (int i = 0; i < cosSunArray.length; i++) {
-                final float[] storageArray = (float[]) storage;
-                cosSunArray[i] = -storageArray[i];  // take negative value to get increasing sequence for LUT creation
-            }
-
-            final Array pArrayNc = p.read();
-            final int pSize = p.getDimension(1).getLength() *
-                        p.getDimension(2).getLength() *
-                        p.getDimension(3).getLength();
-            storage = pArrayNc.getStorage();
-            float[][] pArray = new float[5][pSize];
-            for (int i = 0; i < pArray.length; i++) {
-                System.arraycopy(storage, i*pSize, pArray[i], 0, pSize);
-            }
-
-            // set up LUTs for each pArray
-            final IntervalPartition[] dimensions = IntervalPartition.createArray(
-                    cosSunArray, nreArray, wspArray);
-
-            for (int i = 0; i < 5; i++) {
-                gaussParsLuts[i] = new SynergyLookupTable(pArray[i], dimensions);
-            }
-
-        } catch (UnsupportedEncodingException e) {
-            throw new OperatorException("Failed to read gaussPars LUT from netcdf file.\n");
-        }
-
-        return gaussParsLuts;
     }
 
     /**

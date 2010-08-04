@@ -408,7 +408,7 @@ public class ClassifyFeaturesOp extends Operator {
             for (int y=targetRectangle.y; y<targetRectangle.y + targetRectangle.height; y++) {                
                 for (int x=targetRectangle.x; x<targetRectangle.x + targetRectangle.width; x++) {
                     
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
                     
                     int flags = 0;
                     

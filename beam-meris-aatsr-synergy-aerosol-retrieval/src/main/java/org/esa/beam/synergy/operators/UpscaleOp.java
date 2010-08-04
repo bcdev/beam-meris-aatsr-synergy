@@ -183,7 +183,7 @@ public class UpscaleOp extends Operator {
             if (iSrcY >= srcTile.getHeight() - 1) iSrcY = srcTile.getHeight() - 2;
             float yFac = (float) (iTarY - offset) / scalingFactor - iSrcY;
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
-                checkForCancelation(pm);
+                checkForCancellation(pm);
                 int iSrcX = (iTarX - offset) / scalingFactor;
                 if (iSrcX >= srcTile.getWidth() - 1) iSrcX = srcTile.getWidth() - 2;
                 float xFrac = (float) (iTarX - offset) / scalingFactor - iSrcX;

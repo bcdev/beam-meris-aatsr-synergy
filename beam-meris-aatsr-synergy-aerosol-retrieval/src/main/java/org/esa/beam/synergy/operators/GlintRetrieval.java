@@ -1,14 +1,7 @@
 package org.esa.beam.synergy.operators;
 
-import com.bc.jnn.JnnException;
-import com.bc.jnn.JnnNet;
-import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.synergy.util.GlintHelpers;
-import org.esa.beam.synergy.util.SynergyLookupTable;
 import org.esa.beam.util.math.MathUtils;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Class providing methods for FUB Glint retrieval.
@@ -21,39 +14,6 @@ public class GlintRetrieval {
     public static final double refractiveIndexReal088 = 1.33;
     public static final double rhoFoam037 = 0.01;
     public static final double rhoFoam088 = 0.2;
-
-
-    private JnnNet neuralNetWindspeed;
-
-    private SynergyLookupTable[] gaussParsLuts;
-    private HashMap<double[], Double>[] gaussParsMaps;
-
-    public GlintRetrieval() {
-    }
-
-    public void loadGaussParsLut(String lutPath) {
-        try {
-            gaussParsLuts = GlintAuxData.getInstance().readGaussParsLuts(lutPath);
-        } catch (IOException e) {
-            throw new OperatorException("Failed to read Gauss parameters from netcdf file:\n" + e.getMessage(), e);
-        }
-    }
-
-    //
-    // This method loads required Glint Auxdata
-    //
-    protected void loadGlintAuxData() throws IOException, JnnException {
-        neuralNetWindspeed = GlintAuxData.getInstance().loadNeuralNet(GlintAuxData.NEURAL_NET_WINDSPEED_FILE_NAME);
-    }
-
-    protected float applyGauss2DRecall(float merisViewZenith, float aatsrAzimuthDifference, double[] gaussPars) {
-        return gauss2DRecall(merisViewZenith, aatsrAzimuthDifference, gaussPars);
-    }
-
-    protected void applyNeuralNetWindspeed(double[] nnIn, double[] gaussPars) {
-        neuralNetWindspeed.process(nnIn, gaussPars);
-    }
-
 
     //
     // This method provides the final result (datapair [windspeed, MERIS normalized radiance])
@@ -106,36 +66,6 @@ public class GlintRetrieval {
     //
     // (breadboard step 2.a)
     //
-    protected float[][] convertAatsrRad37ToMerisRadOld(float aatsrRad, float merisSunZenith, float merisViewZenith,
-                                                float aatsrAzimuthDifference, float merisAzimuthDifference) {
-
-        float[][] merisNormalizedRadianceResult = new float[][]{{-1.0f, -1.0f}, {-1.0f, -1.0f}};
-
-        final double[][] normalizedRadianceLUT = createNormalizedRadianceLUT(merisSunZenith, merisViewZenith,
-                aatsrAzimuthDifference);
-
-        final double maximumAcceptableDiff = getMaximumAcceptableRadianceDiffInLUT(normalizedRadianceLUT[1]);
-
-        final int maximumNormalizedRadianceIndex = GlintHelpers.getMaximumValueIndexInDoubleArray(normalizedRadianceLUT[1]);
-
-        if (maximumNormalizedRadianceIndex > 0 && maximumNormalizedRadianceIndex < normalizedRadianceLUT[1].length-1) {
-            // two LUT solutions possible
-            merisNormalizedRadianceResult[0] = getRadianceFromLUT(normalizedRadianceLUT, 0, maximumNormalizedRadianceIndex-1,
-                    aatsrRad, merisSunZenith, maximumAcceptableDiff, merisViewZenith, merisAzimuthDifference);
-
-            merisNormalizedRadianceResult[1] = getRadianceFromLUT(normalizedRadianceLUT, maximumNormalizedRadianceIndex,
-                    normalizedRadianceLUT[0].length-1,
-                    aatsrRad, merisSunZenith, maximumAcceptableDiff, merisViewZenith, merisAzimuthDifference);
-        } else {
-            // monotone
-            final int lutLength = normalizedRadianceLUT[1].length;
-            merisNormalizedRadianceResult[0] = getRadianceFromLUT(normalizedRadianceLUT, 0, lutLength-1,
-                    aatsrRad, merisSunZenith, maximumAcceptableDiff, merisViewZenith, aatsrAzimuthDifference);
-        }
-
-        return merisNormalizedRadianceResult;
-    }
-
      protected float[][] convertAatsrRad37ToMerisRad(float[] aatsrRadInfo, float merisSunZenith, float merisViewZenith,
                                                 float aatsrAzimuthDifference, float merisAzimuthDifference) {
 
@@ -196,36 +126,6 @@ public class GlintRetrieval {
     // This method generates a 1D LUT of AATSR normalized radiances for different wind speeds
     // (breadboard step 2.a.1)
     //
-    private double[][] createNormalizedRadianceLUTOld(float merisSunZenith, float merisViewZenith,
-                                                     float aatsrAzimuthDifference) {
-
-        final int numberOfWindspeeds = 151;
-
-        double[][] lookupTable = new double[2][numberOfWindspeeds];
-
-        double[] windspeed = new double[numberOfWindspeeds];
-        double[] aatsrReflectanceSimulated = new double[numberOfWindspeeds];
-
-        final double[] nnIn = new double[3];
-        double[] gaussPars = new double[4];
-
-        for (int i = 0; i < numberOfWindspeeds; i++) {
-            windspeed[i] = i * 13.0 / (numberOfWindspeeds - 1) + 1.0;
-
-            // apply FUB NN...
-            nnIn[0] = windspeed[i];
-            nnIn[1] = refractiveIndexReal037;
-            nnIn[2] = Math.cos(Math.toRadians(merisSunZenith));  // angle in degree!
-            applyNeuralNetWindspeed(nnIn, gaussPars);
-
-            aatsrReflectanceSimulated[i] = gauss2DRecall(merisViewZenith, aatsrAzimuthDifference, gaussPars);
-            lookupTable[0][i] = windspeed[i];
-            lookupTable[1][i] = aatsrReflectanceSimulated[i];
-        }
-
-        return lookupTable;
-    }
-
     private double[][] createNormalizedRadianceLUT(float merisSunZenith, float merisViewZenith,
                                                      float aatsrAzimuthDifference) {
 
@@ -279,84 +179,4 @@ public class GlintRetrieval {
         return (float) brdf;
     }
 
-    /**
-     * This method computes the glint value for given sza, vza, AATSR azim. diff, refractive index and windspeed
-     * In opposite from FLINT approach, gauss parameters are take from a LUT
-     *
-     * @param sunZenith  - sun zenith angle
-     * @param viewZenith  - view zenith angle
-     * @param azimuthDifference  - azimuth difference
-     * @param refractiveIndex  - refractive index
-     * @param windspeed - windspeed as computed from FLINT algorithm
-     * @return the glint value
-     */
-    public double computeGlintFromLUT(float sunZenith, float viewZenith,
-                                      float azimuthDifference, float refractiveIndex, float windspeed) {
-
-        final float mCosMerisSunZenith = (float) -Math.cos(Math.toRadians(sunZenith));
-        final double[] gaussPars = getGaussParsFromLUT(mCosMerisSunZenith, refractiveIndex,  windspeed);
-        // compute the glint:
-        return gauss2DFullRecall(viewZenith, azimuthDifference, gaussPars);
-    }
-
-    public double[] getGaussParsFromLUT(float mCosMerisSunZenith, float refractiveIndex,  float windspeed) {
-        double[] gaussPars = new double[4];
-
-        final double[] gaussParsLutInput = new double[]{mCosMerisSunZenith, refractiveIndex, windspeed};
-
-        gaussPars[0] = gaussParsLuts[0].getValue(gaussParsLutInput);
-        gaussPars[1] = gaussParsLuts[1].getValue(gaussParsLutInput);
-        gaussPars[2] = gaussParsLuts[2].getValue(gaussParsLutInput);
-        gaussPars[3] = gaussParsLuts[4].getValue(gaussParsLutInput);
-
-        return gaussPars;
-    }
-
-    //
-    // This method provides a maximum acceptable distance for windspeed/radiance LUT
-    // (breadboard step 2.a.2)
-    //
-    private double getMaximumAcceptableRadianceDiffInLUT(double[] lutRadiance) {
-        double diffAcceptable = 0.0;
-        for (int i = 0; i < lutRadiance.length - 1; i++) {
-            final double diff = Math.abs(lutRadiance[i] - lutRadiance[i + 1]);
-            if (diff > diffAcceptable) {
-                diffAcceptable = diff;
-            }
-        }
-
-        return diffAcceptable;
-    }
-
-    private float gauss2DRecall(float merisViewZenith, float aatsrAzimuthDifference, double[] gaussPars) {
-        float normalizedRadiance;
-
-        final double x = Math.cos(Math.toRadians(90.0 - merisViewZenith)) *
-                Math.sin(Math.toRadians(aatsrAzimuthDifference));
-        final double y = Math.cos(Math.toRadians(90.0 - merisViewZenith)) *
-                Math.cos(Math.toRadians(aatsrAzimuthDifference));
-
-        final double yy = y - gaussPars[3];
-        final double u = x * x / (gaussPars[1] * gaussPars[1]) + yy * yy / (gaussPars[2] * gaussPars[2]);
-
-        normalizedRadiance = (float) (gaussPars[0] * Math.exp(-u / 2.0));
-
-        return normalizedRadiance;
-    }
-
-    private float gauss2DFullRecall(float merisViewZenith, float aatsrAzimuthDifference, double[] gaussPars) {
-        float normalizedRadiance;
-
-        final double x = Math.cos(Math.toRadians(90.0 - merisViewZenith)) *
-                Math.sin(Math.toRadians(aatsrAzimuthDifference));
-        final double y = Math.cos(Math.toRadians(90.0 - merisViewZenith)) *
-                Math.cos(Math.toRadians(aatsrAzimuthDifference));
-
-        final double yy = y - gaussPars[3];
-        final double u = x * x / (gaussPars[1] * gaussPars[1]) + yy * yy / (gaussPars[2] * gaussPars[2]);
-
-        normalizedRadiance = (float) (Math.exp(gaussPars[0]) * Math.exp(-u / 2.0));
-
-        return normalizedRadiance;
-    }
 }

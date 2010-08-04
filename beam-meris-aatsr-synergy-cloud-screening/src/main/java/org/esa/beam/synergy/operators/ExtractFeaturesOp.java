@@ -412,6 +412,7 @@ public class ExtractFeaturesOp extends Operator {
                                  ProgressMonitor pm) throws OperatorException {
         
         pm.beginTask("computing features ...", targetRectangle.height);
+        JnnNet clonedNeuralNet = neuralNet.clone();
         
         try {
             // Target tiles
@@ -496,7 +497,7 @@ public class ExtractFeaturesOp extends Operator {
 
             for (int y=targetRectangle.y; y<targetRectangle.y + targetRectangle.height; y++) {
                 for (int x=targetRectangle.x; x<targetRectangle.x + targetRectangle.width; x++) {
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
                     
                     final double[] merisRef   = getSamples(x, y, sTileMeris);
                     final double[] aatsrNadir = getSamples(x, y, sTileAatsrNadir);
@@ -554,7 +555,7 @@ public class ExtractFeaturesOp extends Operator {
                         double spr = 0;
                         if ((sTileL1F.getSampleInt(x,y) & invalidMask) == 0) {
                             // Valid pixel, compute SPR
-                            spr = computeSPR(x, y, sTileDetIdx, sTileR);
+                            spr = computeSPR(x, y, sTileDetIdx, sTileR, clonedNeuralNet);
                         }
                         tTileSPR.setSample(x, y, spr);
                         // SPRD
@@ -662,7 +663,7 @@ public class ExtractFeaturesOp extends Operator {
     /*
      * Calculates the SPR
      */
-    private double computeSPR(final int x, final int y, final Tile detector, final Tile[] tile) {
+    private double computeSPR(final int x, final int y, final Tile detector, final Tile[] tile, final JnnNet neuralNet) {
         
         final int detectorXY = detector.getSampleInt(x,y);
         

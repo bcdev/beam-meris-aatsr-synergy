@@ -1,11 +1,6 @@
 package org.esa.beam.synergy.operators;
 
-import com.bc.jnn.JnnException;
 import junit.framework.TestCase;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLDecoder;
 
 /**
  * @author Olaf Danne
@@ -15,22 +10,11 @@ public class GlintTest extends TestCase {
 
     private GlintSolarPart37 solarPartUnderTest;
     private GlintRetrieval glintRetrievalUnderTest;
-    private String lutPath;
 
     protected void setUp() {
 
         glintRetrievalUnderTest = new GlintRetrieval();
         solarPartUnderTest = new GlintSolarPart37();
-        try {
-            glintRetrievalUnderTest.loadGlintAuxData();
-            final URL url = GlintRetrieval.class.getResource("");
-            lutPath = URLDecoder.decode(url.getPath(), "UTF-8");
-            glintRetrievalUnderTest.loadGaussParsLut(lutPath);
-        } catch (IOException e) {
-            fail("Auxdata cloud not be loaded: " + e.getMessage());
-        } catch (JnnException e) {
-            fail("Neural net cloud not be loaded: " + e.getMessage());
-        }
     }
 
     public void testComputeTransmission() {

@@ -94,12 +94,6 @@ public class GlintAveOp extends Operator {
         aveBlock /= 2;
         minNAve = (int) (scalingFactor*scalingFactor - 1);
 
-        try {
-            glintRetrieval.loadGaussParsLut(auxdataPath);
-            glintRetrieval.loadGlintAuxData();
-        } catch (Exception e) {
-            throw new OperatorException("Failed to load Glint auxdata:\n" + e.getMessage());
-        }
         createTargetProduct();
 
         // get solar irradiance for day of year
@@ -219,8 +213,6 @@ public class GlintAveOp extends Operator {
 
             final Tile isInvalid = getSourceTile(invalidBand, rectangle, pm);
 
-            final float[] windspeed = new float[2];
-
             final int targetBandIndex = getTargetBandIndex(targetBand);
 
             for (int iY = rectangle.y; iY < rectangle.y + rectangle.height; iY++) {
@@ -228,7 +220,7 @@ public class GlintAveOp extends Operator {
 
                     final int iTarX = (int) (scalingFactor*iX + aveBlock);
                     final int iTarY = (int) (scalingFactor*iY + aveBlock);
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
 
                     if ((targetBandIndex != -1 && synergyGlint[targetBandIndex][iX][iY] == -1.0) ||
                             synergyWindspeed[iX][iY] == -1.0) {
@@ -289,10 +281,6 @@ public class GlintAveOp extends Operator {
                             if (glintRetrieval.windspeedFound(merisNormalizedRadianceResultMatrix) > 0) {
                                 final float[] finalResultWindspeedRadiance = glintRetrieval.getAmbiguityReducedRadiance
                                         (merisNormalizedRadianceResultMatrix, zonalWind, meridWind);
-
-                                for (int i = 0; i < 2; i++) {
-                                    windspeed[i] = merisNormalizedRadianceResultMatrix[i][0];
-                                }
 
                                 // these are the final results:
                                 

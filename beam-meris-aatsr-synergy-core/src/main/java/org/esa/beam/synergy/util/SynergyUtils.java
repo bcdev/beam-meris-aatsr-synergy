@@ -62,8 +62,6 @@ public class SynergyUtils {
 
         // Gauss and Mie LUTs
         try {
-            final NetcdfFile netcdfFileGaussLut =
-                    NetcdfFile.open(auxdataPathAerosolOcean + File.separator + SynergyConstants.GAUSS_PARS_LUT_FILE_NAME);
             final NetcdfFile netcdfFileMie =
                     NetcdfFile.open(auxdataPathAerosolOcean + File.separator + SynergyConstants.AEROSOL_MODEL_FILE_NAME);
         } catch (IOException e) {

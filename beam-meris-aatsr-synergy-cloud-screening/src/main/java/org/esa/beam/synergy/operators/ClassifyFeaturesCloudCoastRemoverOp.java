@@ -125,7 +125,7 @@ public class ClassifyFeaturesCloudCoastRemoverOp extends Operator {
             for (int y=targetRectangle.y; y<targetRectangle.y + targetRectangle.height; y++) {                
                 for (int x=targetRectangle.x; x<targetRectangle.x + targetRectangle.width; x++) {
                     
-                    checkForCancelation(pm);
+                    checkForCancellation(pm);
 
                     for (int i=0; i<sTile_nnCm.length; i++) {
 	                    final int m = sTile_nnCm[i].getSampleInt(x, y);
