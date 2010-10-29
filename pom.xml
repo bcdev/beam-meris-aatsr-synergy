@@ -43,18 +43,19 @@
 
     <distributionManagement>
         <repository>
-            <id>bc-mvn-repo</id>
+            <id>bc-mvn-repo-public</id>
             <name>Public Maven Repository at Brockmann Consult</name>
-            <url>scp://apache.bc.local/bc-mvn-repo/os</url>
-			<uniqueVersion>false</uniqueVersion>
+            <url>scp://www.brockmann-consult.de/var/www/www.brockmann-consult.de/mvn/os</url>
+            <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
-            <id>bc-mvn-repo</id>
-            <name>Public Maven Repository at Brockmann Consult</name>
-            <url>scp://apache.bc.local/bc-mvn-repo/os</url>
-			<uniqueVersion>false</uniqueVersion>
+            <id>bc-mvn-repo-public</id>
+            <name>Public Maven Snapshot Repository at Brockmann Consult</name>
+            <url>scp://www.brockmann-consult.de/var/www/www.brockmann-consult.de/mvn/os</url>
+            <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+    
     <modules>
         <module>beam-meris-aatsr-synergy-core</module>
         <module>beam-meris-aatsr-synergy-bootstrap</module>
