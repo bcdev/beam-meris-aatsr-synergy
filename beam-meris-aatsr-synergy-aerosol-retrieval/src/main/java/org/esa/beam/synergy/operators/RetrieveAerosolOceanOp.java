@@ -34,10 +34,10 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 18:54:34 +0100 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.RetrieveAerosolOcean",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Retrieve Aerosol over Ocean." , internal=true)
+                  description = "Retrieve Aerosol over Ocean.", internal = true)
 public class RetrieveAerosolOceanOp extends Operator {
 
     @SourceProduct(alias = "source",
@@ -49,9 +49,10 @@ public class RetrieveAerosolOceanOp extends Operator {
     private Product targetProduct;
 
     private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
-            "aerosolLUTs" + File.separator + "ocean";
+                                 "aerosolLUTs" + File.separator + "ocean";
 
-    @Parameter(defaultValue = "11", label = "Pixels to average (n x n, with n odd number) for AOD retrieval", interval = "[1, 100]")
+    @Parameter(defaultValue = "11", label = "Pixels to average (n x n, with n odd number) for AOD retrieval",
+               interval = "[1, 100]")
     private int aveBlock;
 
     @Parameter(defaultValue = "true", label = "Retrieve AODs over land")
@@ -90,7 +91,7 @@ public class RetrieveAerosolOceanOp extends Operator {
     private float[][] wsResult;
 
     private static int nTau = 201;
-//    private static int nTau = 51;
+    //    private static int nTau = 51;
     private static int nAng = 91;
     private int nMod;
     private int nWvl;
@@ -115,7 +116,7 @@ public class RetrieveAerosolOceanOp extends Operator {
 
         scalingFactor = aveBlock;
         aveBlock /= 2;
-        minNAve = (int) (scalingFactor*scalingFactor - 1);
+        minNAve = (int) (scalingFactor * scalingFactor - 1);
         noDataVal = (float) SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE;
 
         createTargetProduct();
@@ -126,8 +127,10 @@ public class RetrieveAerosolOceanOp extends Operator {
         final int sceneWidth = synergyProduct.getSceneRasterWidth();
         final int sceneHeight = synergyProduct.getSceneRasterHeight();
         final Rectangle rect = new Rectangle(0, 0, sceneWidth, sceneHeight);
-        vaMerisTileComplete = getSourceTile(synergyProduct.getTiePointGrid("view_azimuth"), rect, null);
-        vaAatsrNadirTileComplete = getSourceTile(synergyProduct.getBand("view_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), rect, null);
+        vaMerisTileComplete = getSourceTile(synergyProduct.getTiePointGrid("view_azimuth"), rect);
+        vaAatsrNadirTileComplete = getSourceTile(
+                synergyProduct.getBand("view_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                rect);
 
         aot550Result = new float[sceneWidth][sceneHeight];
         angResult = new float[sceneWidth][sceneHeight];
@@ -163,7 +166,8 @@ public class RetrieveAerosolOceanOp extends Operator {
         nWvl = wvlIndex.length;
 
         try {
-            aerosolLookupTables = AerosolAuxData.getInstance().createAerosolOceanLookupTables(auxdataPath, modelIndices, wvl, wvlIndex);
+            aerosolLookupTables = AerosolAuxData.getInstance().createAerosolOceanLookupTables(auxdataPath, modelIndices,
+                                                                                              wvl, wvlIndex);
         } catch (IOException e) {
             throw new OperatorException("Failed to create aerosol lookup tables:\n" + e.getMessage(), e);
 //            String msg = SynergyConstants.AUXDATA_ERROR_MESSAGE;
@@ -177,12 +181,12 @@ public class RetrieveAerosolOceanOp extends Operator {
         costFunction = new float[nWvl][nTau][nAng];
 
         vectorTauLut = new double[nTauLut];
-        for (int i=0; i<nTauLut; i++) {
-            vectorTauLut[i] = i*2.0/(nTauLut-1);
+        for (int i = 0; i < nTauLut; i++) {
+            vectorTauLut[i] = i * 2.0 / (nTauLut - 1);
         }
         vectorTauLutHigh = new double[nTau];
-        for (int i=0; i<nTau; i++) {
-            vectorTauLutHigh[i] = i*2.0/(nTau-1);
+        for (int i = 0; i < nTau; i++) {
+            vectorTauLutHigh[i] = i * 2.0 / (nTau - 1);
         }
 
         final float[] angArray = aerosolModelTable.getAngArray(modelIndices, 0);
@@ -208,7 +212,7 @@ public class RetrieveAerosolOceanOp extends Operator {
         final int sceneHeight = synergyProduct.getSceneRasterHeight();
 
         final int downscaledRasterWidth = (int) (Math.ceil((float) (sceneWidth / scalingFactor) - 0.5));
-        final int downscaledRasterHeight = (int) (Math.ceil((float) (sceneHeight/ scalingFactor) - 0.5));
+        final int downscaledRasterHeight = (int) (Math.ceil((float) (sceneHeight / scalingFactor) - 0.5));
 
         targetProduct = new Product(productName, productType, downscaledRasterWidth, downscaledRasterHeight);
         targetProduct.setPreferredTileSize(128, 128);
@@ -257,92 +261,121 @@ public class RetrieveAerosolOceanOp extends Operator {
         }
 
         final Rectangle rectangle = targetTile.getRectangle();
-        final int bigWidth = (int) (scalingFactor*rectangle.getWidth());
-        final int bigHeight = (int) (scalingFactor*rectangle.getHeight());
-        final int bigX = (int) (scalingFactor*rectangle.getX());
-        final int bigY = (int) (scalingFactor*rectangle.getY());
+        final int bigWidth = (int) (scalingFactor * rectangle.getWidth());
+        final int bigHeight = (int) (scalingFactor * rectangle.getHeight());
+        final int bigX = (int) (scalingFactor * rectangle.getX());
+        final int bigY = (int) (scalingFactor * rectangle.getY());
         final Rectangle big = new Rectangle(bigX, bigY, bigWidth, bigHeight);
 
         pm.beginTask("Processing frame...", rectangle.height);
 
         try {
             // todo: clean up the tiles which are not finally needed  (depends on how many channels are used)
-            final Tile szMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_zenith"), big, pm);
-            final Tile vzMerisTile = getSourceTile(synergyProduct.getTiePointGrid("view_zenith"), big, pm);
-            final Tile saMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_azimuth"), big, pm);
-            final Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid("atm_press"), big, pm);
+            final Tile szMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_zenith"), big);
+            final Tile vzMerisTile = getSourceTile(synergyProduct.getTiePointGrid("view_zenith"), big);
+            final Tile saMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_azimuth"), big);
+            final Tile pressureTile = getSourceTile(synergyProduct.getTiePointGrid("atm_press"), big);
 
-            final Tile seAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile veAatsrNadirTile = getSourceTile(synergyProduct.getBand("view_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile saAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile seAatsrFwardTile = getSourceTile(synergyProduct.getBand("sun_elev_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile veAatsrFwardTile = getSourceTile(synergyProduct.getBand("view_elev_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile saAatsrFwardTile = getSourceTile(synergyProduct.getBand("sun_azimuth_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile vaAatsrFwardTile = getSourceTile(synergyProduct.getBand("view_azimuth_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile merisRad13Tile = getSourceTile(synergyProduct.getBand("radiance_13" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
-            final Tile merisRad14Tile = getSourceTile(synergyProduct.getBand("radiance_14" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
+            final Tile seAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("sun_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile veAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("view_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile saAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("sun_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile seAatsrFwardTile = getSourceTile(
+                    synergyProduct.getBand("sun_elev_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile veAatsrFwardTile = getSourceTile(
+                    synergyProduct.getBand("view_elev_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile saAatsrFwardTile = getSourceTile(
+                    synergyProduct.getBand("sun_azimuth_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile vaAatsrFwardTile = getSourceTile(
+                    synergyProduct.getBand("view_azimuth_fward" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile merisRad13Tile = getSourceTile(
+                    synergyProduct.getBand("radiance_13" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big);
+            final Tile merisRad14Tile = getSourceTile(
+                    synergyProduct.getBand("radiance_14" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big);
 
-            final Band reflecNadir16Band = synergyProduct.getBand("reflec_nadir_1600" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
-            final Tile aatsrReflNadir1600Tile = getSourceTile(reflecNadir16Band, big, pm);
-            final Band reflecNadir87Band = synergyProduct.getBand("reflec_nadir_0870" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
-            final Tile aatsrReflNadir0870Tile = getSourceTile(reflecNadir87Band, big, pm);
-            final Band reflecFward16Band = synergyProduct.getBand("reflec_fward_1600" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
-            final Tile aatsrReflFward1600Tile = getSourceTile(reflecFward16Band, big, pm);
-            final Band reflecFward87Band = synergyProduct.getBand("reflec_fward_0870" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
-            final Tile aatsrReflFward0870Tile = getSourceTile(reflecFward87Band, big, pm);
+            final Band reflecNadir16Band = synergyProduct.getBand(
+                    "reflec_nadir_1600" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Tile aatsrReflNadir1600Tile = getSourceTile(reflecNadir16Band, big);
+            final Band reflecNadir87Band = synergyProduct.getBand(
+                    "reflec_nadir_0870" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Tile aatsrReflNadir0870Tile = getSourceTile(reflecNadir87Band, big);
+            final Band reflecFward16Band = synergyProduct.getBand(
+                    "reflec_fward_1600" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Tile aatsrReflFward1600Tile = getSourceTile(reflecFward16Band, big);
+            final Band reflecFward87Band = synergyProduct.getBand(
+                    "reflec_fward_0870" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + "");
+            final Tile aatsrReflFward0870Tile = getSourceTile(reflecFward87Band, big);
 
-            final Tile wsTile = getSourceTile(glintProduct.getBand(GlintAveOp.RESULT_WINDSPEED_NAME), rectangle, pm);
+            final Tile wsTile = getSourceTile(glintProduct.getBand(GlintAveOp.RESULT_WINDSPEED_NAME), rectangle);
 
             // Flags tiles
 
-            final Tile isInvalid = getSourceTile(invalidBand, rectangle, pm);
-            
+            final Tile isInvalid = getSourceTile(invalidBand, rectangle);
+
             for (int iY = rectangle.y; iY < rectangle.y + rectangle.height; iY++) {
                 for (int iX = rectangle.x; iX < rectangle.x + rectangle.width; iX++) {
 
-                    final int iTarX = (int) (scalingFactor*iX + aveBlock);
-                    final int iTarY = (int) (scalingFactor*iY + aveBlock);
-                    checkForCancellation(pm);
+                    final int iTarX = (int) (scalingFactor * iX + aveBlock);
+                    final int iTarY = (int) (scalingFactor * iY + aveBlock);
+                    checkForCancellation();
 
                     final float aatsrViewElevationNadir = getAvePixel(veAatsrNadirTile, iTarX, iTarY);
                     final float aatsrSunElevationNadir = getAvePixel(seAatsrNadirTile, iTarX, iTarY);
                     final float aatsrViewElevationFward = getAvePixel(veAatsrFwardTile, iTarX, iTarY);
                     final float aatsrSunElevationFward = getAvePixel(seAatsrFwardTile, iTarX, iTarY);
 
-                     // just use one windspeed (the 'closer to ECMWF' one from Glint retrieval)
-                    final  float ws = wsTile.getSampleFloat(iX, iY);
+                    // just use one windspeed (the 'closer to ECMWF' one from Glint retrieval)
+                    final float ws = wsTile.getSampleFloat(iX, iY);
 
                     if (isInvalid.getSampleBoolean(iX, iY)
-                            || ws == SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE
-                              ) {
+                        || ws == SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE
+                            ) {
                         targetTile.setSample(iX, iY, noDataVal);
-                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOT_BAND_NAME) && (aot550Result[iX][iY] > 0.0 ||
-                            aot550Result[iX][iY] == SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(
+                            SynergyConstants.OUTPUT_AOT_BAND_NAME) && (aot550Result[iX][iY] > 0.0 ||
+                                                                       aot550Result[iX][iY] == SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, aot550Result[iX][iY]);
-                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_ANG_BAND_NAME) && (angResult[iX][iY] > 0.0 ||
-                            angResult[iX][iY] == SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(
+                            SynergyConstants.OUTPUT_ANG_BAND_NAME) && (angResult[iX][iY] > 0.0 ||
+                                                                       angResult[iX][iY] == SynergyConstants.OUTPUT_ANG_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, angResult[iX][iY]);
-                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_AOTERR_BAND_NAME) && (aot550ErrorResult[iX][iY] > 0.0 ||
-                            aot550ErrorResult[iX][iY] == SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(
+                            SynergyConstants.OUTPUT_AOTERR_BAND_NAME) && (aot550ErrorResult[iX][iY] > 0.0 ||
+                                                                          aot550ErrorResult[iX][iY] == SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, aot550ErrorResult[iX][iY]);
-                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_ANGERR_BAND_NAME) && (angErrorResult[iX][iY] > 0.0 ||
-                            angErrorResult[iX][iY] == SynergyConstants.OUTPUT_ANGERR_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(
+                            SynergyConstants.OUTPUT_ANGERR_BAND_NAME) && (angErrorResult[iX][iY] > 0.0 ||
+                                                                          angErrorResult[iX][iY] == SynergyConstants.OUTPUT_ANGERR_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, aot550ErrorResult[iX][iY]);
-                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_GLINT_BAND_NAME) && (glintResult[iX][iY] > 0.0 ||
-                            glintResult[iX][iY] == SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(
+                            SynergyConstants.OUTPUT_GLINT_BAND_NAME) && (glintResult[iX][iY] > 0.0 ||
+                                                                         glintResult[iX][iY] == SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, glintResult[iX][iY]);
-                    } else if (targetBand.getName().equals(SynergyConstants.OUTPUT_WS_BAND_NAME) && (wsResult[iX][iY] > 0.0 ||
-                            wsResult[iX][iY] == SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE)) {
+                    } else if (targetBand.getName().equals(
+                            SynergyConstants.OUTPUT_WS_BAND_NAME) && (wsResult[iX][iY] > 0.0 ||
+                                                                      wsResult[iX][iY] == SynergyConstants.OUTPUT_WS_BAND_NODATAVALUE)) {
                         targetTile.setSample(iX, iY, wsResult[iX][iY]);
                     } else {
                         final float merisViewAzimuth = getAvePixel(vaMerisTileComplete, iTarX, iTarY);
                         final float merisSunAzimuth = getAvePixel(saMerisTile, iTarX, iTarY);
-                        final float merisAzimuthDifference = GlintPreparation.removeAzimuthDifferenceAmbiguity(merisViewAzimuth,
-                                                                                                    merisSunAzimuth);
+                        final float merisAzimuthDifference = GlintPreparation.removeAzimuthDifferenceAmbiguity(
+                                merisViewAzimuth,
+                                merisSunAzimuth);
                         final float merisViewZenith = getAvePixel(vzMerisTile, iTarX, iTarY);
                         final float merisSunZenith = getAvePixel(szMerisTile, iTarX, iTarY);
-                        final float merisRad13 = getAvePixel(merisRad13Tile, iTarX, iTarY)/ SynergyConstants.MERIS_13_SOLAR_FLUX;
-                        final float merisRad14 = getAvePixel(merisRad14Tile, iTarX, iTarY)/ SynergyConstants.MERIS_14_SOLAR_FLUX;
+                        final float merisRad13 = getAvePixel(merisRad13Tile, iTarX,
+                                                             iTarY) / SynergyConstants.MERIS_13_SOLAR_FLUX;
+                        final float merisRad14 = getAvePixel(merisRad14Tile, iTarX,
+                                                             iTarY) / SynergyConstants.MERIS_14_SOLAR_FLUX;
                         final double aatsrSeNadir = getAvePixel(seAatsrNadirTile, iTarX, iTarY);
                         final double aatsrSeFward = getAvePixel(seAatsrFwardTile, iTarX, iTarY);
 
@@ -355,33 +388,38 @@ public class RetrieveAerosolOceanOp extends Operator {
                             aatsrUnitCorrFactor = 100.0f;
                         }
                         final float aatsrReflNadir87 = (float) (getAvePixel(aatsrReflNadir0870Tile, iTarX, iTarY) /
-                                (Math.PI* Math.cos(MathUtils.DTOR * (90.0 - aatsrSeNadir)) * aatsrUnitCorrFactor));
+                                                                (Math.PI * Math.cos(
+                                                                        MathUtils.DTOR * (90.0 - aatsrSeNadir)) * aatsrUnitCorrFactor));
                         final float aatsrReflNadir16 = (float) (getAvePixel(aatsrReflNadir1600Tile, iTarX, iTarY) /
-                                (Math.PI* Math.cos(MathUtils.DTOR * (90.0 - aatsrSeNadir)) * aatsrUnitCorrFactor));
+                                                                (Math.PI * Math.cos(
+                                                                        MathUtils.DTOR * (90.0 - aatsrSeNadir)) * aatsrUnitCorrFactor));
                         final float aatsrReflFward87 = (float) (getAvePixel(aatsrReflFward0870Tile, iTarX, iTarY) /
-                                (Math.PI* Math.cos(MathUtils.DTOR * (90.0 - aatsrSeFward)) * aatsrUnitCorrFactor));
+                                                                (Math.PI * Math.cos(
+                                                                        MathUtils.DTOR * (90.0 - aatsrSeFward)) * aatsrUnitCorrFactor));
                         final float aatsrReflFward16 = (float) (getAvePixel(aatsrReflFward1600Tile, iTarX, iTarY) /
-                                (Math.PI* Math.cos(MathUtils.DTOR * (90.0 - aatsrSeFward)) * aatsrUnitCorrFactor));
+                                                                (Math.PI * Math.cos(
+                                                                        MathUtils.DTOR * (90.0 - aatsrSeFward)) * aatsrUnitCorrFactor));
 
                         final float aatsrViewAzimuthNadir = getAvePixel(vaAatsrNadirTileComplete, iTarX, iTarY);
                         final float aatsrSunAzimuthNadir = getAvePixel(saAatsrNadirTile, iTarX, iTarY);
                         final float aatsrViewAzimuthFward = vaAatsrFwardTile.getSampleFloat(iTarX, iTarY);
                         final float aatsrSunAzimuthFward = saAatsrFwardTile.getSampleFloat(iTarX, iTarY);
 
-                        final float aatsrAzimuthDifferenceNadir = GlintPreparation.removeAzimuthDifferenceAmbiguity(aatsrViewAzimuthNadir,
-                                                                                                         aatsrSunAzimuthNadir);
+                        final float aatsrAzimuthDifferenceNadir = GlintPreparation.removeAzimuthDifferenceAmbiguity(
+                                aatsrViewAzimuthNadir,
+                                aatsrSunAzimuthNadir);
                         final float aatsrAzimuthDifferenceFward = aatsrViewAzimuthFward - aatsrSunAzimuthFward;
                         // negative pressures were stored in LUT to ensure ascending sequence
-                        final float surfacePressure = -1.0f*getAvePixel(pressureTile, iTarX, iTarY);
+                        final float surfacePressure = -1.0f * getAvePixel(pressureTile, iTarX, iTarY);
 
                         // breadboard begin STEP 1
                         final float[] glintArray = doSynAOStep1(
-                                    aatsrViewElevationNadir, aatsrViewElevationFward,
-                                    aatsrSunElevationNadir, aatsrSunElevationFward,
-                                    aatsrAzimuthDifferenceNadir, aatsrAzimuthDifferenceFward,
-                                    merisViewZenith, merisSunZenith,
-                                    merisAzimuthDifference,
-                                    surfacePressure, ws);
+                                aatsrViewElevationNadir, aatsrViewElevationFward,
+                                aatsrSunElevationNadir, aatsrSunElevationFward,
+                                aatsrAzimuthDifferenceNadir, aatsrAzimuthDifferenceFward,
+                                merisViewZenith, merisSunZenith,
+                                merisAzimuthDifference,
+                                surfacePressure, ws);
                         glintResult[iX][iY] = glintArray[0];
                         wsResult[iX][iY] = ws;
                         // breadboard end STEP 1
@@ -411,7 +449,7 @@ public class RetrieveAerosolOceanOp extends Operator {
                         if (targetBand.getName().equals(SynergyConstants.OUTPUT_GLINT_BAND_NAME)) {
                             targetTile.setSample(iX, iY, glintResult[iX][iY]);
                         }
-                         if (targetBand.getName().equals(SynergyConstants.OUTPUT_WS_BAND_NAME)) {
+                        if (targetBand.getName().equals(SynergyConstants.OUTPUT_WS_BAND_NAME)) {
                             targetTile.setSample(iX, iY, wsResult[iX][iY]);
                         }
                     }
@@ -426,7 +464,7 @@ public class RetrieveAerosolOceanOp extends Operator {
     }
 
     private float[] doSynAOStep1(float aatsrViewElevationNadir, float aatsrViewElevationFward,
-                                 float aatsrSunElevationNadir,  float aatsrSunElevationFward,
+                                 float aatsrSunElevationNadir, float aatsrSunElevationFward,
                                  float aatsrAzimuthDifferenceNadir, float aatsrAzimuthDifferenceFward,
                                  float merisViewZenith, float merisSunZenith,
                                  float merisAzimuthDifference,
@@ -503,7 +541,7 @@ public class RetrieveAerosolOceanOp extends Operator {
                     // tlut=fltarr(nwvl,ntau,nang)
                     interpolAngResult[i][j][k] =     // tlut in breadboard
                             (float) (interpol5DResultHigh[angParIdx0][i][j] * angParwgt0 +
-                                    interpol5DResultHigh[angParIdx1][i][j] * angParwgt1);
+                                     interpol5DResultHigh[angParIdx1][i][j] * angParwgt1);
                 }
             }
         }
@@ -520,8 +558,8 @@ public class RetrieveAerosolOceanOp extends Operator {
                     // todo: clean up cost function for finally unused channels
                     // costFunction = 'cost' in breadboard:
                     // cost=fltarr(nwvl,ntau,nang)
-    //                                costFunction[0][j][k] = (interpolAngResult[0][j][k] - merisRad12) * wvlWeight[0];
-                     switch (wvlIndex[i]) {
+                    //                                costFunction[0][j][k] = (interpolAngResult[0][j][k] - merisRad12) * wvlWeight[0];
+                    switch (wvlIndex[i]) {
                         case 0:
                             costFunction[i][j][k] = (interpolAngResult[i][j][k] - merisRad13) * wvlWeight[wvlIndex[i]];
                             break;
@@ -535,7 +573,7 @@ public class RetrieveAerosolOceanOp extends Operator {
                             costFunction[i][j][k] = (interpolAngResult[i][j][k] - aatsrReflNadir87) * wvlWeight[wvlIndex[i]];
                             break;
                         case 4:
-                             costFunction[i][j][k] = (interpolAngResult[i][j][k] - aatsrReflFward16) * wvlWeight[wvlIndex[i]];
+                            costFunction[i][j][k] = (interpolAngResult[i][j][k] - aatsrReflFward16) * wvlWeight[wvlIndex[i]];
                             break;
                         case 5:
                             costFunction[i][j][k] = (interpolAngResult[i][j][k] - aatsrReflFward87) * wvlWeight[wvlIndex[i]];
@@ -575,29 +613,29 @@ public class RetrieveAerosolOceanOp extends Operator {
                 }
             }
         }
-        
+
         final boolean isInsideLut = bestTauIndex > 0 && bestTauIndex < nTau - 1 &&
-                    bestAngIndex > 0 && bestAngIndex < nAng - 1;
+                                    bestAngIndex > 0 && bestAngIndex < nAng - 1;
         // compute derivatives around best AOT solutions, and AOT error
         double[] dRadTodTau = new double[nWvl];
         double[] dRadTodAng = new double[nWvl];
         double deltaTau;
         for (int i = 0; i < nWvl; i++) {
-            final int tauLowerIndex = Math.max(0, bestTauIndex-1);
-            final int tauUpperIndex = Math.min(nTau-1, bestTauIndex+1);
-            final int angLowerIndex = Math.max(0, bestAngIndex-1);
-            final int angUpperIndex = Math.min(nAng-1, bestAngIndex+1);
+            final int tauLowerIndex = Math.max(0, bestTauIndex - 1);
+            final int tauUpperIndex = Math.min(nTau - 1, bestTauIndex + 1);
+            final int angLowerIndex = Math.max(0, bestAngIndex - 1);
+            final int angUpperIndex = Math.min(nAng - 1, bestAngIndex + 1);
             final float dRad = Math.abs(interpolAngResult[i][tauUpperIndex][angUpperIndex] -
-                    interpolAngResult[i][tauLowerIndex][angLowerIndex]);
+                                        interpolAngResult[i][tauLowerIndex][angLowerIndex]);
             final double dTau = Math.abs(vectorTauLutHigh[tauUpperIndex] - vectorTauLutHigh[tauLowerIndex]);
             final double dAng = Math.abs(angstroemParameters[angUpperIndex].getValue() -
-                    angstroemParameters[angLowerIndex].getValue());
+                                         angstroemParameters[angLowerIndex].getValue());
             dRadTodTau[i] = dRad / dTau;
             dRadTodAng[i] = dRad / dAng;
 
             deltaTau = 0.0;
             if (bestTau != noDataVal && isInsideLut) {
-                deltaTau = Math.abs(epsilon/dRadTodTau[i]);
+                deltaTau = Math.abs(epsilon / dRadTodTau[i]);
             }
         }
 
@@ -610,9 +648,9 @@ public class RetrieveAerosolOceanOp extends Operator {
             double sumDeltaTau = 0.0;
             double sumDeltaAng = 0.0;
             for (int i = 0; i < nWvl; i++) {
-                sumDeltaTau += Math.pow(wvlWeight[wvlIndex[i]]/costFunction[i][bestTauIndex][bestAngIndex], 2.0) *
+                sumDeltaTau += Math.pow(wvlWeight[wvlIndex[i]] / costFunction[i][bestTauIndex][bestAngIndex], 2.0) *
                                Math.pow(dRadTodTau[i], 2.0);
-                sumDeltaAng += Math.pow(wvlWeight[wvlIndex[i]]/costFunction[i][bestTauIndex][bestAngIndex], 2.0) *
+                sumDeltaAng += Math.pow(wvlWeight[wvlIndex[i]] / costFunction[i][bestTauIndex][bestAngIndex], 2.0) *
                                Math.pow(dRadTodAng[i], 2.0);
             }
 
@@ -622,8 +660,8 @@ public class RetrieveAerosolOceanOp extends Operator {
                 // FINAL RESULTS 2, 3:
                 angResult[iX][iY] = (float) angstroemParameters[bestAngIndex].getValue();
 //                angResult[iX][iY] = (float) bestAngIndex;
-                aot550ErrorResult[iX][iY] = (float) (1.0/Math.sqrt(sumDeltaTau));
-                angErrorResult[iX][iY] = (float) (1.0/Math.sqrt(sumDeltaAng));
+                aot550ErrorResult[iX][iY] = (float) (1.0 / Math.sqrt(sumDeltaTau));
+                angErrorResult[iX][iY] = (float) (1.0 / Math.sqrt(sumDeltaAng));
             }
         }
     }
@@ -634,10 +672,10 @@ public class RetrieveAerosolOceanOp extends Operator {
         double noDataValue = 0;
         int n = 0;
 
-        final int minX = Math.max(0,iTarX-aveBlock);
-        final int minY = Math.max(0,iTarY-aveBlock);
-        final int maxX = Math.min(synergyProduct.getSceneRasterWidth()-1,iTarX+aveBlock);
-        final int maxY = Math.min(synergyProduct.getSceneRasterHeight()-1,iTarY+aveBlock);
+        final int minX = Math.max(0, iTarX - aveBlock);
+        final int minY = Math.max(0, iTarY - aveBlock);
+        final int maxX = Math.min(synergyProduct.getSceneRasterWidth() - 1, iTarX + aveBlock);
+        final int maxY = Math.min(synergyProduct.getSceneRasterHeight() - 1, iTarY + aveBlock);
 
         for (int iy = minY; iy <= maxY; iy++) {
             for (int ix = minX; ix <= maxX; ix++) {
@@ -650,10 +688,9 @@ public class RetrieveAerosolOceanOp extends Operator {
                 }
             }
         }
-        if (!(n<minNAve)) {
+        if (!(n < minNAve)) {
             value /= n;
-        }
-        else {
+        } else {
             value = noDataValue;
         }
 
@@ -665,6 +702,7 @@ public class RetrieveAerosolOceanOp extends Operator {
      * It provides operator meta-data and is a factory for new operator instances.
      */
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(RetrieveAerosolOceanOp.class);
         }

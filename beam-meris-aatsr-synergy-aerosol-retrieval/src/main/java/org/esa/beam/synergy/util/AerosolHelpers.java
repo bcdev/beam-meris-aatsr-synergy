@@ -1,10 +1,11 @@
 package org.esa.beam.synergy.util;
 
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
+import org.esa.beam.framework.datamodel.Mask;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.ProductNodeGroup;
 import org.esa.beam.framework.datamodel.RasterDataNode;
 import org.esa.beam.framework.datamodel.TiePointGrid;
 import org.esa.beam.framework.gpf.OperatorException;
@@ -43,7 +44,6 @@ public class AerosolHelpers {
     }
 
     /**
-     *
      * @param inputProduct
      * @param instr
      * @param bandList
@@ -61,10 +61,10 @@ public class AerosolHelpers {
         }
         for (int iView = 0; iView < nView; iView++) {
             for (String body : bodyArr) {
-                for(String ang : angArr) {
+                for (String ang : angArr) {
                     if (instr.equals("AATSR")) {
                         bandName = body + "_" + ang + "_" + viewArr[iView] + "_" +
-                                SynergyConstants.INPUT_BANDS_SUFFIX_AATSR;
+                                   SynergyConstants.INPUT_BANDS_SUFFIX_AATSR;
                         bandList.add(inputProduct.getBand(bandName));
                     } else {
                         bandName = body + "_" + ang;
@@ -76,7 +76,7 @@ public class AerosolHelpers {
     }
 
     public static void getSpectralBandList(Product inputProduct, String bandNamePrefix, String bandNameSuffix,
-            int[] excludeBandIndices, ArrayList<Band> bandList) {
+                                           int[] excludeBandIndices, ArrayList<Band> bandList) {
 
         final String[] bandNames = inputProduct.getBandNames();
         Comparator<Band> byWavelength = new WavelengthComparator();
@@ -101,7 +101,8 @@ public class AerosolHelpers {
      * * The method represents the breadboard IDL routine 'minmax'.
      *
      * @param inputArray - the input array
-     * @param n - array dimension
+     * @param n          - array dimension
+     *
      * @return float[]
      */
     public static float[] getMinMaxVector(float[] inputArray, int n) {
@@ -129,6 +130,7 @@ public class AerosolHelpers {
      *
      * @param angArray - array of Angstroem coefficients from aerosol model table
      * @param nAng     - number of Ang coeffs
+     *
      * @return AngstroemParameters[] - the model pairs
      */
     public AngstroemParameters[] getAngstroemParameters(float[] angArray, int nAng) {
@@ -167,8 +169,9 @@ public class AerosolHelpers {
      * This method computed the index of the nearest higher value in a float array
      * compared to a given input float value
      *
-     * @param x - input value
+     * @param x     - input value
      * @param array - the float array
+     *
      * @return int
      */
     public static int getNearestHigherValueIndexInFloatArray(float x, float[] array) {
@@ -194,8 +197,9 @@ public class AerosolHelpers {
      * This method computed the index of the nearest lower value in a float array
      * compared to a given input float value
      *
-     * @param x - input value
+     * @param x     - input value
      * @param array - the float array
+     *
      * @return int
      */
     public static int getNearestLowerValueIndexInFloatArray(float x, float[] array) {
@@ -222,9 +226,10 @@ public class AerosolHelpers {
      * This method spline-interpolates within a double array to upscale
      * the array to a given dimension
      *
-     * @param yIn - input array
+     * @param yIn    - input array
      * @param dimOut - dimension of output array
-     * @return  double[] - the upscaled array
+     *
+     * @return double[] - the upscaled array
      */
     public static double[] interpolateArray(double[] yIn, int dimOut) {
         double[] yOut = new double[dimOut];
@@ -256,13 +261,14 @@ public class AerosolHelpers {
      * @param inputTile    - tile containing the pixels
      * @param aveBlockSize - half size of nxn square
      * @param minAverages  - number of 'good' values required for average computation
-     * @param iTarX - x value
-     * @param iTarY - y value
+     * @param iTarX        - x value
+     * @param iTarY        - y value
+     *
      * @return float
      */
     public static float getAvePixelFloat(Product inputProduct, Tile inputTile,
-                                   int aveBlockSize, int minAverages,
-                                   int iTarX, int iTarY) {
+                                         int aveBlockSize, int minAverages,
+                                         int iTarX, int iTarY) {
 
         double value = 0;
         double noDataValue = 0;
@@ -297,29 +303,38 @@ public class AerosolHelpers {
      * This method copies the flag bands from the synergy product to the target product
      *
      * @param synergyProduct - the Synergy product
-     * @param targetProduct - the target product
+     * @param targetProduct  - the target product
      */
     public static void copySynergyFlagBands(Product synergyProduct, Product targetProduct) {
-        final Band aatsrConfidFlagNadirBand = targetProduct.addBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
-        final Band aatsrConfidFlagFwardBand = targetProduct.addBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
-        final Band aatsrCloudFlagNadirBand = targetProduct.addBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR, ProductData.TYPE_INT16);
-        final Band aatsrCloudFlagFwardBand = targetProduct.addBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR, ProductData.TYPE_INT16);
+        final Band aatsrConfidFlagNadirBand = targetProduct.addBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR,
+                                                                    ProductData.TYPE_INT16);
+        final Band aatsrConfidFlagFwardBand = targetProduct.addBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR,
+                                                                    ProductData.TYPE_INT16);
+        final Band aatsrCloudFlagNadirBand = targetProduct.addBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR,
+                                                                   ProductData.TYPE_INT16);
+        final Band aatsrCloudFlagFwardBand = targetProduct.addBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR,
+                                                                   ProductData.TYPE_INT16);
         final Band merisL1FlagsBand = targetProduct.addBand(SynergyConstants.L1_FLAGS_MERIS, ProductData.TYPE_INT16);
-        final Band merisCloudFlagBand = targetProduct.addBand(SynergyConstants.CLOUD_FLAG_MERIS, ProductData.TYPE_INT16);
+        final Band merisCloudFlagBand = targetProduct.addBand(SynergyConstants.CLOUD_FLAG_MERIS,
+                                                              ProductData.TYPE_INT16);
 
-        final FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
+        final FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrConfidNadirFlagCoding, targetProduct);
         aatsrConfidFlagNadirBand.setSampleCoding(aatsrConfidNadirFlagCoding);
 
-        final FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
+        final FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrConfidFwardFlagCoding, targetProduct);
         aatsrConfidFlagFwardBand.setSampleCoding(aatsrConfidFwardFlagCoding);
 
-        final FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
+        final FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrCloudNadirFlagCoding, targetProduct);
         aatsrCloudFlagNadirBand.setSampleCoding(aatsrCloudNadirFlagCoding);
 
-        final FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
+        final FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
         ProductUtils.copyFlagCoding(aatsrCloudFwardFlagCoding, targetProduct);
         aatsrCloudFlagFwardBand.setSampleCoding(aatsrCloudFwardFlagCoding);
 
@@ -327,7 +342,8 @@ public class AerosolHelpers {
         ProductUtils.copyFlagCoding(merisL1FlagsCoding, targetProduct);
         merisL1FlagsBand.setSampleCoding(merisL1FlagsCoding);
 
-        final FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FLAG_MERIS);
+        final FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CLOUD_FLAG_MERIS);
         ProductUtils.copyFlagCoding(merisCloudFlagCoding, targetProduct);
         merisCloudFlagBand.setSampleCoding(merisCloudFlagCoding);
     }
@@ -363,11 +379,11 @@ public class AerosolHelpers {
         addTpg(targetProduct, altitudeDownscaledBand, "altitude");
     }
 
-     /**
+    /**
      * This method copies selected tie point grids to a rescaled target product
      *
-     * @param sourceProduct - the source product
-     * @param targetProduct - the target product
+     * @param sourceProduct  - the source product
+     * @param targetProduct  - the target product
      * @param xScalingFactor - scaling factor in x-direction
      * @param yScalingFactor - scaling factor in y-direction
      */
@@ -413,6 +429,7 @@ public class AerosolHelpers {
      * This method provides a real tie point grid from a 'tie point band'.
      *
      * @param band - the 'tie point band'
+     *
      * @return TiePointGrid
      */
     public static TiePointGrid getTpgFromBand(Band band) {
@@ -422,19 +439,19 @@ public class AerosolHelpers {
             tpgData[i] = dataBuffer.getElemFloat(i);
         }
 
-        TiePointGrid tpg = new TiePointGrid(band.getName(),
-                                            band.getSceneRasterWidth(),
-                                            band.getSceneRasterHeight(),
-                                            0.0f, 0.0f, 1.0f, 1.0f, tpgData);
-        return tpg;
+        return new TiePointGrid(band.getName(),
+                                band.getSceneRasterWidth(),
+                                band.getSceneRasterHeight(),
+                                0.0f, 0.0f, 1.0f, 1.0f, tpgData);
     }
 
     /**
      * This method provides a rescaled tie point grid from a 'tie point band'.
      *
-     * @param band - the 'tie point band'
-     * @param rescaledWidth - width of the rescaled TPG
+     * @param band           - the 'tie point band'
+     * @param rescaledWidth  - width of the rescaled TPG
      * @param rescaledHeight - height of the rescaled TPG
+     *
      * @return TiePointGrid
      */
     public static TiePointGrid getRescaledTpgFromBand(Band band, int rescaledWidth, int rescaledHeight) {
@@ -453,28 +470,29 @@ public class AerosolHelpers {
                 tpgIndex++;
             }
         }
-        TiePointGrid tpg = new TiePointGrid(band.getName(),
-                                            rescaledWidth,
-                                            rescaledHeight,
-                                            0.0f, 0.0f, 1.0f, 1.0f, tpgData);
-        return tpg;
+        return new TiePointGrid(band.getName(),
+                                rescaledWidth,
+                                rescaledHeight,
+                                0.0f, 0.0f, 1.0f, 1.0f, tpgData);
     }
 
     /**
      * This method downscales a band by a given factor
      *
-     * @param inputBand  - the input band
+     * @param inputBand     - the input band
      * @param scalingFactor - the scaling factor
+     *
      * @return Band - the downscaled band
      */
     public static Band downscaleBand(Band inputBand, float scalingFactor) {
         final RenderedImage sourceImage = inputBand.getSourceImage();
         final RenderedOp downscaledImage = ScaleDescriptor.create(sourceImage,
-                                                            1.0f / scalingFactor,
-                                                            1.0f / scalingFactor,
-                                                            0.0f, 0.0f,
-                                                            Interpolation.getInstance(Interpolation.INTERP_NEAREST),
-                                                            null);
+                                                                  1.0f / scalingFactor,
+                                                                  1.0f / scalingFactor,
+                                                                  0.0f, 0.0f,
+                                                                  Interpolation.getInstance(
+                                                                          Interpolation.INTERP_NEAREST),
+                                                                  null);
         Band downscaledBand = new Band(inputBand.getName(), inputBand.getDataType(),
                                        downscaledImage.getWidth(), downscaledImage.getHeight());
 
@@ -493,19 +511,16 @@ public class AerosolHelpers {
         Guardian.assertNotNull("source", sourceProduct);
         Guardian.assertNotNull("target", targetProduct);
         if (sourceProduct.getFlagCodingGroup().getNodeCount() > 0) {
-            Band sourceBand;
-            Band targetBand;
-            FlagCoding coding;
 
             ProductUtils.copyFlagCodings(sourceProduct, targetProduct);
-            ProductUtils.copyBitmaskDefs(sourceProduct, targetProduct);
+            ProductUtils.copyMasks(sourceProduct, targetProduct);
 
             // loop over bands and check if they have a flags coding attached
             for (int i = 0; i < sourceProduct.getNumBands(); i++) {
-                sourceBand = sourceProduct.getBandAt(i);
-                coding = sourceBand.getFlagCoding();
+                Band sourceBand = sourceProduct.getBandAt(i);
+                FlagCoding coding = sourceBand.getFlagCoding();
                 if (coding != null) {
-                    targetBand = AerosolHelpers.downscaleBand(sourceBand, scalingFactor);
+                    Band targetBand = AerosolHelpers.downscaleBand(sourceBand, scalingFactor);
                     targetBand.setSampleCoding(coding);
                     targetProduct.addBand(targetBand);
                 }
@@ -515,64 +530,69 @@ public class AerosolHelpers {
 
     public static void addAerosolFlagBand(Product targetProduct, int rasterWidth, int rasterHeight) {
         FlagCoding aerosolFlagCoding = new FlagCoding(SynergyConstants.aerosolFlagCodingName);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagCloudyName, SynergyConstants.cloudyMask, SynergyConstants.flagCloudyDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagOceanName,  SynergyConstants.oceanMask,   SynergyConstants.flagOceanDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagSuccessName, SynergyConstants.successMask, SynergyConstants.flagSuccessDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagBorderName, SynergyConstants.borderMask, SynergyConstants.flagBorderDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagFilledName, SynergyConstants.filledMask, SynergyConstants.flagFilledDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagNegMetricName, SynergyConstants.negMetricMask, SynergyConstants.flagNegMetricDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagAotLowName, SynergyConstants.aotLowMask, SynergyConstants.flagAotLowDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagErrHighName, SynergyConstants.errHighMask, SynergyConstants.flagErrHighDesc);
-        aerosolFlagCoding.addFlag(SynergyConstants.flagCoastName, SynergyConstants.coastMask, SynergyConstants.flagCoastDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagCloudyName, SynergyConstants.cloudyMask,
+                                  SynergyConstants.flagCloudyDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagOceanName, SynergyConstants.oceanMask,
+                                  SynergyConstants.flagOceanDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagSuccessName, SynergyConstants.successMask,
+                                  SynergyConstants.flagSuccessDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagBorderName, SynergyConstants.borderMask,
+                                  SynergyConstants.flagBorderDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagFilledName, SynergyConstants.filledMask,
+                                  SynergyConstants.flagFilledDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagNegMetricName, SynergyConstants.negMetricMask,
+                                  SynergyConstants.flagNegMetricDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagAotLowName, SynergyConstants.aotLowMask,
+                                  SynergyConstants.flagAotLowDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagErrHighName, SynergyConstants.errHighMask,
+                                  SynergyConstants.flagErrHighDesc);
+        aerosolFlagCoding.addFlag(SynergyConstants.flagCoastName, SynergyConstants.coastMask,
+                                  SynergyConstants.flagCoastDesc);
         targetProduct.getFlagCodingGroup().add(aerosolFlagCoding);
+        ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagCloudyName, SynergyConstants.flagCloudyDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagCloudyName,
+                                                Color.lightGray, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagOceanName, SynergyConstants.flagOceanDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagOceanName,
+                                                Color.blue, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagSuccessName, SynergyConstants.flagSuccessDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagSuccessName,
+                                                Color.pink, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagBorderName, SynergyConstants.flagBorderDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagBorderName,
+                                                Color.orange, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagFilledName, SynergyConstants.flagFilledDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagFilledName,
+                                                Color.magenta, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagNegMetricName,
+                                                SynergyConstants.flagNegMetricDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagNegMetricName,
+                                                Color.magenta, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagAotLowName,
+                                                SynergyConstants.flagAotLowDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagAotLowName,
+                                                Color.magenta, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagErrHighName,
+                                                SynergyConstants.flagErrHighDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagErrHighName,
+                                                Color.magenta, 0.2f));
+        maskGroup.add(Mask.BandMathsType.create(SynergyConstants.flagCoastName,
+                                                SynergyConstants.flagCoastDesc,
+                                                rasterWidth, rasterHeight,
+                                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagCoastName,
+                                                Color.magenta, 0.2f));
 
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagCloudyName,
-                                SynergyConstants.flagCloudyDesc,
-                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagCloudyName,
-                                Color.lightGray, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagOceanName,
-                                SynergyConstants.flagOceanDesc,
-                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagOceanName,
-                                Color.blue, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagSuccessName,
-                                SynergyConstants.flagSuccessDesc,
-                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagSuccessName,
-                                Color.pink, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagBorderName,
-                                SynergyConstants.flagBorderDesc,
-                                SynergyConstants.aerosolFlagCodingName+"."+ SynergyConstants.flagBorderName,
-                                Color.orange, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagFilledName,
-                                SynergyConstants.flagFilledDesc,
-                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagFilledName,
-                                Color.magenta, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagNegMetricName,
-                                SynergyConstants.flagNegMetricDesc,
-                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagNegMetricName,
-                                Color.magenta, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagAotLowName,
-                                SynergyConstants.flagAotLowDesc,
-                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagAotLowName,
-                                Color.magenta, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagErrHighName,
-                                SynergyConstants.flagErrHighDesc,
-                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagErrHighName,
-                                Color.magenta, 0.2f));
-        targetProduct.addBitmaskDef(
-                new BitmaskDef( SynergyConstants.flagCoastName,
-                                SynergyConstants.flagCoastDesc,
-                                SynergyConstants.aerosolFlagCodingName + "." + SynergyConstants.flagCoastName,
-                                Color.magenta, 0.2f));
-
-        Band targetBand = new Band(SynergyConstants.aerosolFlagCodingName, ProductData.TYPE_UINT16, rasterWidth, rasterHeight);
+        Band targetBand = new Band(SynergyConstants.aerosolFlagCodingName, ProductData.TYPE_UINT16, rasterWidth,
+                                   rasterHeight);
         targetBand.setDescription(SynergyConstants.aerosolFlagCodingDesc);
         targetBand.setSampleCoding(aerosolFlagCoding);
         targetProduct.addBand(targetBand);
@@ -582,10 +602,11 @@ public class AerosolHelpers {
      * Class representing a set of Angstroem parameters
      * (as specified in IDL breadboard)
      */
-    public class AngstroemParameters {
+    public static class AngstroemParameters {
+
         private int[] indexPairs;
         private double[] weightPairs;
-        float value;
+        private float value;
 
         public AngstroemParameters() {
             indexPairs = new int[2];

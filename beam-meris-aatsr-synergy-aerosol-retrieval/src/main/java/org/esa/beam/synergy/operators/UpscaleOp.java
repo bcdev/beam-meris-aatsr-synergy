@@ -7,9 +7,10 @@ package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
 import org.esa.beam.framework.datamodel.FlagCoding;
+import org.esa.beam.framework.datamodel.Mask;
 import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.datamodel.ProductNodeGroup;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
@@ -24,15 +25,21 @@ import org.esa.beam.util.ProductUtils;
 import java.awt.Rectangle;
 
 /**
- *
  * @author akheckel
  */
 @OperatorMetadata(alias = "synergy.Upscale",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT upscaling of interpolated data.", internal=true)
+                  description = "AOT upscaling of interpolated data.", internal = true)
 public class UpscaleOp extends Operator {
+
+    private static final String PRODUCT_NAME = "SYNERGY UPSCALED AOT";
+    private static final String PRODUCT_TYPE = "SYNERGY UPSCALED AOT";
+
+    private static final String AOT_NAME = SynergyConstants.OUTPUT_AOT_BAND_NAME;
+    private static final String ERR_NAME = SynergyConstants.OUTPUT_AOTERR_BAND_NAME;
+    private static final String MODEL_NAME = SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME;
 
     @SourceProduct(alias = "aerosol",
                    label = "Name (Downscaled aerosol product)",
@@ -49,14 +56,8 @@ public class UpscaleOp extends Operator {
 
     @Parameter(defaultValue = "7", label = "BoxSize to invert in Pixel (n x n)", interval = "[1, 100]")
     private int scalingFactor;
+
     private int offset;
-
-    private static String productName = "SYNERGY UPSCALED AOT";
-    private static String productType = "SYNERGY UPSCALED AOT";
-
-    private String aotName = SynergyConstants.OUTPUT_AOT_BAND_NAME;
-    private String errName = SynergyConstants.OUTPUT_AOTERR_BAND_NAME;
-    private String modelName = SynergyConstants.OUTPUT_AOTMODEL_BAND_NAME;
 
     private int sourceRasterWidth;
     private int sourceRasterHeight;
@@ -66,18 +67,18 @@ public class UpscaleOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        
+
         offset = scalingFactor / 2;
         sourceRasterWidth = sourceProduct.getSceneRasterWidth();
         sourceRasterHeight = sourceProduct.getSceneRasterHeight();
         targetRasterWidth = originalProduct.getSceneRasterWidth();
         targetRasterHeight = originalProduct.getSceneRasterHeight();
-        
+
         createTargetProduct();
 //        targetProduct.setPreferredTileSize(512, 512);
         // the upscaling seems to work properly only for a 'single' tile
         // todo: fix
-        targetProduct.setPreferredTileSize(targetRasterWidth+1, targetRasterHeight+1);
+        targetProduct.setPreferredTileSize(targetRasterWidth + 1, targetRasterHeight + 1);
         setTargetProduct(targetProduct);
     }
 
@@ -105,28 +106,27 @@ public class UpscaleOp extends Operator {
         if (originalProduct.containsBand(targetBand.getName())) {
             srcBand = originalProduct.getBand(targetBand.getName());
             if (srcBand != null) {
-                srcTile = getSourceTile(srcBand, tarRec, ProgressMonitor.NULL);
+                srcTile = getSourceTile(srcBand, tarRec);
                 targetTile.setRawSamples(srcTile.getRawSamples());
             }
-        }
-        else if (sourceProduct.containsBand(targetBand.getName())) {
+        } else if (sourceProduct.containsBand(targetBand.getName())) {
             srcBand = sourceProduct.getBand(targetBand.getName());
-            srcTile = getSourceTile(srcBand, srcRec, ProgressMonitor.NULL);
-            if (targetBand.getName().equals(aotName)
-                    || targetBand.getName().equals(errName)
-                    || targetBand.getName().startsWith(modelName)
-                    || targetBand.isFlagBand()) {
-                
+            srcTile = getSourceTile(srcBand, srcRec);
+            if (targetBand.getName().equals(AOT_NAME)
+                || targetBand.getName().equals(ERR_NAME)
+                || targetBand.getName().startsWith(MODEL_NAME)
+                || targetBand.isFlagBand()) {
+
                 upscaleTileCopy(srcTile, targetTile, tarRec, pm);
             } else {
-                upscaleTileBilinear(srcTile, targetTile, tarRec, pm);
+                upscaleTileBilinear(srcTile, targetTile, tarRec);
             }
         }
     }
 
     private void createTargetProduct() {
-        
-        targetProduct = new Product(productName, productType, targetRasterWidth, targetRasterHeight);
+
+        targetProduct = new Product(PRODUCT_NAME, PRODUCT_TYPE, targetRasterWidth, targetRasterHeight);
 
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         ProductUtils.copyGeoCoding(originalProduct, targetProduct);
@@ -141,23 +141,23 @@ public class UpscaleOp extends Operator {
                 ProductUtils.copyFlagCoding(srcFlagCoding, targetProduct);
             }
         }
-        for (String bmName : sourceProduct.getBitmaskDefNames()) {
-            if (!targetProduct.containsBitmaskDef(bmName)) {
-                BitmaskDef srcBitmaskDef = sourceProduct.getBitmaskDef(bmName);
-                targetProduct.addBitmaskDef(srcBitmaskDef);
+        ProductNodeGroup<Mask> targetMaskGroup = targetProduct.getMaskGroup();
+        ProductNodeGroup<Mask> sourceMaskGroup = sourceProduct.getMaskGroup();
+        for (String bmName : sourceMaskGroup.getNodeNames()) {
+            if (!targetMaskGroup.contains(bmName)) {
+                Mask srcMask = sourceMaskGroup.get(bmName);
+                srcMask.getImageType().transferMask(srcMask, targetProduct);
             }
         }
 
-        Band targetBand;
         for (Band srcBand : sourceProduct.getBands()) {
             String bandName = srcBand.getName();
             if (originalProduct.containsBand(bandName)) {
                 if (!originalProduct.getBand(bandName).isFlagBand()) {
                     ProductUtils.copyBand(bandName, originalProduct, targetProduct);
                 }
-            }
-            else {
-                targetBand = new Band(bandName, srcBand.getDataType(), targetRasterWidth, targetRasterHeight);
+            } else {
+                Band targetBand = new Band(bandName, srcBand.getDataType(), targetRasterWidth, targetRasterHeight);
                 targetBand.setDescription(srcBand.getDescription());
                 targetBand.setNoDataValue(srcBand.getNoDataValue());
                 targetBand.setNoDataValueUsed(true);
@@ -171,8 +171,8 @@ public class UpscaleOp extends Operator {
         }
     }
 
-    private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec, ProgressMonitor pm) {
-        
+    private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec) {
+
         final int tarX = tarRec.x;
         final int tarY = tarRec.y;
         final int tarWidth = tarRec.width;
@@ -180,20 +180,23 @@ public class UpscaleOp extends Operator {
 
         for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
             int iSrcY = (iTarY - offset) / scalingFactor;
-            if (iSrcY >= srcTile.getHeight() - 1) iSrcY = srcTile.getHeight() - 2;
+            if (iSrcY >= srcTile.getHeight() - 1) {
+                iSrcY = srcTile.getHeight() - 2;
+            }
             float yFac = (float) (iTarY - offset) / scalingFactor - iSrcY;
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
-                checkForCancellation(pm);
                 int iSrcX = (iTarX - offset) / scalingFactor;
-                if (iSrcX >= srcTile.getWidth() - 1) iSrcX = srcTile.getWidth() - 2;
+                if (iSrcX >= srcTile.getWidth() - 1) {
+                    iSrcX = srcTile.getWidth() - 2;
+                }
                 float xFrac = (float) (iTarX - offset) / scalingFactor - iSrcX;
                 float erg = (1.0f - xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX, iSrcY);
-                erg +=        (xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX+1, iSrcY);
+                erg += (xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX + 1, iSrcY);
 //                System.out.println("srcTile.getWidth(), srcTile.getHeight(), sourceRasterWidth, sourceRasterWidth, " +
 //                        "iSrcX, iSrcY: " + srcTile.getWidth() + "," +  srcTile.getHeight() + "," +  sourceRasterWidth  + "," +
 //                        sourceRasterHeight + "," + iSrcX + "," +  iSrcY);
-                erg += (1.0f - xFrac) *        (yFac) * srcTile.getSampleFloat(iSrcX, iSrcY+1);
-                erg +=        (xFrac) *        (yFac) * srcTile.getSampleFloat(iSrcX+1, iSrcY+1);
+                erg += (1.0f - xFrac) * (yFac) * srcTile.getSampleFloat(iSrcX, iSrcY + 1);
+                erg += (xFrac) * (yFac) * srcTile.getSampleFloat(iSrcX + 1, iSrcY + 1);
                 tarTile.setSample(iTarX, iTarY, erg);
             }
         }
@@ -208,13 +211,17 @@ public class UpscaleOp extends Operator {
 
         for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
             int iSrcY = iTarY / scalingFactor;
-            if (iSrcY >= srcTile.getHeight()) iSrcY = srcTile.getHeight() - 1;
+            if (iSrcY >= srcTile.getHeight()) {
+                iSrcY = srcTile.getHeight() - 1;
+            }
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
                 if (pm.isCanceled()) {
                     break;
                 }
                 int iSrcX = iTarX / scalingFactor;
-                if (iSrcY >= srcTile.getWidth()) iSrcY = srcTile.getWidth() - 1;
+                if (iSrcY >= srcTile.getWidth()) {
+                    iSrcY = srcTile.getWidth() - 1;
+                }
                 float erg = srcTile.getSampleFloat(iSrcX, iSrcY);
                 tarTile.setSample(iTarX, iTarY, erg);
             }
@@ -222,6 +229,7 @@ public class UpscaleOp extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(UpscaleOp.class);
         }

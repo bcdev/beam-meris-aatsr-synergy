@@ -22,7 +22,7 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 17:54:34 +0000 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.Master",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
                   description = "The master operator for the MERIS/(A)ATSR Synergy Toolbox.")
@@ -56,18 +56,18 @@ public class MasterOp extends Operator {
 
     // cloud screening parameters...
     @Parameter(defaultValue = "true",
-            label = "Use the AATSR forward view when classifying",
-            description = "Use the AATSR forward view when classifying.")
+               label = "Use the AATSR forward view when classifying",
+               description = "Use the AATSR forward view when classifying.")
     private boolean useForwardView;
 
     @Parameter(defaultValue = "true",
-            label = "Compute cloud index",
-            description = "Compute cloud index.")
+               label = "Compute cloud index",
+               description = "Compute cloud index.")
     private boolean computeCOT;
 
-	@Parameter(defaultValue = "false",
-            label = "Compute snow risk flag",
-            description = "Compute snow risk flag.")
+    @Parameter(defaultValue = "false",
+               label = "Compute snow risk flag",
+               description = "Compute snow risk flag.")
     private boolean computeSF;
 
     @Parameter(defaultValue = "false",
@@ -134,7 +134,8 @@ public class MasterOp extends Operator {
         preprocessingInput.put("MERIS", merisSourceProduct);
         preprocessingInput.put("AATSR", aatsrSourceProduct);
         Map<String, Object> preprocessingParams = new HashMap<String, Object>();
-        preprocessingProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(CreateSynergyOp.class), preprocessingParams, preprocessingInput);
+        preprocessingProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(CreateSynergyOp.class),
+                                                 preprocessingParams, preprocessingInput);
 
         targetProduct = preprocessingProduct;
 
@@ -148,7 +149,8 @@ public class MasterOp extends Operator {
             cloudScreeningParams.put("computeCOT", computeCOT);
             cloudScreeningParams.put("computeSF", computeSF);
             cloudScreeningParams.put("computeSH", computeSH);
-            cloudScreeningProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(SynergyCloudScreeningOp.class), cloudScreeningParams, cloudScreeningInput);
+            cloudScreeningProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(SynergyCloudScreeningOp.class),
+                                                      cloudScreeningParams, cloudScreeningInput);
             targetProduct = cloudScreeningProduct;
         }
 
@@ -167,17 +169,19 @@ public class MasterOp extends Operator {
             landOceanParams.put("useCustomLandAerosol", useCustomLandAerosol);
             landOceanParams.put("customLandAerosol", customLandAerosol);
 
-            landOceanAerosolProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(RetrieveAerosolOp.class), landOceanParams, landOceanInput);
+            landOceanAerosolProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(RetrieveAerosolOp.class),
+                                                        landOceanParams, landOceanInput);
             targetProduct = landOceanAerosolProduct;
         }
     }
 
-    
+
     /**
      * The Service Provider Interface (SPI) for the operator.
      * It provides operator meta-data and is a factory for new operator instances.
      */
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(MasterOp.class);
         }

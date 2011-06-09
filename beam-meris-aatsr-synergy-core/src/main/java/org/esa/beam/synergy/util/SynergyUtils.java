@@ -1,6 +1,5 @@
 package org.esa.beam.synergy.util;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.dataio.envisat.EnvisatConstants;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
@@ -34,9 +33,10 @@ public class SynergyUtils {
     /**
      * Validation of auxiliary data (i.e., LUTs)
      *
-     * @param useCustomLandAerosol - true if custom models are used instead of defaults
+     * @param useCustomLandAerosol    - true if custom models are used instead of defaults
      * @param customLandAerosolString - string with model numbers (comma separated list)
-     * @return  boolean
+     *
+     * @return boolean
      */
     public static boolean validateAuxdata(boolean useCustomLandAerosol, String customLandAerosolString) {
 
@@ -63,7 +63,8 @@ public class SynergyUtils {
         // Gauss and Mie LUTs
         try {
             final NetcdfFile netcdfFileMie =
-                    NetcdfFile.open(auxdataPathAerosolOcean + File.separator + SynergyConstants.AEROSOL_MODEL_FILE_NAME);
+                    NetcdfFile.open(
+                            auxdataPathAerosolOcean + File.separator + SynergyConstants.AEROSOL_MODEL_FILE_NAME);
         } catch (IOException e) {
             SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
             return false;
@@ -92,14 +93,17 @@ public class SynergyUtils {
         // MERIS land aerosol LUTs
         final int NUMBER_LAND_AEROSOL_MODELS = landAerosolModels.size();
         final int NUMBER_LAND_AEROSOL_MERIS_WAVELENGTHS = 13;
-        final String[] landAerosolMerisWavelengths = {"00412", "00442", "00490", "00510", "00560", "00620", "00665", "00681",
-                "00708", "00753", "00778", "00865", "00885"};
+        final String[] landAerosolMerisWavelengths = {
+                "00412", "00442", "00490", "00510", "00560", "00620", "00665", "00681",
+                "00708", "00753", "00778", "00865", "00885"
+        };
         for (int i = 0; i < NUMBER_LAND_AEROSOL_MODELS; i++) {
             for (int j = 0; j < NUMBER_LAND_AEROSOL_MERIS_WAVELENGTHS; j++) {
                 String modelIndex = (df2.format((long) landAerosolModels.get(i)));
                 String inputFileString = "MERIS_" + landAerosolMerisWavelengths[j] + ".00_" + modelIndex;
                 try {
-                    BufferedReader merisReader = new BufferedReader(new FileReader(auxdataPathAerosolLandMeris + File.separator + inputFileString));
+                    BufferedReader merisReader = new BufferedReader(
+                            new FileReader(auxdataPathAerosolLandMeris + File.separator + inputFileString));
                 } catch (IOException e) {
                     SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
                     return false;
@@ -115,7 +119,8 @@ public class SynergyUtils {
                 String modelIndex = (df2.format((long) landAerosolModels.get(i)));
                 String inputFileString = "AATSR_" + landAerosolAatsrWavelengths[j] + ".00_" + modelIndex;
                 try {
-                    BufferedReader aatsrReader = new BufferedReader(new FileReader(auxdataPathAerosolLandAatsr + File.separator + inputFileString));
+                    BufferedReader aatsrReader = new BufferedReader(
+                            new FileReader(auxdataPathAerosolLandAatsr + File.separator + inputFileString));
                 } catch (IOException e) {
                     SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);
                     return false;
@@ -130,11 +135,13 @@ public class SynergyUtils {
     /**
      * Read land aerosol model numbers from string and provide as list
      *
-     * @param useCustomLandAerosol - true if custom models are used instead of defaults
+     * @param useCustomLandAerosol    - true if custom models are used instead of defaults
      * @param customLandAerosolString - string with model numbers (comma separated list)
+     *
      * @return List<Integer>
      */
-    public static List<Integer> readAerosolLandModelNumbers(boolean useCustomLandAerosol, String customLandAerosolString) {
+    public static List<Integer> readAerosolLandModelNumbers(boolean useCustomLandAerosol,
+                                                            String customLandAerosolString) {
         List<Integer> aerosolModels;
         String landAerosolModelString = SynergyConstants.AEROSOL_MODEL_PARAM_DEFAULT;
         if (useCustomLandAerosol) {
@@ -194,11 +201,16 @@ public class SynergyUtils {
      * Implementation of comparator for bands using the wavelength
      */
     public static final class BandComparator implements java.util.Comparator<Band> {
+
         public int compare(Band b1, Band b2) {
             final float dif = b1.getSpectralWavelength() - b2.getSpectralWavelength();
-            if (dif < 0) return -1;
-            else if (dif > 0) return 1;
-            else return 0;
+            if (dif < 0) {
+                return -1;
+            } else if (dif > 0) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -207,18 +219,20 @@ public class SynergyUtils {
      */
     public static Tile[] getTargetTiles(Band[] bands, Map<Band, Tile> targetTiles) {
         final Tile[] tile = new Tile[bands.length];
-        for (int i = 0; i < tile.length; i++) tile[i] = targetTiles.get(bands[i]);
+        for (int i = 0; i < tile.length; i++) {
+            tile[i] = targetTiles.get(bands[i]);
+        }
         return tile;
     }
 
     /*
      * The same that getSourceTile, but for arrays
      */
-    public static Tile[] getSourceTiles(Band[] bands, Rectangle targetRectangle, ProgressMonitor pm, Operator op) {
+    public static Tile[] getSourceTiles(Band[] bands, Rectangle targetRectangle, Operator op) {
         final Tile[] sourceTiles = new Tile[bands.length];
 
         for (int i = 0; i < bands.length; ++i) {
-            sourceTiles[i] = op.getSourceTile(bands[i], targetRectangle, pm);
+            sourceTiles[i] = op.getSourceTile(bands[i], targetRectangle);
         }
         return sourceTiles;
     }
@@ -228,7 +242,9 @@ public class SynergyUtils {
      */
     public static Band searchBand(Product product, String str) {
         for (Band b : product.getBands()) {
-            if (b.getName().indexOf(str) >= 0) return b;
+            if (b.getName().contains(str)) {
+                return b;
+            }
         }
         return null;
     }
@@ -258,8 +274,9 @@ public class SynergyUtils {
         validatePreprocessedProduct(cloudScreeningProduct);
         List<String> sourceBandNameList = Arrays.asList(cloudScreeningProduct.getBandNames());
         if (!sourceBandNameList.contains(SynergyConstants.B_CLOUDFLAGS)) {
-            String message = MessageFormat.format("Missing required flag band in input product: {0} . Not a preprocessed product with cloud flags?",
-                                                  SynergyConstants.B_CLOUDFLAGS);
+            String message = MessageFormat.format(
+                    "Missing required flag band in input product: {0} . Not a preprocessed product with cloud flags?",
+                    SynergyConstants.B_CLOUDFLAGS);
             throw new OperatorException(message);
         }
     }
@@ -267,14 +284,16 @@ public class SynergyUtils {
     public static void validatePreprocessedProduct(final Product preprocessedProduct) {
         final String missedBand = validatePreprocessedProductBands(preprocessedProduct);
         if (!missedBand.isEmpty()) {
-            String message = MessageFormat.format("Missing required band in input product: {0} . Not a preprocessed product?",
-                                                  missedBand + "_MERIS");
+            String message = MessageFormat.format(
+                    "Missing required band in input product: {0} . Not a preprocessed product?",
+                    missedBand + "_MERIS");
             throw new OperatorException(message);
         }
         final String missedTPG = validateMerisProductTpgs(preprocessedProduct);
         if (!missedTPG.isEmpty()) {
-            String message = MessageFormat.format("Missing required tie-point grid in input product: {0} . Not a preprocessed product?",
-                                                  missedTPG);
+            String message = MessageFormat.format(
+                    "Missing required tie-point grid in input product: {0} . Not a preprocessed product?",
+                    missedTPG);
             throw new OperatorException(message);
         }
     }
@@ -283,14 +302,16 @@ public class SynergyUtils {
     public static void validateMerisProduct(final Product merisProduct) {
         final String missedBand = validateMerisProductBands(merisProduct);
         if (!missedBand.isEmpty()) {
-            String message = MessageFormat.format("Missing required band in MERIS input product: {0} . Not a L1b product?",
-                                                  missedBand);
+            String message = MessageFormat.format(
+                    "Missing required band in MERIS input product: {0} . Not a L1b product?",
+                    missedBand);
             throw new OperatorException(message);
         }
         final String missedTPG = validateMerisProductTpgs(merisProduct);
         if (!missedTPG.isEmpty()) {
-            String message = MessageFormat.format("Missing required tie-point grid in MERIS input product: {0} . Not a L1b product?",
-                                                  missedTPG);
+            String message = MessageFormat.format(
+                    "Missing required tie-point grid in MERIS input product: {0} . Not a L1b product?",
+                    missedTPG);
             throw new OperatorException(message);
         }
     }
@@ -299,14 +320,16 @@ public class SynergyUtils {
         if (aatsrProduct != null) {
             final String missedBand = validateAatsrProductBands(aatsrProduct);
             if (!missedBand.isEmpty()) {
-                String message = MessageFormat.format("Missing required band in AATSR input product: {0} . Not a L1b product?",
-                                                      missedBand);
+                String message = MessageFormat.format(
+                        "Missing required band in AATSR input product: {0} . Not a L1b product?",
+                        missedBand);
                 throw new OperatorException(message);
             }
             final String missedTPG = validateAatsrProductTpgs(aatsrProduct);
             if (!missedTPG.isEmpty()) {
-                String message = MessageFormat.format("Missing required tie-point grid in AATSR input product: {0} . Not a L1b product?",
-                                                      missedTPG);
+                String message = MessageFormat.format(
+                        "Missing required tie-point grid in AATSR input product: {0} . Not a L1b product?",
+                        missedTPG);
                 throw new OperatorException(message);
             }
         }

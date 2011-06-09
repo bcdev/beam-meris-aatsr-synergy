@@ -28,11 +28,12 @@ import java.io.File;
  * @version $Revision: 8111 $ $Date: 2010-01-27 18:54:34 +0100 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.GlintAve",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Olaf Danne",
                   copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Glint Processor for Synergy Ocean Aerosol Retrieval.", internal=true)
+                  description = "Glint Processor for Synergy Ocean Aerosol Retrieval.", internal = true)
 public class GlintAveOp extends Operator {
+
     @SourceProduct(alias = "l1bSynergy",
                    description = "MERIS/AATSR synergy product.")
     private Product synergyProduct;
@@ -41,7 +42,7 @@ public class GlintAveOp extends Operator {
     private Product targetProduct;
 
     private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
-            "aerosolLUTs" + File.separator + "ocean";
+                                 "aerosolLUTs" + File.separator + "ocean";
 
     @Parameter(defaultValue = "10", label = "Pixels to average (n x n) for AOD retrieval", interval = "[1, 100]")
     private int aveBlock;
@@ -92,7 +93,7 @@ public class GlintAveOp extends Operator {
 
         scalingFactor = aveBlock;
         aveBlock /= 2;
-        minNAve = (int) (scalingFactor*scalingFactor - 1);
+        minNAve = (int) (scalingFactor * scalingFactor - 1);
 
         createTargetProduct();
 
@@ -110,8 +111,10 @@ public class GlintAveOp extends Operator {
         int sceneWidth = synergyProduct.getSceneRasterWidth();
         int sceneHeight = synergyProduct.getSceneRasterHeight();
         Rectangle rect = new Rectangle(0, 0, sceneWidth, sceneHeight);
-        vaMerisTileComplete = getSourceTile(synergyProduct.getTiePointGrid("view_azimuth"), rect, null);
-        vaAatsrNadirTileComplete = getSourceTile(synergyProduct.getBand("view_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), rect, null);
+        vaMerisTileComplete = getSourceTile(synergyProduct.getTiePointGrid("view_azimuth"), rect);
+        vaAatsrNadirTileComplete = getSourceTile(
+                synergyProduct.getBand("view_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                rect);
 
         // correct azimuths in these tiles for later usage...
         GlintPreparation.correctViewAzimuthLinear(vaMerisTileComplete, rect);
@@ -142,7 +145,7 @@ public class GlintAveOp extends Operator {
         final int sceneHeight = synergyProduct.getSceneRasterHeight();
 
         final int downscaledRasterWidth = (int) (Math.ceil((float) (sceneWidth / scalingFactor) - 0.5));
-        final int downscaledRasterHeight = (int) (Math.ceil((float) (sceneHeight/ scalingFactor) - 0.5));
+        final int downscaledRasterHeight = (int) (Math.ceil((float) (sceneHeight / scalingFactor) - 0.5));
 
         targetProduct = new Product(productName, productType, downscaledRasterWidth, downscaledRasterHeight);
         targetProduct.setPreferredTileSize(128, 128);
@@ -179,10 +182,10 @@ public class GlintAveOp extends Operator {
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
         final Rectangle rectangle = targetTile.getRectangle();
-        final int bigWidth = (int) (scalingFactor*rectangle.getWidth());
-        final int bigHeight = (int) (scalingFactor*rectangle.getHeight());
-        final int bigX = (int) (scalingFactor*rectangle.getX());
-        final int bigY = (int) (scalingFactor*rectangle.getY());
+        final int bigWidth = (int) (scalingFactor * rectangle.getWidth());
+        final int bigHeight = (int) (scalingFactor * rectangle.getHeight());
+        final int bigX = (int) (scalingFactor * rectangle.getX());
+        final int bigY = (int) (scalingFactor * rectangle.getY());
         final Rectangle big = new Rectangle(bigX, bigY, bigWidth, bigHeight);
 
         if (targetBand.isFlagBand()) {
@@ -193,62 +196,84 @@ public class GlintAveOp extends Operator {
         pm.beginTask("Processing frame...", rectangle.height);
 
         try {
-            final Tile szMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_zenith"), big, pm);
-            final Tile vzMerisTile = getSourceTile(synergyProduct.getTiePointGrid("view_zenith"), big, pm);
-            final Tile saMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_azimuth"), big, pm);
-            final Tile zonalWindTile = getSourceTile(synergyProduct.getTiePointGrid("zonal_wind"), big, pm);
-            final Tile meridWindTile = getSourceTile(synergyProduct.getTiePointGrid("merid_wind"), big, pm);
+            final Tile szMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_zenith"), big);
+            final Tile vzMerisTile = getSourceTile(synergyProduct.getTiePointGrid("view_zenith"), big);
+            final Tile saMerisTile = getSourceTile(synergyProduct.getTiePointGrid("sun_azimuth"), big);
+            final Tile zonalWindTile = getSourceTile(synergyProduct.getTiePointGrid("zonal_wind"), big);
+            final Tile meridWindTile = getSourceTile(synergyProduct.getTiePointGrid("merid_wind"), big);
 
-            final Tile seAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile veAatsrNadirTile = getSourceTile(synergyProduct.getBand("view_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile saAatsrNadirTile = getSourceTile(synergyProduct.getBand("sun_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            final Tile seAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("sun_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile veAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("view_elev_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile saAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("sun_azimuth_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
 
-            final Tile cfAatsrNadirTile = getSourceTile(synergyProduct.getBand("cloud_flags_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            final Tile cfAatsrNadirTile = getSourceTile(
+                    synergyProduct.getBand("cloud_flags_nadir" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
 
-            final Tile merisRad14Tile = getSourceTile(synergyProduct.getBand("radiance_14" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
-            final Tile merisRad15Tile = getSourceTile(synergyProduct.getBand("radiance_15" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big, pm);
-            final Tile aatsrBTNadir0370Tile = getSourceTile(synergyProduct.getBand("btemp_nadir_0370" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile aatsrBTNadir1100Tile = getSourceTile(synergyProduct.getBand("btemp_nadir_1100" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
-            final Tile aatsrBTNadir1200Tile = getSourceTile(synergyProduct.getBand("btemp_nadir_1200" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""), big, pm);
+            final Tile merisRad14Tile = getSourceTile(
+                    synergyProduct.getBand("radiance_14" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big);
+            final Tile merisRad15Tile = getSourceTile(
+                    synergyProduct.getBand("radiance_15" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_MERIS + ""), big);
+            final Tile aatsrBTNadir0370Tile = getSourceTile(
+                    synergyProduct.getBand("btemp_nadir_0370" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile aatsrBTNadir1100Tile = getSourceTile(
+                    synergyProduct.getBand("btemp_nadir_1100" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
+            final Tile aatsrBTNadir1200Tile = getSourceTile(
+                    synergyProduct.getBand("btemp_nadir_1200" + "_" + SynergyConstants.INPUT_BANDS_SUFFIX_AATSR + ""),
+                    big);
 
-            final Tile isInvalid = getSourceTile(invalidBand, rectangle, pm);
+            final Tile isInvalid = getSourceTile(invalidBand, rectangle);
 
             final int targetBandIndex = getTargetBandIndex(targetBand);
 
             for (int iY = rectangle.y; iY < rectangle.y + rectangle.height; iY++) {
                 for (int iX = rectangle.x; iX < rectangle.x + rectangle.width; iX++) {
 
-                    final int iTarX = (int) (scalingFactor*iX + aveBlock);
-                    final int iTarY = (int) (scalingFactor*iY + aveBlock);
-                    checkForCancellation(pm);
+                    final int iTarX = (int) (scalingFactor * iX + aveBlock);
+                    final int iTarY = (int) (scalingFactor * iY + aveBlock);
+                    checkForCancellation();
 
                     if ((targetBandIndex != -1 && synergyGlint[targetBandIndex][iX][iY] == -1.0) ||
-                            synergyWindspeed[iX][iY] == -1.0) {
+                        synergyWindspeed[iX][iY] == -1.0) {
 
-                        final boolean cloudFlagNadirLand = cfAatsrNadirTile.getSampleBit(iTarX, iTarY, AATSR_L1_CF_LAND);
-                        final boolean cloudFlagNadirCloudy = cfAatsrNadirTile.getSampleBit(iTarX, iTarY, AATSR_L1_CF_CLOUDY);
-                        final boolean cloudFlagNadirSunglint = cfAatsrNadirTile.getSampleBit(iTarX, iTarY, AATSR_L1_CF_SUNGLINT);
+                        final boolean cloudFlagNadirLand = cfAatsrNadirTile.getSampleBit(iTarX, iTarY,
+                                                                                         AATSR_L1_CF_LAND);
+                        final boolean cloudFlagNadirCloudy = cfAatsrNadirTile.getSampleBit(iTarX, iTarY,
+                                                                                           AATSR_L1_CF_CLOUDY);
+                        final boolean cloudFlagNadirSunglint = cfAatsrNadirTile.getSampleBit(iTarX, iTarY,
+                                                                                             AATSR_L1_CF_SUNGLINT);
                         final float aatsrViewElevationNadir = getAvePixel(veAatsrNadirTile, iTarX, iTarY);
                         final float aatsrSunElevationNadir = getAvePixel(seAatsrNadirTile, iTarX, iTarY);
                         final float aatsrBt37 = getAvePixel(aatsrBTNadir0370Tile, iTarX, iTarY);
                         if (isInvalid.getSampleBoolean(iX, iY)
-                                || !GlintPreparation.isUsefulPixel(cloudFlagNadirLand, cloudFlagNadirCloudy, cloudFlagNadirSunglint, aatsrViewElevationNadir, aatsrBt37))
-                        {
+                            || !GlintPreparation.isUsefulPixel(cloudFlagNadirLand, cloudFlagNadirCloudy,
+                                                               cloudFlagNadirSunglint, aatsrViewElevationNadir,
+                                                               aatsrBt37)) {
                             targetTile.setSample(iX, iY, SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE);
                         } else {
 
                             // 1. The solar part of 3.7
                             // 1.a. Thermal extrapolation of 11/12 to 3.7
                             final float aatsrBTThermalPart37 =
-                                    solarPart37.extrapolateTo37(getAvePixel(aatsrBTNadir1100Tile, iTarX, iTarY), getAvePixel(aatsrBTNadir1200Tile, iTarX, iTarY));
+                                    solarPart37.extrapolateTo37(getAvePixel(aatsrBTNadir1100Tile, iTarX, iTarY),
+                                                                getAvePixel(aatsrBTNadir1200Tile, iTarX, iTarY));
 
                             // 1.b.1 Calculation of water vapour
                             final float zonalWind = getAvePixel(zonalWindTile, iTarX, iTarY);
                             final float meridWind = getAvePixel(meridWindTile, iTarX, iTarY);
                             float merisViewAzimuth = getAvePixel(vaMerisTileComplete, iTarX, iTarY);
                             float merisSunAzimuth = getAvePixel(saMerisTile, iTarX, iTarY);
-                            float merisAzimuthDifference = GlintPreparation.removeAzimuthDifferenceAmbiguity(merisViewAzimuth,
-                                                                                                        merisSunAzimuth);
+                            float merisAzimuthDifference = GlintPreparation.removeAzimuthDifferenceAmbiguity(
+                                    merisViewAzimuth,
+                                    merisSunAzimuth);
                             final float merisViewZenith = getAvePixel(vzMerisTile, iTarX, iTarY);
                             final float merisSunZenith = getAvePixel(szMerisTile, iTarX, iTarY);
                             final float merisRad14 = getAvePixel(merisRad14Tile, iTarX, iTarY);
@@ -260,22 +285,28 @@ public class GlintAveOp extends Operator {
 
                             // 1.c Conversion of BT to normalized radiance
                             final float aatsrRad37 = solarPart37.convertBT2Radiance(aatsrBt37) / solarIrradiance37;
-                            final float aatsrRadianceThermalPart37 = solarPart37.convertBT2Radiance(aatsrBTThermalPart37) / solarIrradiance37;
+                            final float aatsrRadianceThermalPart37 = solarPart37.convertBT2Radiance(
+                                    aatsrBTThermalPart37) / solarIrradiance37;
 
                             // 1.d Compute the solar part
-                            final float[] aatsrSolarPart37 = solarPart37.computeSolarPart(aatsrRad37, aatsrRadianceThermalPart37, aatsrTrans37Info);
+                            final float[] aatsrSolarPart37 = solarPart37.computeSolarPart(aatsrRad37,
+                                                                                          aatsrRadianceThermalPart37,
+                                                                                          aatsrTrans37Info);
 
                             // 2. The geometrical conversion
                             // 2.a AATSR - MERIS conversion
                             final float aatsrViewAzimuthNadir = getAvePixel(vaAatsrNadirTileComplete, iTarX, iTarY);
                             final float aatsrSunAzimuthNadir = getAvePixel(saAatsrNadirTile, iTarX, iTarY);
 
-                            final float aatsrAzimuthDifferenceNadir = GlintPreparation.removeAzimuthDifferenceAmbiguity(aatsrViewAzimuthNadir,
-                                                                                                             aatsrSunAzimuthNadir);
+                            final float aatsrAzimuthDifferenceNadir = GlintPreparation.removeAzimuthDifferenceAmbiguity(
+                                    aatsrViewAzimuthNadir,
+                                    aatsrSunAzimuthNadir);
 
                             final float[][] merisNormalizedRadianceResultMatrix =
                                     glintRetrieval.convertAatsrRad37ToMerisRad(aatsrSolarPart37, merisSunZenith,
-                                                                               merisViewZenith, 180.0f - aatsrAzimuthDifferenceNadir, 180.0f - merisAzimuthDifference);
+                                                                               merisViewZenith,
+                                                                               180.0f - aatsrAzimuthDifferenceNadir,
+                                                                               180.0f - merisAzimuthDifference);
 
                             // 2.b Ambiuguity reduction and final output
                             if (glintRetrieval.windspeedFound(merisNormalizedRadianceResultMatrix) > 0) {
@@ -283,13 +314,14 @@ public class GlintAveOp extends Operator {
                                         (merisNormalizedRadianceResultMatrix, zonalWind, meridWind);
 
                                 // these are the final results:
-                                
+
                                 // windspeed:
                                 synergyWindspeed[iX][iY] = finalResultWindspeedRadiance[0];
                                 // glme13
                                 setGlintResult(1, iX, iY, merisAzimuthDifference, merisViewZenith, merisSunZenith);
                                 // glaatsr87_nadir
-                                setGlintResult(4, iX, iY, aatsrAzimuthDifferenceNadir, 90.0f - aatsrViewElevationNadir, 90.0f - aatsrSunElevationNadir);
+                                setGlintResult(4, iX, iY, aatsrAzimuthDifferenceNadir, 90.0f - aatsrViewElevationNadir,
+                                               90.0f - aatsrSunElevationNadir);
                             } else {
                                 synergyWindspeed[iX][iY] = SynergyConstants.OUTPUT_GLINT_BAND_NODATAVALUE;
                                 if (targetBandIndex != -1) {
@@ -312,8 +344,7 @@ public class GlintAveOp extends Operator {
     private void writeResultToTile(Band targetBand, Tile targetTile, int targetBandIndex, int y, int x) {
         if (targetBand.getName().equals(RESULT_WINDSPEED_NAME)) {
             targetTile.setSample(x, y, synergyWindspeed[x][y]);
-        }
-        else if (targetBandIndex != -1) {
+        } else if (targetBandIndex != -1) {
             targetTile.setSample(x, y, synergyGlint[targetBandIndex][x][y]);
         }
     }
@@ -383,8 +414,11 @@ public class GlintAveOp extends Operator {
     }
 
     private void setGlintResult(int index, int x, int y, float azimuthDifference, float viewZenith, float sunZenith) {
-        synergyGlint[index][x][y] = GlintRetrieval.calcGlintAnalytical(sunZenith, viewZenith, 180.0f - azimuthDifference, SynergyConstants.refractiveIndex[index],
-                         (float) synergyWindspeed[x][y], SynergyConstants.rhoFoam[index]);
+        synergyGlint[index][x][y] = GlintRetrieval.calcGlintAnalytical(sunZenith, viewZenith,
+                                                                       180.0f - azimuthDifference,
+                                                                       SynergyConstants.refractiveIndex[index],
+                                                                       (float) synergyWindspeed[x][y],
+                                                                       SynergyConstants.rhoFoam[index]);
     }
 
     /**
@@ -392,6 +426,7 @@ public class GlintAveOp extends Operator {
      * It provides operator meta-data and is a factory for new operator instances.
      */
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(GlintAveOp.class);
         }

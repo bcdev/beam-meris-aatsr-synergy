@@ -18,7 +18,7 @@ import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.meris.l2auxdata.L2AuxData;
-import org.esa.beam.meris.l2auxdata.L2AuxdataProvider;
+import org.esa.beam.meris.l2auxdata.L2AuxDataProvider;
 import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
@@ -41,20 +41,20 @@ import static java.lang.Math.*;
  * @version $Revision: 8155 $ $Date: 2010-01-29 17:30:33 +0100 (vie, 29 ene 2010) $
  */
 @OperatorMetadata(alias = "synergy.ExtractFeatures",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Ralf Quast, Olaf Danne, Jordi Munoz-Mari, Luis Gomez-Chova",
                   copyright = "(c) 2008-09 by Brockmann Consult and IPL-UV",
-                  description = "Extracts cloud features from Synergy TOA reflectance products.", internal=true)
+                  description = "Extracts cloud features from Synergy TOA reflectance products.", internal = true)
 public class ExtractFeaturesOp extends Operator {
 
-	private static final double INVERSE_SCALING_FACTOR = 10000.0;
-	
+    private static final double INVERSE_SCALING_FACTOR = 10000.0;
+
     @SourceProduct(alias = "source",
                    label = "Name (Synergy product)",
                    description = "Select a Synergy product")
     private Product sourceProduct;
-    
-	@TargetProduct(description = "The target product. Contains all extracted features.")
+
+    @TargetProduct(description = "The target product. Contains all extracted features.")
     private Product targetProduct;
 
     @Parameter(defaultValue = "true",
@@ -68,7 +68,7 @@ public class ExtractFeaturesOp extends Operator {
     @Parameter(defaultValue = "true",
                label = "Extract water vapour absorption feature")
     boolean extractWv;
-    
+
     @Parameter(defaultValue = "true",
                label = "Extract 761-754-865 ratio")
     boolean extract_761_754_865_ratio;
@@ -76,11 +76,11 @@ public class ExtractFeaturesOp extends Operator {
     @Parameter(defaultValue = "true",
                label = "Extract 870-670 ratio")
     boolean extract_870_670_ratio;
-    
+
     @Parameter(defaultValue = "true",
                label = "Extract 443-754 ratio")
-    boolean extract_443_754_ratio;    
-    
+    boolean extract_443_754_ratio;
+
     @Parameter(defaultValue = "true",
                label = "Extract 11-12 difference")
     boolean extract_11_12_diff;
@@ -88,35 +88,35 @@ public class ExtractFeaturesOp extends Operator {
     @Parameter(defaultValue = "true",
                label = "Extract 865-890 NDSI")
     boolean extract_865_890_ndsi;
-    
+
     @Parameter(defaultValue = "true",
                label = "Extract 555-1600 NDSI")
     boolean extract_555_1600_ndsi;
-    
+
     @Parameter(defaultValue = "true",
                label = "Extract surface pressure")
     boolean extract_spr;
 
     @Parameter(defaultValue = "true",
                label = "Apply strayligth correction to surface pressure extraction",
-               description="If 'true' the algorithm will apply straylight correction.")
+               description = "If 'true' the algorithm will apply straylight correction.")
     public boolean straylightCorr;
-    
+
     /*
-    @Parameter(defaultValue = "true",
-               label = "Use a tropical or a USS atmosphere model to surface pressure extraction",
-               description="If 'true' the algorithm will apply Tropical instead of USS atmosphere model.")
-               */
+@Parameter(defaultValue = "true",
+    label = "Use a tropical or a USS atmosphere model to surface pressure extraction",
+    description="If 'true' the algorithm will apply Tropical instead of USS atmosphere model.")
+    */
     public boolean tropicalAtmosphere = true;
 
     @Parameter(defaultValue = "false",
                label = "Extract surface pressure difference")
     boolean extract_sprd;
-    
+
     @Parameter(defaultValue = "true",
                label = "Extract band with coast line")
     boolean extract_coastline;
-    
+
     /*
     @Parameter(defaultValue = "true",
                label = "Extract thermal features")
@@ -142,7 +142,7 @@ public class ExtractFeaturesOp extends Operator {
     private transient Band sprBand;
     private transient Band sprdBand;
     private transient Band coastline;
-    
+
     // Vars for the SPR FUB method
     private static final String NEURAL_NET_TRP_FILE_NAME = "SP_FUB_trp.nna";
     private static final String NEURAL_NET_USS_FILE_NAME = "SP_FUB_uss.nna";  // changed to US standard atm., 18/03/2009
@@ -151,14 +151,14 @@ public class ExtractFeaturesOp extends Operator {
     private float[] straylightCoefficients = new float[L2AuxData.RR_DETECTOR_COUNT]; // reduced resolution only!
     private float[] straylightCorrWavelengths = new float[L2AuxData.RR_DETECTOR_COUNT];
     private JnnNet neuralNet;
-	private L2AuxData auxData;
+    private L2AuxData auxData;
 
     // Synergy source product bands
     private transient Band[] merisRefBands;
     private transient Band[] merisRadBands;
     private transient Band[] aatsrNadirBands;
     private transient Band[] aatsrFwardBands;
-    
+
     private transient Band demBand = null;
     private transient Band l1fBand = null;
 
@@ -171,15 +171,15 @@ public class ExtractFeaturesOp extends Operator {
     private transient TiePointGrid saaTpg = null;
     private transient TiePointGrid vzaTpg = null;
     private transient TiePointGrid vaaTpg = null;
-    
+
     @Override
     public void initialize() throws OperatorException {
-        
+
         // Setup MERIS, AATSR, L1F, detector index and DEM elevation bands
         prepareBands();
         // Prepare L2 auxiliary data
         initAuxData();
-        
+
         // Tie points
         szaTpg = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
         saaTpg = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_AZIMUTH_DS_NAME);
@@ -190,55 +190,57 @@ public class ExtractFeaturesOp extends Operator {
         atmPreTpg = sourceProduct.getTiePointGrid("atm_press");
 
         // Check bands and TPGs
-        if ((szaTpg == null|| saaTpg == null || vzaTpg == null || vaaTpg == null) && extract_spr) {
-            SynergyUtils.info("Sun/View zenith or azimuth angles not available, extraction of surface pressure disabled");
+        if ((szaTpg == null || saaTpg == null || vzaTpg == null || vaaTpg == null) && extract_spr) {
+            SynergyUtils.info(
+                    "Sun/View zenith or azimuth angles not available, extraction of surface pressure disabled");
             extract_spr = false;
         }
         if (detIdxBand == null && extract_spr) {
             SynergyUtils.info("Detector index band not found, extraction of surface pressure disabled");
-            extract_spr = false;            
+            extract_spr = false;
         }
         if (!extract_spr && extract_sprd) {
             SynergyUtils.info("Surface pressure not extracted, extraction of surface pressure difference disabled");
             extract_sprd = false;
         }
         if ((demBand == null || demAltTpg == null || atmPreTpg == null) && extract_sprd) {
-            SynergyUtils.info("DEM elevation or tie points not found, extraction of surface pressure difference disabled");
+            SynergyUtils.info(
+                    "DEM elevation or tie points not found, extraction of surface pressure difference disabled");
             extract_sprd = false;
         }
         if (l1fBand == null) {
             SynergyUtils.info("L1FLAGS not found, extraction of coast line disabled");
             extract_coastline = false;
         }
-        
+
         // Construct target product
         final String type = sourceProduct.getProductType() + "_FEAT";
         targetProduct = new Product("Synergy_FEATURES", type,
-        			sourceProduct.getSceneRasterWidth(),
-        			sourceProduct.getSceneRasterHeight());
+                                    sourceProduct.getSceneRasterWidth(),
+                                    sourceProduct.getSceneRasterHeight());
         targetProduct.setDescription("SYNERGY extracted features product");
 
         targetProduct.setStartTime(sourceProduct.getStartTime());
         targetProduct.setEndTime(sourceProduct.getEndTime());
-        
+
         if (extractVis) {
             visBr = targetProduct.addBand(SynergyConstants.F_BRIGHTENESS_VIS, ProductData.TYPE_INT16);
             visBr.setDescription("Brightness for visual bands");
             visBr.setUnit("dl");
             visBr.setScalingFactor(1.0 / INVERSE_SCALING_FACTOR);
-    
+
             visWh = targetProduct.addBand(SynergyConstants.F_WHITENESS_VIS, ProductData.TYPE_INT16);
             visWh.setDescription("Whiteness for visual bands");
             visWh.setUnit("dl");
             visWh.setScalingFactor(1.0 / INVERSE_SCALING_FACTOR);
-        }        
+        }
         if (extractNir) {
-        	nirBr = targetProduct.addBand(SynergyConstants.F_BRIGHTENESS_NIR, ProductData.TYPE_INT16);
+            nirBr = targetProduct.addBand(SynergyConstants.F_BRIGHTENESS_NIR, ProductData.TYPE_INT16);
             nirBr.setDescription("Brightness for NIR bands");
             nirBr.setUnit("dl");
             nirBr.setScalingFactor(1.0 / INVERSE_SCALING_FACTOR);
 
-        	nirWh = targetProduct.addBand(SynergyConstants.F_WHITENESS_NIR, ProductData.TYPE_INT16);
+            nirWh = targetProduct.addBand(SynergyConstants.F_WHITENESS_NIR, ProductData.TYPE_INT16);
             nirWh.setDescription("Whiteness for NIR bands");
             nirWh.setUnit("dl");
             nirWh.setScalingFactor(1.0 / INVERSE_SCALING_FACTOR);
@@ -283,7 +285,7 @@ public class ExtractFeaturesOp extends Operator {
             sprBand = targetProduct.addBand(SynergyConstants.F_SURF_PRESS, ProductData.TYPE_FLOAT32);
             sprBand.setDescription("Surface pressure");
             sprBand.setUnit("hPa");
-            
+
             if (extract_sprd) {
                 sprdBand = targetProduct.addBand(SynergyConstants.F_SURF_PRESS_DIFF, ProductData.TYPE_FLOAT32);
                 sprdBand.setDescription("Surface pressure difference");
@@ -295,9 +297,9 @@ public class ExtractFeaturesOp extends Operator {
             coastline.setDescription("Coast line band");
             coastline.setUnit("dl");
         }
-        
+
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
-        targetProduct.setPreferredTileSize(32,32);
+        targetProduct.setPreferredTileSize(32, 32);
     }
 
     private void prepareBands() {
@@ -305,29 +307,39 @@ public class ExtractFeaturesOp extends Operator {
         final ArrayList<Band> merisRadList = new ArrayList<Band>(15);
         final ArrayList<Band> aatsrNadirList = new ArrayList<Band>(7);
         final ArrayList<Band> aatsrFwardList = new ArrayList<Band>(7);
-        
+
         for (Band b : sourceProduct.getBands()) {
-            if (b.getName().startsWith(SynergyConstants.MERIS_REFLECTANCE)) merisRefList.add(b);
-            else if (b.getName().startsWith(SynergyConstants.MERIS_RADIANCE)) merisRadList.add(b);
-            else if (b.getName().startsWith(SynergyConstants.AATSR_REFLEC_NADIR)) aatsrNadirList.add(b);
-            else if (b.getName().startsWith(SynergyConstants.AATSR_BTEMP_NADIR)) aatsrNadirList.add(b);
-            else if (b.getName().startsWith(SynergyConstants.AATSR_REFLEC_FWARD)) aatsrFwardList.add(b);
-            else if (b.getName().startsWith(SynergyConstants.AATSR_BTEMP_FWARD)) aatsrFwardList.add(b);
-            else if (b.getName().startsWith(SynergyConstants.DEM_ELEVATION)) demBand = b;
-            else if (b.getName().startsWith(EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME)) l1fBand = b;
-            else if (b.getName().startsWith(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME)) detIdxBand = b;
+            if (b.getName().startsWith(SynergyConstants.MERIS_REFLECTANCE)) {
+                merisRefList.add(b);
+            } else if (b.getName().startsWith(SynergyConstants.MERIS_RADIANCE)) {
+                merisRadList.add(b);
+            } else if (b.getName().startsWith(SynergyConstants.AATSR_REFLEC_NADIR)) {
+                aatsrNadirList.add(b);
+            } else if (b.getName().startsWith(SynergyConstants.AATSR_BTEMP_NADIR)) {
+                aatsrNadirList.add(b);
+            } else if (b.getName().startsWith(SynergyConstants.AATSR_REFLEC_FWARD)) {
+                aatsrFwardList.add(b);
+            } else if (b.getName().startsWith(SynergyConstants.AATSR_BTEMP_FWARD)) {
+                aatsrFwardList.add(b);
+            } else if (b.getName().startsWith(SynergyConstants.DEM_ELEVATION)) {
+                demBand = b;
+            } else if (b.getName().startsWith(EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME)) {
+                l1fBand = b;
+            } else if (b.getName().startsWith(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME)) {
+                detIdxBand = b;
+            }
         }
-        
+
         if (merisRefList.size() != EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS &&
             merisRadList.size() != EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS) {
             throw new OperatorException("Unable to detect required MERIS radiance or reflectance bands");
         }
-        
+
         if (aatsrNadirList.size() != EnvisatConstants.AATSR_WAVELENGTHS.length ||
             aatsrFwardList.size() != EnvisatConstants.AATSR_WAVELENGTHS.length) {
             throw new OperatorException("Unable to detect required AATSR bands");
         }
-        
+
         merisRefBands = merisRefList.toArray(new Band[merisRefList.size()]);
         merisRadBands = merisRadList.toArray(new Band[merisRadList.size()]);
         aatsrNadirBands = aatsrNadirList.toArray(new Band[aatsrNadirList.size()]);
@@ -339,7 +351,7 @@ public class ExtractFeaturesOp extends Operator {
         java.util.Arrays.sort(aatsrNadirBands, bandComp);
         java.util.Arrays.sort(aatsrFwardBands, bandComp);
     }
-    
+
     private void initSPR() {
         if ((straylightCorr) && !SynergyUtils.isRR(sourceProduct)) {
             SynergyUtils.info("Straylight correction not possible for full resolution products, disabled.");
@@ -364,13 +376,13 @@ public class ExtractFeaturesOp extends Operator {
             throw new OperatorException("Failed to load aux data:\n" + e.getMessage());
         }
     }
-    
+
     private void loadSPRFUBNeuralNet() throws IOException, JnnException {
         InputStream inputStream = null;
-        inputStream = (tropicalAtmosphere) ? 
-            ExtractFeaturesOp.class.getResourceAsStream("nna/"+NEURAL_NET_TRP_FILE_NAME) :
-        	ExtractFeaturesOp.class.getResourceAsStream("nna/"+NEURAL_NET_USS_FILE_NAME);
-        
+        inputStream = (tropicalAtmosphere) ?
+                      ExtractFeaturesOp.class.getResourceAsStream("nna/" + NEURAL_NET_TRP_FILE_NAME) :
+                      ExtractFeaturesOp.class.getResourceAsStream("nna/" + NEURAL_NET_USS_FILE_NAME);
+
         final InputStreamReader reader = new InputStreamReader(inputStream);
         try {
             Jnn.setOptimizing(true);
@@ -379,16 +391,16 @@ public class ExtractFeaturesOp extends Operator {
             reader.close();
         }
     }
-    
+
     /**
      * This method reads a file into a float array
-     * 
+     *
      * @throws IOException
      */
     private void readFileData(final float[] data, final String fileName) throws IOException {
-        
+
         final InputStream inputStream = ExtractFeaturesOp.class.getResourceAsStream(fileName);
-        
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         for (int i = 0; i < data.length; i++) {
             String line = bufferedReader.readLine();
@@ -397,23 +409,23 @@ public class ExtractFeaturesOp extends Operator {
         }
         inputStream.close();
     }
-    
+
     private void initAuxData() {
         try {
-        	L2AuxdataProvider auxdataProvider = L2AuxdataProvider.getInstance();
+            L2AuxDataProvider auxdataProvider = L2AuxDataProvider.getInstance();
             auxData = auxdataProvider.getAuxdata(sourceProduct);
         } catch (Exception e) {
             throw new OperatorException("Failed to load L2AuxData:\n" + e.getMessage(), e);
         }
     }
-    
+
     @Override
     public void computeTileStack(Map<Band, Tile> targetTileMap, Rectangle targetRectangle,
                                  ProgressMonitor pm) throws OperatorException {
-        
+
         pm.beginTask("computing features ...", targetRectangle.height);
         JnnNet clonedNeuralNet = neuralNet.clone();
-        
+
         try {
             // Target tiles
             Tile tTileVisBr = null;
@@ -430,10 +442,10 @@ public class ExtractFeaturesOp extends Operator {
             Tile tTileSPR = null;
             Tile tTileSPRD = null;
             Tile tTileCoastline = null;
-            
+
             // Source tiles
-            final Tile[] sTileMeris = SynergyUtils.getSourceTiles(merisRefBands, targetRectangle, pm, this);
-            final Tile[] sTileAatsrNadir = SynergyUtils.getSourceTiles(aatsrNadirBands, targetRectangle, pm, this);
+            final Tile[] sTileMeris = SynergyUtils.getSourceTiles(merisRefBands, targetRectangle, this);
+            final Tile[] sTileAatsrNadir = SynergyUtils.getSourceTiles(aatsrNadirBands, targetRectangle, this);
             Tile[] sTileVirMeris = null;
             Tile[] sTileNirMeris = null;
             Tile[] sTileWVabs = null;
@@ -442,7 +454,7 @@ public class ExtractFeaturesOp extends Operator {
             // Source tiles for the SPR
             Tile sTileDetIdx = null;
             final Tile sTileR[] = new Tile[3];
-            
+
             // Coastline and invalid masks
             int coastMask = 0;
             int invalidMask = 0;
@@ -450,73 +462,87 @@ public class ExtractFeaturesOp extends Operator {
                 coastMask = l1fBand.getFlagCoding().getFlagMask(SynergyConstants.FLAG_COASTLINE);
                 invalidMask = l1fBand.getFlagCoding().getFlagMask(SynergyConstants.FLAG_INVALID);
             }
-            
+
             double[] visWavelengths = null;
             double[] nirWavelengths = null;
             if (extractVis) {
                 final Band[] meriVisBands = subBandArray(SynergyConstants.MERIS_VIS_BANDS, merisRefBands);
-                sTileVirMeris = SynergyUtils.getSourceTiles(meriVisBands, targetRectangle, pm, this);
+                sTileVirMeris = SynergyUtils.getSourceTiles(meriVisBands, targetRectangle, this);
                 visWavelengths = getSpectralWavelengths(meriVisBands);
                 tTileVisBr = targetTileMap.get(visBr);
                 tTileVisWh = targetTileMap.get(visWh);
             }
             if (extractNir) {
                 final Band[] merisNirBands = subBandArray(SynergyConstants.MERIS_NIR_BANDS, merisRefBands);
-                sTileNirMeris = SynergyUtils.getSourceTiles(merisNirBands, targetRectangle, pm, this);
+                sTileNirMeris = SynergyUtils.getSourceTiles(merisNirBands, targetRectangle, this);
                 nirWavelengths = getSpectralWavelengths(merisNirBands);
                 tTileNirBr = targetTileMap.get(nirBr);
                 tTileNirWh = targetTileMap.get(nirWh);
             }
             if (extractWv) {
-                sTileWVabs = SynergyUtils.getSourceTiles(subBandArray(new int[] {14,15}, merisRefBands), targetRectangle, pm, this);
+                sTileWVabs = SynergyUtils.getSourceTiles(subBandArray(new int[]{14, 15}, merisRefBands),
+                                                         targetRectangle,
+                                                         this);
                 tTileWVabs = targetTileMap.get(wvabs);
             }
-            if (extract_761_754_865_ratio) tTile_761_754_865_r = targetTileMap.get(b761_754_865_ratio);
-            if (extract_443_754_ratio)     tTile_443_754_r     = targetTileMap.get(b443_754_ratio);
-            if (extract_870_670_ratio)     tTile_870_760_r     = targetTileMap.get(b870_670_ratio);
-            if (extract_11_12_diff)        tTile_11_12_d       = targetTileMap.get(b11_12_diff);
-            if (extract_865_890_ndsi)      tTile_865_890_ndsi  = targetTileMap.get(b865_890_ndsi);
-            if (extract_555_1600_ndsi)     tTile_555_1600_ndsi = targetTileMap.get(b555_1600_ndsi);
+            if (extract_761_754_865_ratio) {
+                tTile_761_754_865_r = targetTileMap.get(b761_754_865_ratio);
+            }
+            if (extract_443_754_ratio) {
+                tTile_443_754_r = targetTileMap.get(b443_754_ratio);
+            }
+            if (extract_870_670_ratio) {
+                tTile_870_760_r = targetTileMap.get(b870_670_ratio);
+            }
+            if (extract_11_12_diff) {
+                tTile_11_12_d = targetTileMap.get(b11_12_diff);
+            }
+            if (extract_865_890_ndsi) {
+                tTile_865_890_ndsi = targetTileMap.get(b865_890_ndsi);
+            }
+            if (extract_555_1600_ndsi) {
+                tTile_555_1600_ndsi = targetTileMap.get(b555_1600_ndsi);
+            }
             if (extract_spr) {
-                sTileDetIdx = getSourceTile(detIdxBand, targetRectangle, pm);
+                sTileDetIdx = getSourceTile(detIdxBand, targetRectangle);
                 final Band[] merisBands = (merisRadBands.length > 0) ? merisRadBands : merisRefBands;
-                for (int i=0; i<3; i++) { // Bands 10, 11 and 12 (0-based in the arrays)
-                    sTileR[i] = getSourceTile(merisBands[9+i], targetRectangle, pm);
+                for (int i = 0; i < 3; i++) { // Bands 10, 11 and 12 (0-based in the arrays)
+                    sTileR[i] = getSourceTile(merisBands[9 + i], targetRectangle);
                 }
-                
+
                 tTileSPR = targetTileMap.get(sprBand);
-                if (extract_sprd) {                    
-                    sTileDEM = getSourceTile(demBand, targetRectangle, pm);
+                if (extract_sprd) {
+                    sTileDEM = getSourceTile(demBand, targetRectangle);
                     tTileSPRD = targetTileMap.get(sprdBand);
                 }
             }
             if (extract_coastline) {
-                sTileL1F = getSourceTile(l1fBand, targetRectangle, pm);
+                sTileL1F = getSourceTile(l1fBand, targetRectangle);
                 tTileCoastline = targetTileMap.get(coastline);
             }
 
-            for (int y=targetRectangle.y; y<targetRectangle.y + targetRectangle.height; y++) {
-                for (int x=targetRectangle.x; x<targetRectangle.x + targetRectangle.width; x++) {
-                    checkForCancellation(pm);
-                    
-                    final double[] merisRef   = getSamples(x, y, sTileMeris);
+            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+                for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                    checkForCancellation();
+
+                    final double[] merisRef = getSamples(x, y, sTileMeris);
                     final double[] aatsrNadir = getSamples(x, y, sTileAatsrNadir);
-                    
+
                     // Visible brightness and whiteness 
                     if (extractVis) {
-                        final double[] reflectance = getSamples(x, y, sTileVirMeris); 
+                        final double[] reflectance = getSamples(x, y, sTileVirMeris);
                         final double b = brightness(visWavelengths, reflectance);
                         final double w = whiteness(visWavelengths, reflectance);
-                        tTileVisBr.setSample(x,y,b);
-                        tTileVisWh.setSample(x,y,w);
+                        tTileVisBr.setSample(x, y, b);
+                        tTileVisWh.setSample(x, y, w);
                     }
                     // NIR brightness and whiteness
                     if (extractNir) {
-                        final double[] reflectance = getSamples(x, y, sTileNirMeris); 
+                        final double[] reflectance = getSamples(x, y, sTileNirMeris);
                         final double b = brightness(nirWavelengths, reflectance);
                         final double w = whiteness(nirWavelengths, reflectance);
-                        tTileNirBr.setSample(x,y,b);
-                        tTileNirWh.setSample(x,y,w);
+                        tTileNirBr.setSample(x, y, b);
+                        tTileNirWh.setSample(x, y, w);
                     }
                     // Water vapor absorption
                     if (extractWv) {
@@ -548,12 +574,12 @@ public class ExtractFeaturesOp extends Operator {
                     }
                     if (extract_555_1600_ndsi) {
                         final double ndsi = (aatsrNadir[0] - aatsrNadir[3]) / (aatsrNadir[0] + aatsrNadir[3]);
-                        tTile_555_1600_ndsi.setSample(x, y, ndsi);                        
+                        tTile_555_1600_ndsi.setSample(x, y, ndsi);
                     }
                     // SPR
                     if (extract_spr) {
                         double spr = 0;
-                        if ((sTileL1F.getSampleInt(x,y) & invalidMask) == 0) {
+                        if ((sTileL1F.getSampleInt(x, y) & invalidMask) == 0) {
                             // Valid pixel, compute SPR
                             spr = computeSPR(x, y, sTileDetIdx, sTileR, clonedNeuralNet);
                         }
@@ -566,24 +592,25 @@ public class ExtractFeaturesOp extends Operator {
                     }
                     // COAST LINE
                     if (extract_coastline) {
-                        tTileCoastline.setSample(x,y,
-                                               (sTileL1F.getSampleInt(x,y) & coastMask) != 0 ? 1 : 0);
+                        tTileCoastline.setSample(x, y,
+                                                 (sTileL1F.getSampleInt(x, y) & coastMask) != 0 ? 1 : 0);
                     }
                     pm.worked(1);
                 }
             }
-        }
-        finally {
+        } finally {
             pm.done();
         }
     }
 
     private static Band[] subBandArray(int[] idx, Band[] bands) {
-        final Band[] b = new Band[idx.length];        
-        for (int i=0; i<idx.length; i++) b[i] = bands[idx[i]-1];
+        final Band[] b = new Band[idx.length];
+        for (int i = 0; i < idx.length; i++) {
+            b[i] = bands[idx[i] - 1];
+        }
         return b;
     }
-     
+
     private static double[] getSpectralWavelengths(Band[] bands) {
         final double[] wavelengths = new double[bands.length];
 
@@ -592,7 +619,7 @@ public class ExtractFeaturesOp extends Operator {
         }
         return wavelengths;
     }
-    
+
     private static double[] getSamples(int x, int y, Tile[] tiles) {
         final double[] samples = new double[tiles.length];
 
@@ -607,7 +634,7 @@ public class ExtractFeaturesOp extends Operator {
         double sum = 0.0;
 
         for (int i = 1; i < reflectances.length; i++) {
-            sum += 0.5 * (reflectances[i] + reflectances[i-1]) * (wavelengths[i] - wavelengths[i-1]);
+            sum += 0.5 * (reflectances[i] + reflectances[i - 1]) * (wavelengths[i] - wavelengths[i - 1]);
         }
 
         return sum / (wavelengths[wavelengths.length - 1] - wavelengths[0]);
@@ -615,95 +642,94 @@ public class ExtractFeaturesOp extends Operator {
 
     private static double whiteness(double[] wavelengths, double[] reflectances) {
         double sum = 0.0;
-        
+
         // Calculate the reflectances norm
         double norm = (reflectances[0] * reflectances[0]);
         for (int i = 1; i < reflectances.length; i++) {
-            norm += (reflectances[i] * reflectances[i]);  
+            norm += (reflectances[i] * reflectances[i]);
         }
         norm = sqrt(norm);
-        if (norm == 0) norm = 1.0;
-        
+        if (norm == 0) {
+            norm = 1.0;
+        }
+
         for (int i = 1; i < reflectances.length; i++) {
-            
-            final double a = reflectances[i-1]/norm - 1/sqrt(reflectances.length);
-            final double b = reflectances[i]  /norm - 1/sqrt(reflectances.length);
-            
+
+            final double a = reflectances[i - 1] / norm - 1 / sqrt(reflectances.length);
+            final double b = reflectances[i] / norm - 1 / sqrt(reflectances.length);
+
             // Integration
-            if ( (a * b) >= 0) {
+            if ((a * b) >= 0) {
                 // Both are >0 or <0, calculate trapezoid area
-                sum += 0.5 * (abs(a) + abs(b)) * (wavelengths[i] - wavelengths[i-1]);
-            }
-            else {
+                sum += 0.5 * (abs(a) + abs(b)) * (wavelengths[i] - wavelengths[i - 1]);
+            } else {
                 // Different signs, the slope crosses the 'origin', find that wavelength
-                final double lambda = (a * (wavelengths[i] - wavelengths[i-1]) / (a-b)) + wavelengths[i-1];
+                final double lambda = (a * (wavelengths[i] - wavelengths[i - 1]) / (a - b)) + wavelengths[i - 1];
                 // Sum the two triangles
-                sum += 0.5 * ( abs(a)*(lambda - wavelengths[i-1]) + abs(b)*(wavelengths[i] - lambda) );
+                sum += 0.5 * (abs(a) * (lambda - wavelengths[i - 1]) + abs(b) * (wavelengths[i] - lambda));
             }
         }
 
         return sum / (wavelengths[wavelengths.length - 1] - wavelengths[0]);
     }
-    
+
     /*
-     * Calculates waver vapor absorption
-     */
-    private double waterVaporAbs(final int x, final int y, final Tile[] sourceTiles)
-    {
-        final double SZA = szaTpg.getPixelDouble(x,y);
-        final double VZA = vzaTpg.getPixelDouble(x,y);
-        final double mu = 1.0 / ( 1.0/cos(SZA*MathUtils.DTOR) + 1.0/cos(VZA*MathUtils.DTOR) );
+    * Calculates waver vapor absorption
+    */
+    private double waterVaporAbs(final int x, final int y, final Tile[] sourceTiles) {
+        final double SZA = szaTpg.getPixelDouble(x, y);
+        final double VZA = vzaTpg.getPixelDouble(x, y);
+        final double mu = 1.0 / (1.0 / cos(SZA * MathUtils.DTOR) + 1.0 / cos(VZA * MathUtils.DTOR));
         // Calculate ratio
-        final double[] reflectances = getSamples(x,y,sourceTiles);                
-        final double wva = -mu / SynergyConstants.TAU_ATM * log( reflectances[1]/reflectances[0] );
-        return wva;
+        final double[] reflectances = getSamples(x, y, sourceTiles);
+        return -mu / SynergyConstants.TAU_ATM * log(reflectances[1] / reflectances[0]);
     }
-    
+
     // TODO: decide whether to use radiances or reflectances. It would be nice to get ride of radiances!
     /*
      * Calculates the SPR
      */
-    private double computeSPR(final int x, final int y, final Tile detector, final Tile[] tile, final JnnNet neuralNet) {
-        
-        final int detectorXY = detector.getSampleInt(x,y);
-        
-        final double szaRadXY = szaTpg.getPixelDouble(x,y) * MathUtils.DTOR; // degrees to radians
-        final double vzaRadXY = vzaTpg.getPixelDouble(x,y) * MathUtils.DTOR;
-        final double vaaDegXY = vaaTpg.getPixelDouble(x,y);
-        final double saaDegXY = saaTpg.getPixelDouble(x,y);
-        
+    private double computeSPR(final int x, final int y, final Tile detector, final Tile[] tile,
+                              final JnnNet neuralNet) {
+
+        final int detectorXY = detector.getSampleInt(x, y);
+
+        final double szaRadXY = szaTpg.getPixelDouble(x, y) * MathUtils.DTOR; // degrees to radians
+        final double vzaRadXY = vzaTpg.getPixelDouble(x, y) * MathUtils.DTOR;
+        final double vaaDegXY = vaaTpg.getPixelDouble(x, y);
+        final double saaDegXY = saaTpg.getPixelDouble(x, y);
+
         double lambda = auxData.central_wavelength[L2AuxData.bb760][detectorXY];
-        final double fraction = (lambda - 753.75)/(778.0 - 753.75);
+        final double fraction = (lambda - 753.75) / (778.0 - 753.75);
         double toar10XY;
         double toar11XY;
-        double toar12XY;        
+        double toar12XY;
         if (merisRadBands.length > 0) {
             // Working with radiance bands
-            toar10XY = tile[0].getSampleDouble(x,y) / auxData.detector_solar_irradiance[9][detectorXY];
-            toar11XY = tile[1].getSampleDouble(x,y) / auxData.detector_solar_irradiance[10][detectorXY];
-            toar12XY = tile[2].getSampleDouble(x,y) / auxData.detector_solar_irradiance[11][detectorXY];
-        }
-        else {
+            toar10XY = tile[0].getSampleDouble(x, y) / auxData.detector_solar_irradiance[9][detectorXY];
+            toar11XY = tile[1].getSampleDouble(x, y) / auxData.detector_solar_irradiance[10][detectorXY];
+            toar12XY = tile[2].getSampleDouble(x, y) / auxData.detector_solar_irradiance[11][detectorXY];
+        } else {
             // Working with reflectance bands
             final double ref2rad = Math.cos(szaRadXY) / Math.PI * auxData.seasonal_factor;
-            toar10XY = tile[0].getSampleDouble(x,y) * ref2rad;
-            toar11XY = tile[1].getSampleDouble(x,y) * ref2rad;
-            toar12XY = tile[2].getSampleDouble(x,y) * ref2rad;
+            toar10XY = tile[0].getSampleDouble(x, y) * ref2rad;
+            toar11XY = tile[1].getSampleDouble(x, y) * ref2rad;
+            toar12XY = tile[2].getSampleDouble(x, y) * ref2rad;
         }
-        final double toar11XY_na = (1.0 - fraction)*toar10XY + fraction*toar12XY;
-        
+        final double toar11XY_na = (1.0 - fraction) * toar10XY + fraction * toar12XY;
+
         double stray = 0.0;
         if (straylightCorr) {
             // apply FUB straylight correction...
             stray = straylightCoefficients[detectorXY] * toar10XY;
             lambda = straylightCorrWavelengths[detectorXY];
         }
-        
+
         final double toar11XY_corrected = toar11XY + stray;
-        
+
         final double[] nnIn = new double[7];
         final double[] nnOut = new double[1];
-        
+
         // Apply FUB NN...
         nnIn[0] = toar10XY;
         nnIn[1] = toar11XY_corrected / toar11XY_na;
@@ -716,26 +742,25 @@ public class ExtractFeaturesOp extends Operator {
         neuralNet.process(nnIn, nnOut);
         return nnOut[0];
     }
-    
+
     /*
-     * Calculates the signal pressure ratio difference
-     */
-    private double computeSPRD(final int x, final int y, final double spr, final Tile sTileDEM)
-    {
-        double ap = atmPreTpg.getPixelDouble(x,y);
-        double da = demAltTpg.getPixelDouble(x,y);
-        double dem = sTileDEM.getSampleDouble(x,y);
+    * Calculates the signal pressure ratio difference
+    */
+    private double computeSPRD(final int x, final int y, final double spr, final Tile sTileDEM) {
+        double ap = atmPreTpg.getPixelDouble(x, y);
+        double da = demAltTpg.getPixelDouble(x, y);
+        double dem = sTileDEM.getSampleDouble(x, y);
         // Cannot be negative (da could be < 0 over the sea)
         if (da < 0 || dem < 0) {
             da = 0;
             dem = 0;
         }
         // Reference value for the surface pressure
-        final double sprd = spr - ( ap * exp( (da - dem)/7400.0d ) );
-        return sprd;
+        return spr - (ap * exp((da - dem) / 7400.0d));
     }
-    
+
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(ExtractFeaturesOp.class);
         }

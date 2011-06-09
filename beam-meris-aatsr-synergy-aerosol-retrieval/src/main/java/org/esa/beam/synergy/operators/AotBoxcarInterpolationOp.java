@@ -26,11 +26,14 @@ import java.awt.image.renderable.ParameterBlock;
  * @version $Revision: 8111 $ $Date: 2010-01-27 18:54:34 +0100 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.AotBoxcarInterpolation",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT interpolation of missing data.", internal=true)
+                  description = "AOT interpolation of missing data.", internal = true)
 public class AotBoxcarInterpolationOp extends Operator {
+
+    private static final String PRODUCT_NAME = "SYNERGY INTERPOLATED";
+    private static final String PRODUCT_TYPE = "SYNERGY INTERPOLATED";
 
     @SourceProduct(alias = "source",
                    label = "Name (Synergy aerosol product)",
@@ -39,9 +42,6 @@ public class AotBoxcarInterpolationOp extends Operator {
 
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
-
-    private static String productName = "SYNERGY INTERPOLATED";
-    private static String productType = "SYNERGY INTERPOLATED";
 
     private int sourceRasterWidth;
     private int sourceRasterHeight;
@@ -54,27 +54,26 @@ public class AotBoxcarInterpolationOp extends Operator {
         sourceRasterHeight = sourceProduct.getSceneRasterHeight();
         createTargetProduct();
 
-        final int boxWidth =  5;
-        final int boxHeight =  5;
+        final int boxWidth = 5;
+        final int boxHeight = 5;
         final Dimension boxDimension = new Dimension(boxWidth / 2, boxHeight / 2);
 
-        for (Band band:sourceProduct.getBands()) {
+        for (Band band : sourceProduct.getBands()) {
             if (!band.isFlagBand()) {
 
                 final RenderedImage sourceImage = band.getSourceImage();
                 System.out.printf("Source, size: %d x %d\n", sourceImage.getWidth(), sourceImage.getHeight());
 
                 final RenderedOp extSourceImage = getImageWithZeroBorderExtension(sourceImage, boxDimension);
-                System.out.printf("Extended Source, size: %d x %d\n", extSourceImage.getWidth(), extSourceImage.getHeight());
+                System.out.printf("Extended Source, size: %d x %d\n", extSourceImage.getWidth(),
+                                  extSourceImage.getHeight());
 
-                double[] low, high, map;
-
-                low = new double[1];
-                high = new double[1];
-                map = new double[1];
+                double[] low = new double[1];
+                double[] high = new double[1];
+                double[] map = new double[1];
 
                 // todo: clean up this!
-                low[0] =  SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE - 0.5;
+                low[0] = SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE - 0.5;
                 high[0] = SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE + 0.5;
                 map[0] = 0.0;
 
@@ -88,14 +87,18 @@ public class AotBoxcarInterpolationOp extends Operator {
 
                 // upscale
                 System.out.printf("Dst, size: %d x %d\n", dstImage.getWidth(), dstImage.getHeight());
+                ParameterBlock args = new ParameterBlock();
+                args.addSource(dstImage);
+                args.add(boxWidth);
+                args.add(boxHeight);
+                args.add(boxWidth / 2);
+                args.add(boxHeight / 2);
 
-                final RenderedOp boxImage = JAI.create("boxfilter", dstImage,
-                                            boxWidth, boxHeight,
-                                            boxWidth / 2, boxHeight / 2);
+                final RenderedOp boxImage = JAI.create("boxfilter", args);
                 System.out.printf("Boximage, size: %d x %d\n", boxImage.getWidth(), boxImage.getHeight());
 
                 Band interpolBand = targetProduct.getBand(band.getName());
-                if (band.getName().equals("land_aerosol_model")) {
+                if ("land_aerosol_model".equals(band.getName())) {
                     interpolBand.setSourceImage(extSourceImage);
                 } else {
                     interpolBand.setSourceImage(boxImage);
@@ -107,7 +110,7 @@ public class AotBoxcarInterpolationOp extends Operator {
 
     private void createTargetProduct() {
 
-        targetProduct = new Product(productName, productType, sourceRasterWidth, sourceRasterHeight);
+        targetProduct = new Product(PRODUCT_NAME, PRODUCT_TYPE, sourceRasterWidth, sourceRasterHeight);
 
         ProductUtils.copyFlagBands(sourceProduct, targetProduct);
         ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
@@ -121,7 +124,7 @@ public class AotBoxcarInterpolationOp extends Operator {
     }
 
     private void createTargetProductBands() {
-        for (Band band:sourceProduct.getBands()) {
+        for (Band band : sourceProduct.getBands()) {
             if (!band.isFlagBand()) {
                 Band targetBand = new Band(band.getName(), band.getDataType(), sourceRasterWidth, sourceRasterHeight);
                 targetBand.setDescription(band.getDescription());
@@ -133,7 +136,7 @@ public class AotBoxcarInterpolationOp extends Operator {
     }
 
     public RenderedOp getImageWithZeroBorderExtension(RenderedImage img,
-                                        Dimension border) {
+                                                      Dimension border) {
         ParameterBlock pb = new ParameterBlock();
         pb.addSource(img);
         pb.add(border.width);
@@ -145,6 +148,7 @@ public class AotBoxcarInterpolationOp extends Operator {
 
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(AotBoxcarInterpolationOp.class);
         }

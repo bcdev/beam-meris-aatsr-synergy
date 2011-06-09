@@ -32,10 +32,10 @@ import java.util.logging.Logger;
  * @version $Revision: 8034 $ $Date: 2010-01-20 15:47:34 +0100 (Mi, 20 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.LaplaceInterpolation",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "Perform Laplace interpolation of fields", internal=true)
+                  description = "Perform Laplace interpolation of fields", internal = true)
 public class LaplaceInterpolationOp extends Operator {
 
     @SourceProduct(alias = "source",
@@ -47,15 +47,15 @@ public class LaplaceInterpolationOp extends Operator {
     private Product targetProduct;
 
     @Parameter(alias = SynergyConstants.OUTPUT_PRODUCT_NAME_NAME,
-              defaultValue = SynergyConstants.OUTPUT_PRODUCT_NAME_DEFAULT,
-              description = SynergyConstants.OUTPUT_PRODUCT_NAME_DESCRIPTION,
-              label = SynergyConstants.OUTPUT_PRODUCT_NAME_LABEL)
+               defaultValue = SynergyConstants.OUTPUT_PRODUCT_NAME_DEFAULT,
+               description = SynergyConstants.OUTPUT_PRODUCT_NAME_DESCRIPTION,
+               label = SynergyConstants.OUTPUT_PRODUCT_NAME_LABEL)
     private String productName;
 
     @Parameter(alias = SynergyConstants.OUTPUT_PRODUCT_TYPE_NAME,
-              defaultValue = SynergyConstants.OUTPUT_PRODUCT_TYPE_DEFAULT,
-              description = SynergyConstants.OUTPUT_PRODUCT_TYPE_DESCRITPION,
-              label = SynergyConstants.OUTPUT_PRODUCT_TYPE_LABEL)
+               defaultValue = SynergyConstants.OUTPUT_PRODUCT_TYPE_DEFAULT,
+               description = SynergyConstants.OUTPUT_PRODUCT_TYPE_DESCRITPION,
+               label = SynergyConstants.OUTPUT_PRODUCT_TYPE_LABEL)
     private String productType;
 
     private String aotBandName = "aot";
@@ -65,7 +65,6 @@ public class LaplaceInterpolationOp extends Operator {
 
     private int rasterWidth;
     private int rasterHeight;
-
 
 
     @Override
@@ -83,7 +82,9 @@ public class LaplaceInterpolationOp extends Operator {
 
         final int aveBlock = 100;
         final Rectangle targetRectangle = targetTile.getRectangle();
-        final Rectangle big = new Rectangle(targetRectangle.x-aveBlock,targetRectangle.y-aveBlock,targetRectangle.width+2*aveBlock,targetRectangle.height+2*aveBlock);
+        final Rectangle big = new Rectangle(targetRectangle.x - aveBlock, targetRectangle.y - aveBlock,
+                                            targetRectangle.width + 2 * aveBlock,
+                                            targetRectangle.height + 2 * aveBlock);
 
         final int x1 = targetRectangle.x;
         final int x2 = targetRectangle.x + targetRectangle.width - 1;
@@ -93,16 +94,16 @@ public class LaplaceInterpolationOp extends Operator {
         final int end = targetBand.getName().indexOf("_intp");
         final String srcBandName = targetBand.getName().substring(0, end);
         final Band sourceBand = sourceProduct.getBand(srcBandName);
-        final Tile sT = getSourceTile(sourceBand, big, ProgressMonitor.NULL);
+        final Tile sT = getSourceTile(sourceBand, big);
 
         final double[][] dataArr = new double[big.height][big.width];
         final double noDataValue = sT.getRasterDataNode().getNoDataValue();
 
-        for (int iy=0; iy<big.height; iy++) {
-            for (int ix=0; ix<big.width; ix++) {
-                boolean outside = ((big.x+ix < 0) || (big.x+ix >= rasterWidth)
-                                || (big.y+iy < 0) || (big.y+iy >= rasterHeight));
-                dataArr[iy][ix] = outside ? noDataValue : (double) sT.getSampleFloat(big.x+ix, big.y+iy);
+        for (int iy = 0; iy < big.height; iy++) {
+            for (int ix = 0; ix < big.width; ix++) {
+                boolean outside = ((big.x + ix < 0) || (big.x + ix >= rasterWidth)
+                                   || (big.y + iy < 0) || (big.y + iy >= rasterHeight));
+                dataArr[iy][ix] = outside ? noDataValue : (double) sT.getSampleFloat(big.x + ix, big.y + iy);
             }
         }
 
@@ -113,12 +114,13 @@ public class LaplaceInterpolationOp extends Operator {
             Logger.getLogger(LaplaceInterpolationOp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        for (int iy=y1; iy<=y2; iy++) {
-            for (int ix=x1; ix<=x2; ix++) {
-                targetTile.setSample(ix, iy, (float) dataArr[iy-targetRectangle.y+aveBlock][ix-targetRectangle.x+aveBlock]);
+        for (int iy = y1; iy <= y2; iy++) {
+            for (int ix = x1; ix <= x2; ix++) {
+                targetTile.setSample(ix, iy,
+                                     (float) dataArr[iy - targetRectangle.y + aveBlock][ix - targetRectangle.x + aveBlock]);
             }
         }
-        
+
     }
 
     private void createTargetProduct() {
@@ -130,7 +132,7 @@ public class LaplaceInterpolationOp extends Operator {
 
         createTargetProductBands();
 
-        targetProduct.setPreferredTileSize(128,128);
+        targetProduct.setPreferredTileSize(128, 128);
         setTargetProduct(targetProduct);
     }
 
@@ -138,21 +140,21 @@ public class LaplaceInterpolationOp extends Operator {
         //String bandName = SynergyPreprocessingConstants.OUTPUT_AOT_BAND_NAME
         //                  + String.format("_%02d", aerosolModels.get(iAM));
 
-        final Band aotBand = new Band(aotBandName+"_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
+        final Band aotBand = new Band(aotBandName + "_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
         aotBand.setDescription(SynergyConstants.OUTPUT_AOT_BAND_DESCRIPTION);
         aotBand.setNoDataValue(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE);
         aotBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE_USED);
         aotBand.setValidPixelExpression(aotBand.getName() + ">= 0 AND " + aotBand.getName() + "<= 1");
         targetProduct.addBand(aotBand);
 
-        final Band errBand = new Band(errBandName+"_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
+        final Band errBand = new Band(errBandName + "_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
         errBand.setDescription(SynergyConstants.OUTPUT_AOTERR_BAND_DESCRIPTION);
         errBand.setNoDataValue(SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE);
         errBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE_USED);
         errBand.setValidPixelExpression(errBand.getName() + ">= 0 AND " + errBand.getName() + "<= 1");
         targetProduct.addBand(errBand);
 
-        final Band modelBand = new Band(modelBandName+"_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
+        final Band modelBand = new Band(modelBandName + "_intp", ProductData.TYPE_FLOAT32, rasterWidth, rasterHeight);
         modelBand.setDescription(SynergyConstants.OUTPUT_AOTMODEL_BAND_DESCRIPTION);
         modelBand.setNoDataValue(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE);
         modelBand.setNoDataValueUsed(SynergyConstants.OUTPUT_AOTMODEL_BAND_NODATAVALUE_USED);
@@ -161,6 +163,7 @@ public class LaplaceInterpolationOp extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(LaplaceInterpolationOp.class);
         }

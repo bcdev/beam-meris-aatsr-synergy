@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-preprocessing</symbolicName>
-    <version>1.1.2</version>
+    <version>1.2</version>
     <name>MERIS/AATSR Synergy Preprocessing</name>
     <description>
         <![CDATA[
@@ -36,22 +36,27 @@
     <url>http://envisat.esa.int/beam</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
 
-    <changelog/>
-    
+    <changelog>
+        <![CDATA[
+             <p>From 1.1.2 to 1.2:<br/>
+             - adapted according to BEAM 4.9 API changes<br/>
+        ]]>
+    </changelog>
+
     <dependency>
         <module>beam-core</module>
     </dependency>
-	<dependency>
+    <dependency>
         <module>beam-gpf</module>
     </dependency>
-	 <dependency>
+    <dependency>
         <module>beam-visat</module>
         <optional>true</optional>
     </dependency>
-	<dependency>
+    <dependency>
         <module>beam-envisat-reader</module>
-    </dependency>	
-	<dependency>
+    </dependency>
+    <dependency>
         <module>beam-meris-brr</module>
     </dependency>
     <dependency>
@@ -76,7 +81,7 @@
         <module>beam-meris-aatsr-synergy-core</module>
     </dependency>
     <dependency>
-        <module>lib-netcdf</module>
+        <module>beam-netcdf</module>
     </dependency>
 
     <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
@@ -85,7 +90,7 @@
         <action>
             <id>synergyToolbox</id>
             <class>org.esa.beam.synergy.ui.MasterAction</class>
-            <text>MERIS/(A)ATSR Synergy Toolbox... </text>
+            <text>MERIS/(A)ATSR Synergy Toolbox...</text>
             <mnemonic/>
             <placeAfter/>
         </action>
@@ -93,9 +98,9 @@
     </extension>
 
     <!--<extension point="beam-ui:helpSets">-->
-        <!--<helpSet>-->
-            <!--<parent>beam-help</parent>-->
-            <!--<path>doc/help/synergyhelp.hs</path>-->
-        <!--</helpSet>-->
+    <!--<helpSet>-->
+    <!--<parent>beam-help</parent>-->
+    <!--<path>doc/help/synergyhelp.hs</path>-->
+    <!--</helpSet>-->
     <!--</extension>-->
 </module>

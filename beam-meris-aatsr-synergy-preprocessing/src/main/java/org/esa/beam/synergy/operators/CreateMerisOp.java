@@ -48,10 +48,11 @@ import java.util.Map;
  * @version $Revision: 7481 $ $Date: 2009-12-11 20:03:20 +0100 (Fr, 11 Dez 2009) $
  */
 @OperatorMetadata(alias = "synergy.CreateMeris",
-        version = "1.1",
-        authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
-        copyright = "(c) 2008-09 by IPL",
-        description = "This operator calls a chain of operators to prepare the MERIS product.", internal=true)
+                  version = "1.2",
+                  authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
+                  copyright = "(c) 2008-09 by IPL",
+                  description = "This operator calls a chain of operators to prepare the MERIS product.",
+                  internal = true)
 
 public class CreateMerisOp extends Operator {
 
@@ -82,15 +83,15 @@ public class CreateMerisOp extends Operator {
     boolean copyLandWaterReclass;
 
     // Map to rename reflectance bands
-    Map<String,String> renameMap = new HashMap<String,String>(EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS);
+    Map<String, String> renameMap = new HashMap<String, String>(EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS);
     // New scaling factor
     final static double scalingFactor = 10000.0;
     private transient Product rad2reflProduct;
 
-	@Override
+    @Override
     public void initialize() throws OperatorException {
 
-	    // Declare possible output products
+        // Declare possible output products
         Product cloudProbabilityProduct = null;
         Product cloudProduct = null;
         Product landProduct = null;
@@ -108,7 +109,7 @@ public class CreateMerisOp extends Operator {
 
         // Radiance to Reflectance
         rad2reflProduct =
-            GPF.createProduct(OperatorSpi.getOperatorAlias(Rad2ReflOp.class), GPF.NO_PARAMS, sourceProduct);
+                GPF.createProduct(OperatorSpi.getOperatorAlias(Rad2ReflOp.class), GPF.NO_PARAMS, sourceProduct);
 
         if (copyCloudTopPreassureAndMask || copyLandWaterReclass) {
             // Cloud Top Pressure
@@ -120,7 +121,8 @@ public class CreateMerisOp extends Operator {
             cloudInput.put("rhotoa", rad2reflProduct);
             cloudInput.put("ctp", ctpProduct);
             cloudProduct =
-                GPF.createProduct(OperatorSpi.getOperatorAlias(CloudClassificationOp.class), GPF.NO_PARAMS, cloudInput);
+                    GPF.createProduct(OperatorSpi.getOperatorAlias(CloudClassificationOp.class), GPF.NO_PARAMS,
+                                      cloudInput);
 
             if (copyLandWaterReclass) {
                 // Gaseous Correction
@@ -132,14 +134,16 @@ public class CreateMerisOp extends Operator {
                 gasParameters.put("correctWater", true);
                 gasParameters.put("exportTg", true);
                 final Product gasProduct =
-                    GPF.createProduct(OperatorSpi.getOperatorAlias(GaseousCorrectionOp.class), gasParameters, gasInput);
+                        GPF.createProduct(OperatorSpi.getOperatorAlias(GaseousCorrectionOp.class), gasParameters,
+                                          gasInput);
 
                 // Land Water Reclassification
                 Map<String, Product> landInput = new HashMap<String, Product>(2);
                 landInput.put("l1b", sourceProduct);
                 landInput.put("gascor", gasProduct);
                 landProduct =
-                    GPF.createProduct(OperatorSpi.getOperatorAlias(LandClassificationOp.class), GPF.NO_PARAMS, landInput);
+                        GPF.createProduct(OperatorSpi.getOperatorAlias(LandClassificationOp.class), GPF.NO_PARAMS,
+                                          landInput);
             }
         }
 
@@ -172,7 +176,7 @@ public class CreateMerisOp extends Operator {
             Band targetBand = targetProduct.addBand(newName, ProductData.TYPE_INT16);
             targetBand.setDescription(oldName.replace("rho_toa_", "TOA reflectance band "));
             targetBand.setUnit("dl");
-            targetBand.setScalingFactor(1.0/scalingFactor);
+            targetBand.setScalingFactor(1.0 / scalingFactor);
             targetBand.setValidPixelExpression(newName + ">=0");
             ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
             renameMap.put(newName, oldName);
@@ -189,7 +193,7 @@ public class CreateMerisOp extends Operator {
         }
 
         // Copy cloudProduct bands
-        if (copyCloudTopPreassureAndMask)  {
+        if (copyCloudTopPreassureAndMask) {
             for (Band b : cloudProduct.getBands()) {
                 targetProduct.addBand(b);
             }
@@ -199,11 +203,11 @@ public class CreateMerisOp extends Operator {
         if (copyLandWaterReclass) {
             FlagCoding flagCoding = LandClassificationOp.createFlagCoding();
             targetProduct.getFlagCodingGroup().add(flagCoding);
-            for (Band band:landProduct.getBands()) {
-            	if (band.getName().equals(LandClassificationOp.LAND_FLAGS)) {
-            	    band.setSampleCoding(flagCoding);
-            	}
-            	targetProduct.addBand(band);
+            for (Band band : landProduct.getBands()) {
+                if (band.getName().equals(LandClassificationOp.LAND_FLAGS)) {
+                    band.setSampleCoding(flagCoding);
+                }
+                targetProduct.addBand(band);
             }
         }
 
@@ -218,8 +222,7 @@ public class CreateMerisOp extends Operator {
                     ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
                     targetBand.setSourceImage(sourceBand.getSourceImage());
                 }
-            }
-            else {
+            } else {
                 targetBand = targetProduct.getBand(sourceBand.getName());
                 targetBand.setSourceImage(sourceBand.getSourceImage()); // copy band data
             }
@@ -241,12 +244,12 @@ public class CreateMerisOp extends Operator {
         if (bandName.startsWith("reflectance")) {
             // Convert float band to int16
             final Band sourceBand = rad2reflProduct.getBand(renameMap.get(bandName));
-            final Tile sourceTile = getSourceTile(sourceBand, rect, pm);
-            final float sourceData[] = sourceTile.getDataBufferFloat();
-            final short targetData[] = targetTile.getDataBufferShort();
+            final Tile sourceTile = getSourceTile(sourceBand, rect);
+            final float[] sourceData = sourceTile.getDataBufferFloat();
+            final short[] targetData = targetTile.getDataBufferShort();
 
-            for (int y=rect.y; y<rect.y+rect.height; y++) {
-                for (int x=rect.x; x<rect.x+rect.width; x++) {
+            for (int y = rect.y; y < rect.y + rect.height; y++) {
+                for (int x = rect.x; x < rect.x + rect.width; x++) {
                     final int pos = targetTile.getDataBufferIndex(x, y);
                     targetData[pos] = (short) (scalingFactor * sourceData[pos]);
                 }
@@ -262,6 +265,7 @@ public class CreateMerisOp extends Operator {
      * It provides operator meta-data and is a factory for new operator instances.
      */
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(CreateMerisOp.class);
         }

@@ -6,7 +6,6 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.core.SubProgressMonitor;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
@@ -24,14 +23,13 @@ import java.awt.Rectangle;
 import java.util.Arrays;
 
 /**
- *
  * @author akheckel
  */
 @OperatorMetadata(alias = "synergy.Median",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "", internal=true)
+                  description = "", internal = true)
 public class MedianOp extends Operator {
 
     @SourceProduct(alias = "source",
@@ -67,7 +65,7 @@ public class MedianOp extends Operator {
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
         final Rectangle tarRec = targetTile.getRectangle();
-        pm.beginTask("filter aot", tarRec.width*tarRec.height + 1);
+        pm.beginTask("filter aot", tarRec.width * tarRec.height + 1);
 
         if (targetBand.getName().equals(tarBandName)) {
             final int srcX = tarRec.x - medBoxHalf;
@@ -77,7 +75,7 @@ public class MedianOp extends Operator {
             final Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
             final Band srcBand = sourceProduct.getBand(srcBandName);
-            final Tile srcTile = getSourceTile(srcBand, srcRec, SubProgressMonitor.create(pm, 1));
+            final Tile srcTile = getSourceTile(srcBand, srcRec);
             final double noDataValue = srcTile.getRasterDataNode().getNoDataValue();
 
             final int tarX = tarRec.x;
@@ -86,7 +84,7 @@ public class MedianOp extends Operator {
             final int tarHeight = tarRec.height;
             for (int iTarY = tarY; iTarY < tarHeight; iTarY++) {
                 for (int iTarX = tarX; iTarX < tarWidth; iTarX++) {
-                    checkForCancellation(pm);
+                    checkForCancellation();
                     float srcPixel = srcTile.getSampleFloat(iTarX, iTarY);
                     if (srcPixel != noDataValue) {
                         float medianPixel = getMedianPixel(srcTile, iTarX, iTarY);
@@ -98,12 +96,11 @@ public class MedianOp extends Operator {
                     pm.worked(1);
                 }
             }
-        }
-        else {
+        } else {
             final Band srcBand = sourceProduct.getBand(targetBand.getName());
-            final Tile srcTile = getSourceTile(srcBand, tarRec, SubProgressMonitor.create(pm, 1));
+            final Tile srcTile = getSourceTile(srcBand, tarRec);
             targetTile.setRawSamples(srcTile.getRawSamples());
-            pm.worked(tarRec.width*tarRec.height);
+            pm.worked(tarRec.width * tarRec.height);
         }
         pm.done();
     }
@@ -113,8 +110,8 @@ public class MedianOp extends Operator {
         targetProduct = new Product(productName, productType, rasterWidth, rasterHeight);
 
         ProductUtils.copyFlagCodings(sourceProduct, targetProduct);
-        ProductUtils.copyBitmaskDefs(sourceProduct, targetProduct);
-        for (String bandName : sourceProduct.getBandNames()){
+        ProductUtils.copyMasks(sourceProduct, targetProduct);
+        for (String bandName : sourceProduct.getBandNames()) {
             ProductUtils.copyBand(bandName, sourceProduct, targetProduct);
             FlagCoding flagCoding = sourceProduct.getBand(bandName).getFlagCoding();
             if (flagCoding != null) {
@@ -160,19 +157,20 @@ public class MedianOp extends Operator {
         }
         if (n >= 2) {
             Arrays.sort(tmp, 0, n);
-            int n2 = n/2;
-            if (n == n2*2) {
-                median = (tmp[n2]+tmp[n2-1])/2;
-            }
-            else {
+            int n2 = n / 2;
+            if (n == n2 * 2) {
+                median = (tmp[n2] + tmp[n2 - 1]) / 2;
+            } else {
                 median = tmp[n2];
             }
+        } else {
+            median = noDataValue;
         }
-        else median = noDataValue;
         return (float) median;
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(MedianOp.class);
         }

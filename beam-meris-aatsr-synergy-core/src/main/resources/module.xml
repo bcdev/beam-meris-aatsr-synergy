@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-core</symbolicName>
-    <version>1.1.2</version>
+    <version>1.2</version>
     <name>MERIS/AATSR Synergy Core</name>
 
     <description>
@@ -36,25 +36,30 @@
     <url>http://envisat.esa.int/beam</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
 
-    <changelog/>
-    
-    
+    <changelog>
+        <![CDATA[
+             <p>From 1.1.2 to 1.2:<br/>
+             - adapted according to BEAM 4.9 API changes<br/>
+        ]]>
+    </changelog>
+
+
     <categories>Application,Processor,Synergy,MERIS,AATSR</categories>
 
-     <dependency>
+    <dependency>
         <module>beam-core</module>
     </dependency>
-	<dependency>
+    <dependency>
         <module>beam-gpf</module>
     </dependency>
-	 <dependency>
+    <dependency>
         <module>beam-visat</module>
         <optional>true</optional>
     </dependency>
-	<dependency>
+    <dependency>
         <module>beam-envisat-reader</module>
     </dependency>
-	<dependency>
+    <dependency>
         <module>beam-meris-brr</module>
     </dependency>
     <dependency>
@@ -67,7 +72,7 @@
         <module>beam-collocation</module>
     </dependency>
     <dependency>
-        <module>lib-netcdf</module>
+        <module>beam-netcdf</module>
     </dependency>
 
     <extension point="beam-ui:helpSets">

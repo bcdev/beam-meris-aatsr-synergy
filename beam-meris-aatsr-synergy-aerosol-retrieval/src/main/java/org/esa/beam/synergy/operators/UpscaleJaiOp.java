@@ -30,10 +30,10 @@ import java.awt.image.RenderedImage;
  * @version $Revision: 8041 $ $Date: 2010-01-20 17:23:15 +0100 (Mi, 20 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.UpscaleJai",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT upscaling of interpolated data using JAI.", internal=true)
+                  description = "AOT upscaling of interpolated data using JAI.", internal = true)
 public class UpscaleJaiOp extends Operator {
 
     @SourceProduct(alias = "synergy",
@@ -94,7 +94,7 @@ public class UpscaleJaiOp extends Operator {
 
         //TODO: check wether to copy TIEs from source or aerosol Product
         targetProduct = new Product(productName, productType,
-                                    (int)scalingFactor*sourceRasterWidth, (int)scalingFactor*sourceRasterHeight);
+                                    (int) scalingFactor * sourceRasterWidth, (int) scalingFactor * sourceRasterHeight);
 
         AerosolHelpers.copySynergyFlagBands(synergyProduct, targetProduct);
 
@@ -105,10 +105,11 @@ public class UpscaleJaiOp extends Operator {
     }
 
     private void createTargetProductBands() {
-        for (Band band: aerosolProduct.getBands()) {
+        for (Band band : aerosolProduct.getBands()) {
             if (!band.isFlagBand()) {
                 Band targetBand = new Band(band.getName(), band.getDataType(),
-                                           (int)scalingFactor*sourceRasterWidth, (int)scalingFactor*sourceRasterHeight);
+                                           (int) scalingFactor * sourceRasterWidth,
+                                           (int) scalingFactor * sourceRasterHeight);
                 targetBand.setDescription(band.getDescription());
                 targetBand.setNoDataValue(band.getNoDataValue());
                 targetBand.setNoDataValueUsed(true);
@@ -117,7 +118,8 @@ public class UpscaleJaiOp extends Operator {
         }
 
         AerosolHelpers.copyRescaledTiePointGrids(synergyProduct, targetProduct,
-                                                 (int)scalingFactor*sourceRasterWidth, (int)scalingFactor*sourceRasterHeight);
+                                                 (int) scalingFactor * sourceRasterWidth,
+                                                 (int) scalingFactor * sourceRasterHeight);
     }
 
     @Override
@@ -141,52 +143,61 @@ public class UpscaleJaiOp extends Operator {
         }
     }
 
-    private void writeSynergyFlagBands(Band targetBand, Tile targetTile, ProgressMonitor pm, Rectangle rectangle, int xMax, int yMax) {
-        Tile aatsrConfidFlagNadirTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR), rectangle, pm);
-        Tile aatsrConfidFlagFwardTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR), rectangle, pm);
-        Tile aatsrCloudFlagNadirTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR), rectangle, pm);
-        Tile aatsrCloudFlagFwardTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR), rectangle, pm);
-        Tile merisL1FlagsTile = getSourceTile(synergyProduct.getBand(SynergyConstants.L1_FLAGS_MERIS), rectangle, pm);
-        Tile merisCloudFlagTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CLOUD_FLAG_MERIS), rectangle, pm);
+    private void writeSynergyFlagBands(Band targetBand, Tile targetTile, ProgressMonitor pm, Rectangle rectangle,
+                                       int xMax, int yMax) {
+        Tile aatsrConfidFlagNadirTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CONFID_NADIR_FLAGS_AATSR),
+                                                      rectangle);
+        Tile aatsrConfidFlagFwardTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CONFID_FWARD_FLAGS_AATSR),
+                                                      rectangle);
+        Tile aatsrCloudFlagNadirTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR),
+                                                     rectangle);
+        Tile aatsrCloudFlagFwardTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR),
+                                                     rectangle);
+        Tile merisL1FlagsTile = getSourceTile(synergyProduct.getBand(SynergyConstants.L1_FLAGS_MERIS), rectangle);
+        Tile merisCloudFlagTile = getSourceTile(synergyProduct.getBand(SynergyConstants.CLOUD_FLAG_MERIS), rectangle);
 
-        FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
-        FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
-        FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
-        FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
+        FlagCoding aatsrConfidNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CONFID_NADIR_FLAGS_AATSR);
+        FlagCoding aatsrConfidFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CONFID_FWARD_FLAGS_AATSR);
+        FlagCoding aatsrCloudNadirFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CLOUD_NADIR_FLAGS_AATSR);
+        FlagCoding aatsrCloudFwardFlagCoding = synergyProduct.getFlagCodingGroup().get(
+                SynergyConstants.CLOUD_FWARD_FLAGS_AATSR);
         FlagCoding merisL1FlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.L1_FLAGS_MERIS);
         FlagCoding merisCloudFlagCoding = synergyProduct.getFlagCodingGroup().get(SynergyConstants.CLOUD_FLAG_MERIS);
 
 
         for (int y = rectangle.y; y < Math.min(yMax, rectangle.y + rectangle.height); y++) {
             for (int x = rectangle.x; x < Math.min(xMax, rectangle.x + rectangle.width); x++) {
-                checkForCancellation(pm);
+                checkForCancellation();
                 if (targetBand.getName().equals(SynergyConstants.CONFID_NADIR_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrConfidNadirFlagCoding.getNumAttributes(); i++) {
+                    for (int i = 0; i < aatsrConfidNadirFlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, aatsrConfidFlagNadirTile.getSampleBit(x, y, i));
                     }
                 }
                 if (targetBand.getName().equals(SynergyConstants.CONFID_FWARD_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrConfidFwardFlagCoding.getNumAttributes(); i++) {
+                    for (int i = 0; i < aatsrConfidFwardFlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, aatsrConfidFlagFwardTile.getSampleBit(x, y, i));
                     }
                 }
                 if (targetBand.getName().equals(SynergyConstants.CLOUD_NADIR_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrCloudNadirFlagCoding.getNumAttributes(); i++) {
+                    for (int i = 0; i < aatsrCloudNadirFlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, aatsrCloudFlagNadirTile.getSampleBit(x, y, i));
                     }
                 }
                 if (targetBand.getName().equals(SynergyConstants.CLOUD_FWARD_FLAGS_AATSR)) {
-                    for (int i=0; i<aatsrCloudFwardFlagCoding.getNumAttributes(); i++) {
+                    for (int i = 0; i < aatsrCloudFwardFlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, aatsrCloudFlagFwardTile.getSampleBit(x, y, i));
                     }
                 }
                 if (targetBand.getName().equals(SynergyConstants.L1_FLAGS_MERIS)) {
-                    for (int i=0; i<merisL1FlagCoding.getNumAttributes(); i++) {
+                    for (int i = 0; i < merisL1FlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, merisL1FlagsTile.getSampleBit(x, y, i));
                     }
                 }
                 if (targetBand.getName().equals(SynergyConstants.CLOUD_FLAG_MERIS)) {
-                    for (int i=0; i<merisCloudFlagCoding.getNumAttributes(); i++) {
+                    for (int i = 0; i < merisCloudFlagCoding.getNumAttributes(); i++) {
                         targetTile.setSample(x, y, i, merisCloudFlagTile.getSampleBit(x, y, i));
                     }
                 }
@@ -196,6 +207,7 @@ public class UpscaleJaiOp extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(UpscaleJaiOp.class);
         }

@@ -23,14 +23,13 @@ import java.util.Map;
 
 
 /**
- *
  * @author akheckel
  */
 @OperatorMetadata(alias = "synergy.AotExtrap",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "AOT extrapolation of missing data.", internal=true)
+                  description = "AOT extrapolation of missing data.", internal = true)
 public class AotExtrapOp extends Operator {
 
     @SourceProduct(alias = "synergy",
@@ -38,7 +37,7 @@ public class AotExtrapOp extends Operator {
                    description = "Select a Synergy aerosol product.")
     private Product synergyProduct;
 
-     @SourceProduct(alias = "source",
+    @SourceProduct(alias = "source",
                    label = "Name (Synergy aerosol product)",
                    description = "Select a Synergy aerosol product.")
     private Product sourceProduct;
@@ -61,15 +60,15 @@ public class AotExtrapOp extends Operator {
         aveParam.put("aveBlock", 3);
         aveAotProd = GPF.createProduct(OperatorSpi.getOperatorAlias(BoxAveOp.class), aveParam, aveInputProd);
 
-        final int[] aveBlocks = {3,3,3,3,3,5,7,9,11,13,15,17,19,21};
-        for (int i=0; i<aveBlocks.length; i++) {
+        final int[] aveBlocks = {3, 3, 3, 3, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21};
+        for (int block : aveBlocks) {
             aveInputProd.put("source", aveAotProd);
-            aveParam.put("aveBlock", aveBlocks[i]);
+            aveParam.put("aveBlock", block);
             aveAotProd = GPF.createProduct(OperatorSpi.getOperatorAlias(BoxAveOp.class), aveParam, aveInputProd);
         }
 
         Map<String, Object> emptyParam = new HashMap<String, Object>();
-        targetProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(MedianOp.class),emptyParam, aveAotProd);
+        targetProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(MedianOp.class), emptyParam, aveAotProd);
 
         //copy source bands, TPs, geocoding and MetaData
 
@@ -78,8 +77,8 @@ public class AotExtrapOp extends Operator {
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("latitude"));
         targetProduct.removeTiePointGrid(targetProduct.getTiePointGrid("longitude"));
         ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
-        ProductUtils.copyBitmaskDefs(sourceProduct, targetProduct);
-        AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, aveBlock*1.0f);
+        ProductUtils.copyMasks(sourceProduct, targetProduct);
+        AerosolHelpers.copyDownscaledFlagBands(synergyProduct, targetProduct, aveBlock * 1.0f);
         for (String srcBandName : sourceProduct.getBandNames()) {
             if (!targetProduct.containsBand(srcBandName)) {
                 ProductUtils.copyBand(srcBandName, sourceProduct, targetProduct);
@@ -95,6 +94,7 @@ public class AotExtrapOp extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(AotExtrapOp.class);
         }

@@ -3,7 +3,6 @@ package org.esa.beam.synergy.ui;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.PropertyDescriptor;
-import com.bc.ceres.binding.ValidationException;
 import com.bc.ceres.binding.ValueSet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.PropertyPane;
@@ -106,12 +105,8 @@ public class SynergyDialog extends SingleTargetProductDialog {
         final PropertyContainer propertyContainer = PropertyContainer.createMapBacked(parameterMap,
                                                                                       operatorSpi.getOperatorClass(),
                                                                                       parameterDescriptorFactory);
-        try {
-            propertyContainer.setDefaultValues();
-        } catch (ValidationException e) {
-            e.printStackTrace();
-            showErrorDialog(e.getMessage());
-        }
+        propertyContainer.setDefaultValues();
+
         if (propertyContainer.getProperties().length > 0) {
             if (!sourceProductSelectorList.isEmpty()) {
                 Property[] properties = propertyContainer.getProperties();
@@ -122,7 +117,8 @@ public class SynergyDialog extends SingleTargetProductDialog {
                         rdnTypeProperties.add(parameterDescriptor);
                     }
                 }
-                rasterDataNodeTypeProperties = rdnTypeProperties.toArray(new PropertyDescriptor[rdnTypeProperties.size()]);
+                rasterDataNodeTypeProperties = rdnTypeProperties.toArray(
+                        new PropertyDescriptor[rdnTypeProperties.size()]);
             }
             PropertyPane parametersPane = new PropertyPane(propertyContainer);
             final JPanel paremetersPanel = parametersPane.createPanel();

@@ -7,7 +7,7 @@
     <parent>
         <artifactId>beam-meris-aatsr-synergy</artifactId>
         <groupId>org.esa.beam.synergy</groupId>
-        <version>1.1.2</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -25,22 +25,22 @@
         <dependency>
             <groupId>org.esa.beam.synergy</groupId>
             <artifactId>beam-meris-aatsr-synergy-core</artifactId>
-            <version>1.1.2</version>
-         </dependency>
+            <version>${pom.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.esa.beam.synergy</groupId>
             <artifactId>beam-meris-aatsr-synergy-preprocessing</artifactId>
-            <version>1.1.2</version>
-         </dependency>
+            <version>${pom.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.esa.beam.synergy</groupId>
             <artifactId>beam-meris-aatsr-synergy-cloud-screening</artifactId>
-            <version>1.1.2</version>
-         </dependency>
-         <dependency>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.esa.beam.synergy</groupId>
             <artifactId>beam-meris-aatsr-synergy-aerosol-retrieval</artifactId>
-            <version>1.1.2</version>
+            <version>${pom.version}</version>
         </dependency>
     </dependencies>
 

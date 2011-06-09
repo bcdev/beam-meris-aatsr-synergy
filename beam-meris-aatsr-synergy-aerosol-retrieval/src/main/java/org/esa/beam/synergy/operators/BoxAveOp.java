@@ -6,7 +6,6 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.core.SubProgressMonitor;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FlagCoding;
 import org.esa.beam.framework.datamodel.Product;
@@ -27,14 +26,13 @@ import java.util.Map;
 
 
 /**
- *
  * @author akheckel
  */
 @OperatorMetadata(alias = "synergy.BoxAve",
-                  version = "1.1",
+                  version = "1.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
-                  description = "boxcar Averaging excluding NoDataPixel", internal=true)
+                  description = "boxcar Averaging excluding NoDataPixel", internal = true)
 public class BoxAveOp extends Operator {
 
     @SourceProduct(alias = "source",
@@ -65,7 +63,7 @@ public class BoxAveOp extends Operator {
     private final String aerosolFlagName = SynergyConstants.aerosolFlagCodingName;
     //private final String validPixelExpression = "true";
     private final String validPixelExpression = "(" + aerosolFlagName + "." + SynergyConstants.flagSuccessName
-                                              + " || " + aerosolFlagName + "." + SynergyConstants.flagFilledName + ")";
+                                                + " || " + aerosolFlagName + "." + SynergyConstants.flagFilledName + ")";
 
     private Band origAotBand;
     private Band aotSrcBand;
@@ -84,9 +82,12 @@ public class BoxAveOp extends Operator {
         rasterHeight = sourceProduct.getSceneRasterHeight();
 
         origAotBand = sourceProduct.getBand(aotBandName);
-        aotSrcBand = (sourceProduct.containsBand(aotExtrpName)) ? sourceProduct.getBand(aotExtrpName) : sourceProduct.getBand(aotBandName);
-        errSrcBand = (sourceProduct.containsBand(errExtrpName)) ? sourceProduct.getBand(errExtrpName) : sourceProduct.getBand(errBandName);
-        modelSrcBand = (sourceProduct.containsBand(modelExtrpName)) ? sourceProduct.getBand(modelExtrpName) : sourceProduct.getBand(modelBandName);
+        aotSrcBand = (sourceProduct.containsBand(aotExtrpName)) ? sourceProduct.getBand(
+                aotExtrpName) : sourceProduct.getBand(aotBandName);
+        errSrcBand = (sourceProduct.containsBand(errExtrpName)) ? sourceProduct.getBand(
+                errExtrpName) : sourceProduct.getBand(errBandName);
+        modelSrcBand = (sourceProduct.containsBand(modelExtrpName)) ? sourceProduct.getBand(
+                modelExtrpName) : sourceProduct.getBand(modelBandName);
         flagSrcBand = sourceProduct.getBand(SynergyConstants.aerosolFlagCodingName);
 
         validPixelOp = BandMathsOp.createBooleanExpressionBand(validPixelExpression, sourceProduct);
@@ -105,38 +106,39 @@ public class BoxAveOp extends Operator {
         sourceProduct.addBand(validModelSrcBand);
 */
         createTargetProduct();
-        
+
     }
 
     @Override
-    public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle tarRec, ProgressMonitor pm) throws OperatorException {
+    public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle tarRec, ProgressMonitor pm) throws
+                                                                                                    OperatorException {
 
         pm.beginTask("aot extrapolation", tarRec.width * tarRec.height + 5);
 
         int srcX = tarRec.x - aveBHalf;
         int srcY = tarRec.y - aveBHalf;
-        int srcWidth  = tarRec.width + 2 * aveBHalf;
+        int srcWidth = tarRec.width + 2 * aveBHalf;
         int srcHeight = tarRec.height + 2 * aveBHalf;
         Rectangle srcRec = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
-        Tile origAotTile = getSourceTile(origAotBand, srcRec, SubProgressMonitor.create(pm, 1));
+        Tile origAotTile = getSourceTile(origAotBand, srcRec);
         Tile origTarTile = targetTiles.get(targetProduct.getBand(aotBandName));
         // didn't work! why?
         //origTarTile.setRawSamples(origAotTile.getRawSamples());
 
-        Tile aotSrcTile = getSourceTile(aotSrcBand, srcRec, SubProgressMonitor.create(pm, 1));
+        Tile aotSrcTile = getSourceTile(aotSrcBand, srcRec);
         Tile aotTarTile = targetTiles.get(targetProduct.getBand(aotExtrpName));
 
-        Tile errSrcTile = getSourceTile(errSrcBand, srcRec, SubProgressMonitor.create(pm, 1));
+        Tile errSrcTile = getSourceTile(errSrcBand, srcRec);
         Tile errTarTile = targetTiles.get(targetProduct.getBand(errExtrpName));
 
-        Tile modelSrcTile = getSourceTile(modelSrcBand, srcRec, SubProgressMonitor.create(pm, 1));
+        Tile modelSrcTile = getSourceTile(modelSrcBand, srcRec);
         Tile modelTarTile = targetTiles.get(targetProduct.getBand(modelExtrpName));
 
-        Tile flagSrcTile = getSourceTile(flagSrcBand, srcRec, SubProgressMonitor.create(pm, 1));
+        Tile flagSrcTile = getSourceTile(flagSrcBand, srcRec);
         Tile flagTarTile = targetTiles.get(targetProduct.getBand(aerosolFlagName));
 
-        Tile validPixelTile = getSourceTile(validPixelOp.getTargetProduct().getBandAt(0), srcRec, SubProgressMonitor.create(pm, 1));
+        Tile validPixelTile = getSourceTile(validPixelOp.getTargetProduct().getBandAt(0), srcRec);
 
         int tarX = tarRec.x;
         int tarY = tarRec.y;
@@ -145,7 +147,7 @@ public class BoxAveOp extends Operator {
 
         for (int iTarY = tarY; iTarY < tarHeight; iTarY++) {
             for (int iTarX = tarX; iTarX < tarWidth; iTarX++) {
-                checkForCancellation(pm);
+                checkForCancellation();
                 float origPixel = origAotTile.getSampleFloat(iTarX, iTarY);
                 int flagPixel = flagSrcTile.getSampleInt(iTarX, iTarY);
                 origTarTile.setSample(iTarX, iTarY, origPixel);
@@ -162,8 +164,7 @@ public class BoxAveOp extends Operator {
 
                     pixel = getNearestPixel(modelSrcTile, iTarX, iTarY, validPixelTile);
                     modelTarTile.setSample(iTarX, iTarY, pixel);
-                }
-                else {
+                } else {
                     aotTarTile.setSample(iTarX, iTarY, aotSrcTile.getSampleFloat(iTarX, iTarY));
                     errTarTile.setSample(iTarX, iTarY, errSrcTile.getSampleFloat(iTarX, iTarY));
                     modelTarTile.setSample(iTarX, iTarY, modelSrcTile.getSampleFloat(iTarX, iTarY));
@@ -194,19 +195,15 @@ public class BoxAveOp extends Operator {
 
     private void createTargetProductBands() {
 
-        Band srcBand;
-        Band targetBand;
-
         ProductUtils.copyBand(aotBandName, sourceProduct, targetProduct);
 
         if (sourceProduct.containsBand(aotExtrpName)) {
             ProductUtils.copyBand(aotExtrpName, sourceProduct, targetProduct);
             ProductUtils.copyBand(errExtrpName, sourceProduct, targetProduct);
             ProductUtils.copyBand(modelExtrpName, sourceProduct, targetProduct);
-        }
-        else {
-            srcBand = sourceProduct.getBand(aotBandName);
-            targetBand = new Band(aotExtrpName, srcBand.getDataType(), rasterWidth, rasterHeight);
+        } else {
+            Band srcBand = sourceProduct.getBand(aotBandName);
+            Band targetBand = new Band(aotExtrpName, srcBand.getDataType(), rasterWidth, rasterHeight);
             targetBand.setDescription(srcBand.getDescription());
             targetBand.setNoDataValue(srcBand.getNoDataValue());
             targetBand.setNoDataValueUsed(true);
@@ -234,20 +231,23 @@ public class BoxAveOp extends Operator {
         double ave = 0;
         double noDataValue = inputTile.getRasterDataNode().getNoDataValue();
         int n = 0;
-        for (int iy = iTarY-aveBHalf; iy <= iTarY+aveBHalf; iy++) {
-            for (int ix = iTarX-aveBHalf; ix <= iTarX+aveBHalf; ix++) {
+        for (int iy = iTarY - aveBHalf; iy <= iTarY + aveBHalf; iy++) {
+            for (int ix = iTarX - aveBHalf; ix <= iTarX + aveBHalf; ix++) {
                 if (iy >= 0 && iy < rasterHeight && ix >= 0 && ix < rasterWidth) {
                     double val = inputTile.getSampleDouble(ix, iy);
                     if (validPixelTile.getSampleBoolean(ix, iy)
-                            && Double.compare(val, noDataValue) != 0) {
+                        && Double.compare(val, noDataValue) != 0) {
                         n++;
                         ave += val;
                     }
                 }
             }
         }
-        if (n >= 2) ave /= n;
-        else ave = noDataValue;
+        if (n >= 2) {
+            ave /= n;
+        } else {
+            ave = noDataValue;
+        }
 
         return (float) ave;
     }
@@ -257,13 +257,13 @@ public class BoxAveOp extends Operator {
         double noDataValue = inputTile.getRasterDataNode().getNoDataValue();
         double result = noDataValue;
         double minDist = 99999;
-        for (int iy = iTarY-aveBHalf; iy <= iTarY+aveBHalf; iy++) {
-            for (int ix = iTarX-aveBHalf; ix <= iTarX+aveBHalf; ix++) {
+        for (int iy = iTarY - aveBHalf; iy <= iTarY + aveBHalf; iy++) {
+            for (int ix = iTarX - aveBHalf; ix <= iTarX + aveBHalf; ix++) {
                 if (validPixelTile.getSampleBoolean(ix, iy)
-                        && iy >= 0 && iy < rasterHeight
-                        && ix >= 0 && ix < rasterWidth) {
+                    && iy >= 0 && iy < rasterHeight
+                    && ix >= 0 && ix < rasterWidth) {
                     double val = inputTile.getSampleDouble(ix, iy);
-                    double dist = (ix-iTarX)*(ix-iTarX) + (iy-iTarY)*(iy-iTarY);
+                    double dist = (ix - iTarX) * (ix - iTarX) + (iy - iTarY) * (iy - iTarY);
                     if (Double.compare(val, noDataValue) != 0 && minDist > dist) {
                         result = val;
                         minDist = dist;
@@ -277,6 +277,7 @@ public class BoxAveOp extends Operator {
 
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(BoxAveOp.class);
         }

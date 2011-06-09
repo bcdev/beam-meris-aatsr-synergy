@@ -43,10 +43,10 @@ import java.util.Map;
  * @version $Revision: 7988 $ $Date: 2010-01-14 12:51:28 +0100 (Do, 14 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.CreateAatsr",
-        version = "1.1",
-        authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
-        copyright = "(c) 2008-90 by IPL",
-        description = "This operator prepares the AATRS product.", internal=true)
+                  version = "1.2",
+                  authors = "Jordi Munyoz-Mari and Luis Gomez-Chova",
+                  copyright = "(c) 2008-90 by IPL",
+                  description = "This operator prepares the AATRS product.", internal = true)
 
 public class CreateAatsrOp extends Operator {
 
@@ -68,7 +68,8 @@ public class CreateAatsrOp extends Operator {
         // Recalibrate AATSR reflectances
         Map<String, Object> emptyParams = new HashMap<String, Object>();
         recalProduct =
-            GPF.createProduct(OperatorSpi.getOperatorAlias(RecalibrateAATSRReflectancesOp.class), emptyParams, sourceProduct);
+                GPF.createProduct(OperatorSpi.getOperatorAlias(RecalibrateAATSRReflectancesOp.class), emptyParams,
+                                  sourceProduct);
 
         // Recover initial tile size
         //sourceProduct.setPreferredTileSize(dim);
@@ -111,10 +112,9 @@ public class CreateAatsrOp extends Operator {
                 targetProduct.addBand(targetBand);
                 */
                 ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
-                targetBand.setScalingFactor(1.0/10000.0);
+                targetBand.setScalingFactor(1.0 / 10000.0);
                 targetBand.setUnit("dl");
-            }
-            else if (bandName.startsWith("btemp")) {
+            } else if (bandName.startsWith("btemp")) {
                 //SynergyPreprocessingUtils.info("  Adding  band " + bandName);
                 targetProduct.addBand(sourceBand);
             }
@@ -122,10 +122,12 @@ public class CreateAatsrOp extends Operator {
 
         sunZenithBandNadir = recalProduct.getTiePointGrid(EnvisatConstants.AATSR_SUN_ELEV_NADIR_DS_NAME);
         sunZenithBandFward = recalProduct.getTiePointGrid(EnvisatConstants.AATSR_SUN_ELEV_FWARD_DS_NAME);
-        if (sunZenithBandNadir == null)
+        if (sunZenithBandNadir == null) {
             throw new OperatorException("Unable to get tie point grid for AATSR Sun Elevation nadir");
-        if (sunZenithBandFward == null)
+        }
+        if (sunZenithBandFward == null) {
             throw new OperatorException("Unable to get tie point grid for AATSR Sun Elevation fward");
+        }
     }
 
     @Override
@@ -142,7 +144,7 @@ public class CreateAatsrOp extends Operator {
 
         final String bandName = targetBand.getName();
         Band band = recalProduct.getBand(bandName);
-        Tile sourceTile = getSourceTile(band, rect, pm);
+        Tile sourceTile = getSourceTile(band, rect);
 
         if (bandName.startsWith("reflec")) {
             short[] sourceData = sourceTile.getDataBufferShort();
@@ -150,21 +152,20 @@ public class CreateAatsrOp extends Operator {
             final float[] rad = new float[1];
             final float[] sea = new float[1];
             TiePointGrid sunZenithBand =
-                bandName.startsWith("reflec_nadir") ? sunZenithBandNadir : sunZenithBandFward;
+                    bandName.startsWith("reflec_nadir") ? sunZenithBandNadir : sunZenithBandFward;
 
             // Calculate cosine correction and write new band
-            for (int y = rect.y; y < rect.y+rect.height; y++) {
-                for (int x = rect.x; x < rect.x+rect.width; x++) {
+            for (int y = rect.y; y < rect.y + rect.height; y++) {
+                for (int x = rect.x; x < rect.x + rect.width; x++) {
                     int pos = targetTile.getDataBufferIndex(x, y);
                     rad[0] = sourceData[pos];
-                    sea[0] = 90 - sunZenithBand.getPixelFloat(x,y); // 90d correction
-                    RsMathUtils.radianceToReflectance(rad, sea, (float)(java.lang.Math.PI), rad);
+                    sea[0] = 90 - sunZenithBand.getPixelFloat(x, y); // 90d correction
+                    RsMathUtils.radianceToReflectance(rad, sea, (float) (java.lang.Math.PI), rad);
                     targetData[pos] = (short) rad[0];
                 }
                 pm.worked(1);
             }
-        }
-        else {
+        } else {
             // Just copy it
             targetTile.setRawSamples(sourceTile.getRawSamples());
             pm.worked(rect.height);
@@ -178,6 +179,7 @@ public class CreateAatsrOp extends Operator {
      * It provides operator meta-data and is a factory for new operator instances.
      */
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(CreateAatsrOp.class);
         }
