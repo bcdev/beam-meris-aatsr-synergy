@@ -228,18 +228,15 @@ public class CreateSynergyOp extends Operator {
         }
         //SynergyPreprocessingUtils.info("  Found " +r.x+ " " +r.y);
 
-        // Find width
-        for (x = (width - 1); x > r.x; x--) {
-            if (band.isPixelValid(x, r.y + 5)) { // +5 to be sure
-                r.width = x;
-                break;
-            }
-        }
-        // Find height
+        // Find valid pixel bottom right corner
+        findPixel2:
         for (y = (height - 1); y > r.y; y--) {
-            if (band.isPixelValid(r.x + 5, y)) { // +5 to be sure
-                r.height = y;
-                break;
+            for (x = (width - 1); x > r.x; x--) {
+                if (band.isPixelValid(x, y)) {
+                    r.width = x;
+                    r.height = y;
+                    break findPixel2;
+                }
             }
         }
 

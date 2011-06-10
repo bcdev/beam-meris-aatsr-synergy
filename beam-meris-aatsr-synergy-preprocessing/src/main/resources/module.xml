@@ -39,6 +39,7 @@
     <changelog>
         <![CDATA[
              <p>From 1.1.2 to 1.2:<br/>
+             - fixed cropping to common valid region<br/>
              - adapted according to BEAM 4.9 API changes<br/>
         ]]>
     </changelog>
