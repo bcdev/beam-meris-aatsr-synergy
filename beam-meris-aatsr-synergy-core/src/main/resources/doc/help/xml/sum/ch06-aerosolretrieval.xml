@@ -1,24 +1,25 @@
 <chapter id="sum.processor.aerosolretrieval">
     <title>The Processor for Aerosol Retrieval and Atmospheric Correction</title>
 
-     <para>
-        The  Processor for Aerosol Retrieval and Atmospheric Correction is the second of three main modules
+    <para>
+        The Processor for Aerosol Retrieval and Atmospheric Correction is the second of three main modules
         within the MERIS/(A)ATSR Synergy toolbox.
         Its purpose is to derive aerosol optical depths over land and/or ocean and (optionally) provide an
         atmospheric correction by using the derived AODs. The processor also makes use of quantities
-         derived from the cloud screening module. Therefore, the input for the aerosol retrieval must be
-         an output product from the cloud screening.
+        derived from the cloud screening module. Therefore, the input for the aerosol retrieval must be
+        an output product from the cloud screening.
     </para>
 
     <para>
-        The user interface for the Processor for Aerosol and Atmospheric Correction  is represented by one main dialog, which
+        The user interface for the Processor for Aerosol and Atmospheric Correction is represented by one main dialog,
+        which
         consists of the following components:
         <itemizedlist mark='bullet'>
             <listitem>
-                 'I/O Parameters' Tab Pane
+                'I/O Parameters' Tab Pane
             </listitem>
             <listitem>
-                 'Processing Parameters' Tab Pane
+                'Processing Parameters' Tab Pane
             </listitem>
         </itemizedlist>
     </para>
@@ -27,9 +28,9 @@
         <title>I/O Parameters Tab Pane</title>
 
         <figure id="figure.processor.aerosolretrieval.iotab">
-			<title>Aerosol Retrieval and Atmospheric Correction: I/O Parameters Tab Pane</title>
-			<graphic scale="60" fileref="figures/iotab_aerosolretrieval.png"/>
-		</figure>
+            <title>Aerosol Retrieval and Atmospheric Correction: I/O Parameters Tab Pane</title>
+            <graphic scale="60" fileref="figures/iotab_aerosolretrieval.png"/>
+        </figure>
 
         This tab pane consists of the following components:
         <itemizedlist mark='bullet'>
@@ -45,8 +46,8 @@
                 filed or by pressing the file selection button to invoke a standard file dialog.
             </listitem>
             <listitem>
-                 Target product format and target directory:
-                 <itemizedlist mark='bullet'>
+                Target product format and target directory:
+                <itemizedlist mark='bullet'>
                     <listitem>
                         'Save as': If this checkbox is selected, the output product will be saved to disk.
                     </listitem>
@@ -57,7 +58,7 @@
                         Select the target product directory by either typing the product path into the text
                         filed or by pressing the file selection button to invoke a standard file dialog.
                     </listitem>
-                 </itemizedlist>
+                </itemizedlist>
             </listitem>
             <listitem>
                 'Open in Visat': If this checkbox is selected, the output product is opened in Visat
@@ -70,18 +71,18 @@
         <title>'Processing Parameters' Tab Pane</title>
 
         <figure id="figure.processor.aerosolretrieval">
-			<title>Aerosol Retrieval and Atmospheric Correction: 'Processing Parameters' Tab Pane</title>
-			<graphic scale="60" fileref="figures/processingtab_aerosolretrieval.png"/>
-		</figure>
+            <title>Aerosol Retrieval and Atmospheric Correction: 'Processing Parameters' Tab Pane</title>
+            <graphic scale="60" fileref="figures/processingtab_aerosolretrieval.png"/>
+        </figure>
 
         This tab pane consists of the following components:
         <itemizedlist mark='bullet'>
             <listitem>
-                 'Retrieve AODs over ocean': If this checkbox is selected, aerosol optical depths will
+                'Retrieve AODs over ocean': If this checkbox is selected, aerosol optical depths will
                 be retrieved over ocean. The default is 'true'.
             </listitem>
             <listitem>
-                 'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
+                'Retrieve AODs over land': If this checkbox is selected, aerosol optical depths will
                 be retrieved over land. The default is 'true'.
             </listitem>
             <listitem>
@@ -91,24 +92,20 @@
             <listitem>
                 'Soil surface reflectance spectrum': Text field to set the filename containing
                 the soil surface reflectance spectrum. The default is 'spec_soil.dat' and is the only one included
-                in the delivered software package. If the user wants to use different files,
-                they must be added to the software archive (synergy-aerosol-retrieval-1.1.jar)
-                with an appropriate tool before starting Visat.
+                in the delivered software package.
             </listitem>
             <listitem>
                 'Vegetation surface reflectance spectrum': Text field to set the filename containing
                 the vegetation surface reflectance spectrum. The default is 'spec_veg.dat' and is the only one included
-                in the delivered software package. If the user wants to use different files,
-                they must be added to the software archive (synergy-aerosol-retrieval-1.1.jar)
-                with an appropriate tool before starting Visat.
+                in the delivered software package.
             </listitem>
             <listitem>
-                 'List of land aerosol models': Text field to set a comma separated list of the indices of
+                'List of land aerosol models': Text field to set a comma separated list of the indices of
                 the aerosol models to be used for the land aerosol retrieval. The default is '8,20,28'.
                 See [3] for more details.
             </listitem>
             <listitem>
-                 'N x N average for AOD retrieval': Text field to set
+                'N x N average for AOD retrieval': Text field to set
                 the number of pixels to average over in the aerosol retrieval. The default number is '7',
                 which corresponds to a square with 3 pixels to each side of a center pixel.
             </listitem>
@@ -131,20 +128,20 @@
         From both tab panes, the following control buttons can be accessed:
         <itemizedlist mark='bullet'>
             <listitem>
-                 'Run': If this button is clicked, the processor will start the computations.
+                'Run': If this button is clicked, the processor will start the computations.
             </listitem>
             <listitem>
-                 'Close': If this button is clicked, the 'Synergy Aerosol and SDR Retrieval' dialog is closed.
+                'Close': If this button is clicked, the 'Synergy Aerosol and SDR Retrieval' dialog is closed.
             </listitem>
             <listitem>
-                 'Help': If this button is clicked, this manual is displayed as online help.
+                'Help': If this button is clicked, this manual is displayed as online help.
             </listitem>
         </itemizedlist>
 
         <figure id="figure.processor.aerosolretrieval.controlbuttons">
-			<title>Aerosol Retrieval and Atmospheric Correction: control buttons</title>
-			<graphic scale="60" fileref="figures/controlbuttons.png"/>
-		</figure>
+            <title>Aerosol Retrieval and Atmospheric Correction: control buttons</title>
+            <graphic scale="60" fileref="figures/controlbuttons.png"/>
+        </figure>
 
     </sect1>
 
@@ -154,17 +151,17 @@
         Specific help on the 'Aerosol Retrieval and Atmospheric Correction' processor can be obtained with
         <itemizedlist mark='bullet'>
             <listitem>
-                 ${BEAM-INSTALL-DIR}/bin/gpt -h synergy.AerosolRetrieval
+                ${BEAM-INSTALL-DIR}/bin/gpt -h synergy.AerosolRetrieval
             </listitem>
         </itemizedlist>
         In this case, information on the usage and a list of all available parameters are given
-        (see <xref linkend="figure.processor.aerosolretrieval.gpt" xrefstyle="select: label"/>).
+        (see<xref linkend="figure.processor.aerosolretrieval.gpt" xrefstyle="select: label"/>).
 
 
         <figure id="figure.processor.aerosolretrieval.gpt">
-			<title>'Synergy Aerosol and SDR Retrieval': command line processing</title>
-			<graphic scale="40" fileref="figures/aerosolretrieval_gpt.png"/>
-		</figure>
+            <title>'Synergy Aerosol and SDR Retrieval': command line processing</title>
+            <graphic scale="40" fileref="figures/aerosolretrieval_gpt.png"/>
+        </figure>
 
     </sect1>
 
