@@ -195,52 +195,37 @@ public class CreateSynergyOp extends Operator {
      *
      * @return a Rectangle with the limits found (x/y coordinates, not width/height)
      */
-    @SuppressWarnings("deprecation")
     private java.awt.Rectangle findLimits(final Band band) {
         final int width = band.getRasterWidth();
         final int height = band.getRasterHeight();
-        // We user a rectangle, but width and height will mean the end x/y
-        // coordinates, not the actual width/height
-        final java.awt.Rectangle r = new java.awt.Rectangle(0, 0, width, height);
-
+        // Caution: we use a rectangle, but width and height mean end coordinates, not width/height
+        final java.awt.Rectangle limits = new java.awt.Rectangle(0, 0, width - 1, height - 1);
         if (!band.isValidMaskUsed()) {
             SynergyUtils.info("No data mask available");
-            return r;
+            return limits;
         }
-
-        // Caution: we use r.width and r.height as the last x/y coordinates
-
-        // Find limits
-        int x;
-        int y;
-
-        //SynergyPreprocessingUtils.info("  Starting finding a valid pixel for " +r+ " ...");
-        // Find first valid pixel at upper left corner
-        findPixel:
-        for (y = 0; y < height; y++) {
-            for (x = 0; x < width; x++) {
+        // Invert limits
+        limits.setRect(width, height, 0, 0);
+        // Search valid pixel limits
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 if (band.isPixelValid(x, y)) {
-                    r.x = x;
-                    r.y = y;
-                    break findPixel;
+                    if (limits.x > x) {
+                        limits.x = x;
+                    }
+                    if (limits.y > y) {
+                        limits.y = y;
+                    }
+                    if (limits.width < x) {
+                        limits.width = x;
+                    }
+                    if (limits.height < y) {
+                        limits.height = y;
+                    }
                 }
             }
         }
-        //SynergyPreprocessingUtils.info("  Found " +r.x+ " " +r.y);
-
-        // Find valid pixel bottom right corner
-        findPixel2:
-        for (y = (height - 1); y > r.y; y--) {
-            for (x = (width - 1); x > r.x; x--) {
-                if (band.isPixelValid(x, y)) {
-                    r.width = x;
-                    r.height = y;
-                    break findPixel2;
-                }
-            }
-        }
-
-        return r;
+        return limits;
     }
 
     /**

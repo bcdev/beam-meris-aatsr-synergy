@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-preprocessing</symbolicName>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <name>MERIS/AATSR Synergy Preprocessing</name>
     <description>
         <![CDATA[
@@ -38,7 +38,7 @@
 
     <changelog>
         <![CDATA[
-             <p>From 1.1.2 to 1.2:<br/>
+             <p>From 1.1.2 to 1.2.1:<br/>
              - fixed cropping to common valid region<br/>
              - adapted according to BEAM 4.9 API changes<br/>
         ]]>
