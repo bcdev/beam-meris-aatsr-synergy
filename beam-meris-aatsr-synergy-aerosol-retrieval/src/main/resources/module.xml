@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-aerosol-retrieval</symbolicName>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>MERIS/AATSR Synergy Aerosol Retrieval</name>
     <description>
         <![CDATA[
@@ -38,6 +38,8 @@
 
     <changelog>
         <![CDATA[
+             <p>From 1.2.1 to 1.2.2:<br/>
+             - computation of aerosol and atmo. correction fails with initialisation error<br/>
              <p>From 1.1.2 to 1.2.1:<br/>
              - adapted according to BEAM 4.9 API changes<br/>
         ]]>

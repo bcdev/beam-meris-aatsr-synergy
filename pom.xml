@@ -7,7 +7,7 @@
     <name>Synergy</name>
     <groupId>org.esa.beam.synergy</groupId>
     <artifactId>beam-meris-aatsr-synergy</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 

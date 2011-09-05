@@ -29,7 +29,7 @@ import java.util.Map;
  * @author akheckel
  */
 @OperatorMetadata(alias = "synergy.BoxAve",
-                  version = "1.2",
+                  version = "1.2.2",
                   authors = "Andreas Heckel, Olaf Danne",
                   copyright = "(c) 2009 by A. Heckel",
                   description = "boxcar Averaging excluding NoDataPixel", internal = true)
@@ -71,7 +71,7 @@ public class BoxAveOp extends Operator {
     private Band modelSrcBand;
     private Band flagSrcBand;
 
-    private BandMathsOp validPixelOp;
+    private Product validPixelProduct;
 
 
     @Override
@@ -90,7 +90,8 @@ public class BoxAveOp extends Operator {
                 modelExtrpName) : sourceProduct.getBand(modelBandName);
         flagSrcBand = sourceProduct.getBand(SynergyConstants.aerosolFlagCodingName);
 
-        validPixelOp = BandMathsOp.createBooleanExpressionBand(validPixelExpression, sourceProduct);
+        BandMathsOp validPixelOp = BandMathsOp.createBooleanExpressionBand(validPixelExpression, sourceProduct);
+        validPixelProduct = validPixelOp.getTargetProduct();
 
 /*
         String validExpression = validPixelExpression + " ? " + aotSrcBand.getName() + " : " + String.valueOf(aotSrcBand.getNoDataValue());
@@ -138,7 +139,7 @@ public class BoxAveOp extends Operator {
         Tile flagSrcTile = getSourceTile(flagSrcBand, srcRec);
         Tile flagTarTile = targetTiles.get(targetProduct.getBand(aerosolFlagName));
 
-        Tile validPixelTile = getSourceTile(validPixelOp.getTargetProduct().getBandAt(0), srcRec);
+        Tile validPixelTile = getSourceTile(validPixelProduct.getBandAt(0), srcRec);
 
         int tarX = tarRec.x;
         int tarY = tarRec.y;

@@ -7,7 +7,7 @@
     <parent>
         <artifactId>beam-meris-aatsr-synergy</artifactId>
         <groupId>org.esa.beam.synergy</groupId>
-        <version>1.2.1</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
