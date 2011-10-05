@@ -22,15 +22,15 @@ import java.util.Map;
  * @version $Revision: 8111 $ $Date: 2010-01-27 17:54:34 +0000 (Mi, 27 Jan 2010) $
  */
 @OperatorMetadata(alias = "synergy.RetrieveAerosol",
-                  version = "1.1",
-                  authors = "Olaf Danne",
-                  copyright = "(c) 2009 by Brockmann Consult",
-                  description = "Retrieves aerosol over ocean and land.")
+        version = "1.1",
+        authors = "Olaf Danne",
+        copyright = "(c) 2009 by Brockmann Consult",
+        description = "Retrieves aerosol over ocean and land.")
 public class RetrieveAerosolOp extends Operator {
 
     @SourceProduct(alias = "source",
-                   label = "Name (Preprocessed product with cloud flags)",
-                   description = "Select a collocated MERIS AATSR product obtained from preprocessing AND cloudscreening.")
+            label = "Name (Preprocessed product with cloud flags)",
+            description = "Select a collocated MERIS AATSR product obtained from preprocessing AND cloudscreening.")
     private Product synergyProduct;
 
 
@@ -38,41 +38,41 @@ public class RetrieveAerosolOp extends Operator {
     private Product targetProduct;
 
     @Parameter(defaultValue = "true",
-               description = "Compute ocean AODs",
-               label = "Retrieve AODs over ocean")
+            description = "Compute ocean AODs",
+            label = "Retrieve AODs over ocean")
     boolean computeOcean;
 
     @Parameter(defaultValue = "true",
-               description = "Compute land AODs",
-               label = "Retrieve AODs over land")
+            description = "Compute land AODs",
+            label = "Retrieve AODs over land")
     boolean computeLand;
 
     @Parameter(defaultValue = "false",
-               label = "Retrieve surface directional reflectances (over land only)",
-               description = "Retrieve surface directional reflectances AODs")
+            label = "Retrieve surface directional reflectances (over land only)",
+            description = "Retrieve surface directional reflectances AODs")
     boolean computeSurfaceReflectances;
 
     @Parameter(defaultValue = SynergyConstants.SOIL_SPEC_PARAM_DEFAULT,
-               description = SynergyConstants.SOIL_SPEC_PARAM_DESCRIPTION,
-                label = SynergyConstants.SOIL_SPEC_PARAM_LABEL)
+            description = SynergyConstants.SOIL_SPEC_PARAM_DESCRIPTION,
+            label = SynergyConstants.SOIL_SPEC_PARAM_LABEL)
     private String soilSpecName;
 
     @Parameter(defaultValue = SynergyConstants.VEG_SPEC_PARAM_DEFAULT,
-               description = SynergyConstants.VEG_SPEC_PARAM_DESCRIPTION,
-                label = SynergyConstants.VEG_SPEC_PARAM_LABEL)
+            description = SynergyConstants.VEG_SPEC_PARAM_DESCRIPTION,
+            label = SynergyConstants.VEG_SPEC_PARAM_LABEL)
     private String vegSpecName;
 
     @Parameter(defaultValue = "false")
     private boolean useCustomLandAerosol = false;
 
     @Parameter(alias = SynergyConstants.AEROSOL_MODEL_PARAM_NAME,
-               defaultValue = SynergyConstants.AEROSOL_MODEL_PARAM_DEFAULT)
+            defaultValue = SynergyConstants.AEROSOL_MODEL_PARAM_DEFAULT)
     private String customLandAerosol;
 
     @Parameter(defaultValue = "7",
-               description = "Pixels to average (n x n, with n odd number) for AOD retrieval",
-               label = "N x N average for AOD retrieval",
-               interval = "[1, 99]")
+            description = "Pixels to average (n x n, with n odd number) for AOD retrieval",
+            label = "N x N average for AOD retrieval",
+            interval = "[1, 99]")
     private int aveBlock;
 
     boolean doAodInterpolation = true;
@@ -157,17 +157,12 @@ public class RetrieveAerosolOp extends Operator {
             landOceanInterpolatedProduct = landOceanAerosolProduct;
         }
 
-        Product landOceanUpscaledProduct;
-        if (rescaleToOriginalResolution && computeSurfaceReflectances && computeLand) {
-            Map<String, Product> landOceanUpscaledInput = new HashMap<String, Product>(2);
-            landOceanUpscaledInput.put("synergy", synergyProduct);
-            landOceanUpscaledInput.put("aerosol", landOceanInterpolatedProduct);
-            Map<String, Object> landOceanUpscaledParams = new HashMap<String, Object>(1);
-            landOceanUpscaledParams.put("scalingFactor", aveBlock);
-            landOceanUpscaledProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(UpscaleOp.class), landOceanUpscaledParams, landOceanUpscaledInput);
-        } else {
-            landOceanUpscaledProduct = landOceanInterpolatedProduct;
-        }
+        Map<String, Product> landOceanUpscaledInput = new HashMap<String, Product>(2);
+        landOceanUpscaledInput.put("synergy", synergyProduct);
+        landOceanUpscaledInput.put("aerosol", landOceanInterpolatedProduct);
+        Map<String, Object> landOceanUpscaledParams = new HashMap<String, Object>(1);
+        landOceanUpscaledParams.put("scalingFactor", aveBlock);
+        Product landOceanUpscaledProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(UpscaleOp.class), landOceanUpscaledParams, landOceanUpscaledInput);
 
         Product surfaceReflectanceProduct;
         if (computeSurfaceReflectances && computeLand) {
@@ -181,8 +176,6 @@ public class RetrieveAerosolOp extends Operator {
             surfaceReflectanceParams.put("dumpPixelX", dumpPixelX);
             surfaceReflectanceParams.put("dumpPixelY", dumpPixelY);
             surfaceReflectanceProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(RetrieveSdrLandOp.class), surfaceReflectanceParams, surfaceReflectanceInput);
-
-//            surfaceReflectanceProduct = landOceanUpscaledProduct;
         } else {
             surfaceReflectanceProduct = landOceanUpscaledProduct;
         }
