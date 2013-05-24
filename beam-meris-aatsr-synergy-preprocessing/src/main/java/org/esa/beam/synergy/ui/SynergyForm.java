@@ -151,7 +151,13 @@ public class SynergyForm extends JTabbedPane {
     private void initComponents() {
         setPreferredSize(new Dimension(600, 600));
 
-        synergyAuxdataHome = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
+        if (new File(SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT).exists()) {
+            synergyAuxdataHome = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
+                    "aerosolLUTs" + File.separator + "land";
+        } else {
+            // try this one (in case of calvalus processing)
+            synergyAuxdataHome = SynergyConstants.SYNERGY_AUXDATA_CALVALUS_DEFAULT;
+        }
 
         URL imgURL = getClass().getResource("images/Help24.gif");
         infoIcon = new ImageIcon(imgURL, "");

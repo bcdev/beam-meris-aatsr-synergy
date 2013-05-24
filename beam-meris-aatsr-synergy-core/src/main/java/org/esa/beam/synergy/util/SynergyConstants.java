@@ -16,6 +16,10 @@ public class SynergyConstants {
                     + File.separator + ".beam"
                     + File.separator + "beam-meris-aatsr-synergy"
                     + File.separator + "auxdata";
+
+    public static final String SYNERGY_AUXDATA_CALVALUS_DEFAULT =
+            "/home/hadoop/opt/beam-meris-aatsr-synergy/auxdata";
+
     public static final String AUXDATA_PATH_PARAM_LABEL = "Path to auxiliary data for land and ocean aerosol algorithms";
 
     public static final String AUXDATA_INFO_MESSAGE =

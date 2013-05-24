@@ -67,8 +67,7 @@ public class RetrieveSdrLandOp extends Operator {
                label = SynergyConstants.VEG_SPEC_PARAM_LABEL)
     private String vegSpecName;
 
-    private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
-                                 "aerosolLUTs" + File.separator + "land";
+    private String auxdataPath;
 
     @Parameter(defaultValue = "true", label = "dump pixel")
     boolean dumpPixel;
@@ -108,6 +107,16 @@ public class RetrieveSdrLandOp extends Operator {
     @Override
     public void initialize() throws OperatorException {
 
+        String auxdataRoot;
+        if (new File(SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT).exists()) {
+            auxdataRoot = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
+        } else {
+            // try this one (in case of calvalus processing)
+            auxdataRoot = SynergyConstants.SYNERGY_AUXDATA_CALVALUS_DEFAULT;
+        }
+        auxdataPath = auxdataRoot + File.separator + "aerosolLUTs" + File.separator + "land";
+
+
         rasterWidth = aerosolProduct.getSceneRasterWidth();
         rasterHeight = aerosolProduct.getSceneRasterHeight();
 
@@ -140,10 +149,24 @@ public class RetrieveSdrLandOp extends Operator {
         readWavelengthBandw(merisBandList, merisWvl, merisBandWidth);
         readWavelengthBandw(aatsrBandListNad, aatsrWvl, aatsrBandWidth);
 
+//        if (soilSurfSpec == null) {
+//            soilSurfSpec = new SurfaceSpec(soilSpecName, merisWvl).getSpec();
+//        }
+//        if (vegSurfSpec == null) {
+//            vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
+//        }
         if (soilSurfSpec == null) {
+            if (soilSpecName.equals(SynergyConstants.SOIL_SPEC_PARAM_DEFAULT)) {
+                soilSpecName = auxdataRoot + File.separator +
+                        SynergyConstants.SOIL_SPEC_PARAM_DEFAULT;
+            }
             soilSurfSpec = new SurfaceSpec(soilSpecName, merisWvl).getSpec();
         }
         if (vegSurfSpec == null) {
+            if (vegSpecName.equals(SynergyConstants.VEG_SPEC_PARAM_DEFAULT)) {
+                vegSpecName = auxdataRoot + File.separator +
+                        SynergyConstants.VEG_SPEC_PARAM_DEFAULT;
+            }
             vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
         }
 

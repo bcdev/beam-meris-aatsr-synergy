@@ -40,12 +40,19 @@ public class SynergyUtils {
      */
     public static boolean validateAuxdata(boolean useCustomLandAerosol, String customLandAerosolString) {
 
-        String auxdataPathRoot =
-                SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
+        String auxdataPathRoot;
+        if (new File(SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT).exists()) {
+            auxdataPathRoot = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
+        } else {
+            // try this one (in case of calvalus processing)
+            auxdataPathRoot = SynergyConstants.SYNERGY_AUXDATA_CALVALUS_DEFAULT;
+        }
+
+        SynergyUtils.logErrorMessage(auxdataPathRoot);
         String auxdataPathAerosolOcean =
-                SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator + "aerosolLUTs" + File.separator + "ocean";
+                auxdataPathRoot + File.separator + "aerosolLUTs" + File.separator + "ocean";
         String auxdataPathAerosolLand =
-                SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator + "aerosolLUTs" + File.separator + "land";
+                auxdataPathRoot + File.separator + "aerosolLUTs" + File.separator + "land";
         String auxdataPathAerosolLandMeris = auxdataPathAerosolLand + File.separator + "MERIS";
         String auxdataPathAerosolLandAatsr = auxdataPathAerosolLand + File.separator + "AATSR";
 
@@ -53,7 +60,6 @@ public class SynergyUtils {
         String soilSpecFileString = auxdataPathRoot + File.separator + SynergyConstants.SOIL_SPEC_PARAM_DEFAULT;
         String vegSpecFileString = auxdataPathRoot + File.separator + SynergyConstants.VEG_SPEC_PARAM_DEFAULT;
         try {
-            BufferedReader soilReader = new BufferedReader(new FileReader(soilSpecFileString));
             BufferedReader vegReader = new BufferedReader(new FileReader(vegSpecFileString));
         } catch (IOException e) {
             SynergyUtils.logErrorMessage(SynergyConstants.AUXDATA_ERROR_MESSAGE);

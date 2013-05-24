@@ -64,8 +64,7 @@ public class RetrieveAerosolLandOp extends Operator {
                label = SynergyConstants.VEG_SPEC_PARAM_LABEL)
     private String vegSpecName;
 
-    private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
-                                 "aerosolLUTs" + File.separator + "land";
+    private String auxdataPath;
 
     @Parameter(defaultValue = "false")
     private boolean useCustomLandAerosol = false;
@@ -136,6 +135,15 @@ public class RetrieveAerosolLandOp extends Operator {
     @Override
     public void initialize() throws OperatorException {
 
+        String auxdataRoot;
+        if (new File(SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT).exists()) {
+            auxdataRoot = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT;
+        } else {
+            // try this one (in case of calvalus processing)
+            auxdataRoot = SynergyConstants.SYNERGY_AUXDATA_CALVALUS_DEFAULT;
+        }
+        auxdataPath = auxdataRoot + File.separator + "aerosolLUTs" + File.separator + "land";
+
         synergyProduct = sourceProduct;
 
         deactivateComputeTileMethod();
@@ -191,14 +199,14 @@ public class RetrieveAerosolLandOp extends Operator {
 
         if (soilSurfSpec == null) {
             if (soilSpecName.equals(SynergyConstants.SOIL_SPEC_PARAM_DEFAULT)) {
-                soilSpecName = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
+                soilSpecName = auxdataRoot + File.separator +
                                SynergyConstants.SOIL_SPEC_PARAM_DEFAULT;
             }
             soilSurfSpec = new SurfaceSpec(soilSpecName, merisWvl).getSpec();
         }
         if (vegSurfSpec == null) {
             if (vegSpecName.equals(SynergyConstants.VEG_SPEC_PARAM_DEFAULT)) {
-                vegSpecName = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
+                vegSpecName = auxdataRoot + File.separator +
                               SynergyConstants.VEG_SPEC_PARAM_DEFAULT;
             }
             vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();

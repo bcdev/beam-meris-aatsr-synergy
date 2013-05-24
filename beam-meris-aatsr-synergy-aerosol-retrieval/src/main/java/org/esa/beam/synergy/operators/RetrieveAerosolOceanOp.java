@@ -48,8 +48,7 @@ public class RetrieveAerosolOceanOp extends Operator {
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
-                                 "aerosolLUTs" + File.separator + "ocean";
+    private String auxdataPath;
 
     @Parameter(defaultValue = "11", label = "Pixels to average (n x n, with n odd number) for AOD retrieval",
                interval = "[1, 100]")
@@ -104,6 +103,14 @@ public class RetrieveAerosolOceanOp extends Operator {
 
     public void initialize() throws OperatorException {
 //        System.out.println("starting...");
+
+        if (new File(SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT).exists()) {
+            auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
+                    "aerosolLUTs" + File.separator + "ocean";
+        } else {
+            // try this one (in case of calvalus processing)
+            auxdataPath = SynergyConstants.SYNERGY_AUXDATA_CALVALUS_DEFAULT;
+        }
 
         noDataVal = (float) SynergyConstants.OUTPUT_AOT_BAND_NODATAVALUE;
 

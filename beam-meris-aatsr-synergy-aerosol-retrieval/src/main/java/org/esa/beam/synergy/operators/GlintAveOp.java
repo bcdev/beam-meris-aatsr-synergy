@@ -41,9 +41,6 @@ public class GlintAveOp extends Operator {
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
 
-    private String auxdataPath = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
-                                 "aerosolLUTs" + File.separator + "ocean";
-
     @Parameter(defaultValue = "10", label = "Pixels to average (n x n) for AOD retrieval", interval = "[1, 100]")
     private int aveBlock;
 
