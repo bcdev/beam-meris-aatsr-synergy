@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-core</symbolicName>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
     <name>MERIS/AATSR Synergy Core</name>
 
     <description>
