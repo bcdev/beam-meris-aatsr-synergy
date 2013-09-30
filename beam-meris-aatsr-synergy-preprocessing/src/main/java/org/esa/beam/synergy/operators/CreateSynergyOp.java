@@ -182,7 +182,8 @@ public class CreateSynergyOp extends Operator {
             targetProduct.setProductType(SynergyConstants.SYNERGY_FS_PRODUCT_TYPE_NAME);
         }
         targetProduct.setDescription("SYNERGY product");
-        ProductUtils.copyMetadata(merisSourceProduct, targetProduct);
+        // metadata of master seems to be copied in CollocateOp already
+        //ProductUtils.copyMetadata(merisSourceProduct, targetProduct);
 
         // Copy the pointing factory ("orthorectificability") of the source product
         //targetProduct.setPointingFactory(merisSourceProduct.getPointingFactory());
