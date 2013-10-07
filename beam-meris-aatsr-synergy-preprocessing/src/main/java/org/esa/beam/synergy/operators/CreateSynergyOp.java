@@ -18,6 +18,7 @@ package org.esa.beam.synergy.operators;
 import org.esa.beam.collocation.CollocateOp;
 import org.esa.beam.dataio.envisat.EnvisatConstants;
 import org.esa.beam.framework.datamodel.Band;
+import org.esa.beam.framework.datamodel.MetadataElement;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.TiePointGrid;
 import org.esa.beam.framework.gpf.GPF;
@@ -98,6 +99,11 @@ public class CreateSynergyOp extends Operator {
     boolean subsetOvAreas;
 //    boolean subsetOvAreas = true;
 
+    @Parameter(defaultValue = "false",
+               description = "Copies metadata of the AATSR product to the target",
+               label = "Copy AATSR metadata")
+    boolean copySlaveMetadata;
+
     @Override
     public void initialize() throws OperatorException {
 
@@ -171,6 +177,13 @@ public class CreateSynergyOp extends Operator {
             */
         } else {
             targetProduct = collocateProduct;
+        }
+
+        if (copySlaveMetadata) {
+            MetadataElement metadataRoot = targetProduct.getMetadataRoot();
+            MetadataElement slaveMetadata = new MetadataElement("slave");
+            metadataRoot.addElement(slaveMetadata);
+            ProductUtils.copyMetadata(aatsrProduct.getMetadataRoot(), slaveMetadata);
         }
 
         // Save information about reduced or full resolution
