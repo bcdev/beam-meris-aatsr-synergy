@@ -143,7 +143,7 @@
             <dependency>
                 <groupId>org.esa.beam.aatsr-recalibration</groupId>
                 <artifactId>beam-aatsr-recalibration</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
             </dependency>
 
             <dependency>
