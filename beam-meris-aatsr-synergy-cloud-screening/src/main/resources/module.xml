@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-cloud-screening</symbolicName>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <name>MERIS/AATSR Synergy Cloud Screening</name>
     <description>
         <![CDATA[

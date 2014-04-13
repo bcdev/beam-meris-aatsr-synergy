@@ -1,18 +1,9 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.jai.GeneralFilterFunction;
 import org.esa.beam.dataio.envisat.EnvisatConstants;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.FlagCoding;
-import org.esa.beam.framework.datamodel.GeneralFilterBand;
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.Mask;
-import org.esa.beam.framework.datamodel.PixelPos;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
-import org.esa.beam.framework.datamodel.RasterDataNode;
-import org.esa.beam.framework.datamodel.TiePointGrid;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.GPF;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
@@ -169,7 +160,7 @@ public class ClassifyFeaturesOp extends Operator {
         // Check if there is coastline
         final Band bCoastline = featProduct.getBand(SynergyConstants.F_COASTLINE);
 
-        if (bCoastline.getStx().getMax() > 0) {
+        if (bCoastline.getStx().getMaximum() > 0) {
             // Coastline present, remove false artifacts
             final Operator operator = new ClassifyFeaturesCloudCoastRemoverOp();
             operator.setSourceProduct("features", featProduct);
@@ -191,7 +182,11 @@ public class ClassifyFeaturesOp extends Operator {
 
         // Generate 3x3 median bands
         for (int i = 0; i < sBand.length; i++) {
-            sBand_cmcr_med3x3[i] = new GeneralFilterBand("median", sBand[i], 3, GeneralFilterBand.MEDIAN);
+//            sBand_cmcr_med3x3[i] = new GeneralFilterBand("median", sBand[i], 3, GeneralFilterBand.MEDIAN);
+            // adjusted for BEAM 5:
+            sBand_cmcr_med3x3[i] = new GeneralFilterBand("median", sBand[i], GeneralFilterBand.OpType.MEDIAN,
+                    new Kernel(3, 3, new double[]{1, 1, 1, 1, 1, 1, 1, 1, 1}), 1);
+
         }
 
         // Abundances source band
