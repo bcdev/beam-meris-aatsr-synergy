@@ -144,14 +144,18 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-collocation</artifactId>
-                <!--<version>1.4.1</version>-->
                 <version>${beam.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-envisat-reader</artifactId>
-                <!--<version>1.5.2</version>-->
+                <version>${beam.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-netcdf</artifactId>
                 <version>${beam.version}</version>
             </dependency>
 
@@ -177,16 +181,10 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>4.11</version>
                 <scope>test</scope>
             </dependency>
 
-
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-netcdf</artifactId>
-                <version>1.1</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
