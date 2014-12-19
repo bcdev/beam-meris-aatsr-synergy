@@ -48,7 +48,6 @@ public class SynergyUtils {
             auxdataPathRoot = SynergyConstants.SYNERGY_AUXDATA_CALVALUS_DEFAULT;
         }
 
-        SynergyUtils.logErrorMessage(auxdataPathRoot);
         String auxdataPathAerosolOcean =
                 auxdataPathRoot + File.separator + "aerosolLUTs" + File.separator + "ocean";
         String auxdataPathAerosolLand =

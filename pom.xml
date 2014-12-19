@@ -7,7 +7,7 @@
     <name>Synergy</name>
     <groupId>org.esa.beam.synergy</groupId>
     <artifactId>beam-meris-aatsr-synergy</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
 
     <packaging>pom</packaging>
 
@@ -80,8 +80,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <beam.version>5.0-SNAPSHOT</beam.version>
-        <ceres.version>0.14-SNAPSHOT</ceres.version>
+        <beam.version>5.0</beam.version>
+        <ceres.version>0.14</ceres.version>
 
     </properties>
 
@@ -119,31 +119,36 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-core</artifactId>
-                <version>${beam.version}</version>
+                <version>5.0.2</version>
             </dependency>
+
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-ui</artifactId>
-                <version>${beam.version}</version>
+                <version>5.0.1</version>
             </dependency>
+
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-visat</artifactId>
                 <version>${beam.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-bootstrap</artifactId>
-                <version>${beam.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-gpf</artifactId>
-                <version>${beam.version}</version>
+                <version>5.0.4</version>
             </dependency>
+
             <dependency>
                 <groupId>org.esa.beam</groupId>
-                <artifactId>beam-collocation</artifactId>
+                <artifactId>beam-netcdf</artifactId>
+                <version>5.0.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-unmix</artifactId>
                 <version>${beam.version}</version>
             </dependency>
 
@@ -155,25 +160,32 @@
 
             <dependency>
                 <groupId>org.esa.beam</groupId>
-                <artifactId>beam-netcdf</artifactId>
+                <artifactId>beam-meris-radiometry</artifactId>
+                <!--<version>${beamVersion}</version>-->
+                <version>5.0.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-collocation</artifactId>
                 <version>${beam.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.esa.beam.aatsr-recalibration</groupId>
                 <artifactId>beam-aatsr-recalibration</artifactId>
-                <version>1.2.4</version>
+                <version>1.2.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-meris-brr</artifactId>
-                <version>2.4-SNAPSHOT</version>
+                <version>2.4.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-meris-sdr</artifactId>
-                <version>2.4-SNAPSHOT</version>
+                <version>2.4.1</version>
             </dependency>
 
             <!-- JUnit Libraries ############################################# -->
@@ -193,8 +205,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <debug>true</debug>
                     <fork>false</fork>
                     <encoding>ISO-8859-1</encoding>
@@ -205,8 +217,8 @@
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>true</downloadJavadocs>
-                    <jdkName>1.6</jdkName>
-                    <jdkLevel>1.6</jdkLevel>
+                    <jdkName>1.7</jdkName>
+                    <jdkLevel>1.7</jdkLevel>
                     <exclude>target</exclude>
                 </configuration>
             </plugin>
@@ -227,11 +239,10 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-beta-5</version>
+                <version>2.2</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                        <descriptor>src/main/assembly/project.xml</descriptor>
+                        <descriptor>src/main/assembly/modules.xml</descriptor>
                     </descriptors>
                 </configuration>
             </plugin>

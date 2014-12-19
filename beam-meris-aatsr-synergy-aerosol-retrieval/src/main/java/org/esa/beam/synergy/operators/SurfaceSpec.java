@@ -67,6 +67,7 @@ public class SurfaceSpec {
         } catch (IOException ex) {
             Logger.getLogger(SurfaceSpec.class.getName()).log(Level.SEVERE, "trying to open " + fname, ex);
         } finally {
+            // todo: no finally in case of IOException!!
             try {
                 if (reader != null) {
                    reader.close();

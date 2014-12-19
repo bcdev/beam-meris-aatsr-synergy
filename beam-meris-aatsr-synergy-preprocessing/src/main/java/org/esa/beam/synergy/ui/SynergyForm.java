@@ -186,7 +186,7 @@ public class SynergyForm extends JTabbedPane {
 
         soilSpecNameLabel = new JLabel(SynergyConstants.SOIL_SPEC_PARAM_LABEL + ":");
 
-        final String soilSpecFileDefault = synergyAuxdataHome + File.separator +
+        final String soilSpecFileDefault = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
                 SynergyConstants.SOIL_SPEC_PARAM_DEFAULT;
         this.synergyModel.setSoilSpecName(soilSpecFileDefault);
         soilSpecNameTextField = new JFormattedTextField(soilSpecFileDefault);
@@ -196,7 +196,7 @@ public class SynergyForm extends JTabbedPane {
         soilSpecFileChooserButton.setMinimumSize(new Dimension(25, 20));
 
         vegSpecNameLabel = new JLabel(SynergyConstants.VEG_SPEC_PARAM_LABEL + ":");
-        final String vegSpecFileDefault = synergyAuxdataHome + File.separator +
+        final String vegSpecFileDefault = SynergyConstants.SYNERGY_AUXDATA_HOME_DEFAULT + File.separator +
                 SynergyConstants.VEG_SPEC_PARAM_DEFAULT;
         this.synergyModel.setVegSpecName(vegSpecFileDefault);
         vegSpecNameTextField = new JFormattedTextField(vegSpecFileDefault);

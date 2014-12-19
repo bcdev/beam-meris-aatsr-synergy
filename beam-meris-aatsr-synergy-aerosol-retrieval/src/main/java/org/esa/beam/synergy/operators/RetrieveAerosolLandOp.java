@@ -6,11 +6,7 @@
 package org.esa.beam.synergy.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
-import org.esa.beam.framework.datamodel.RasterDataNode;
-import org.esa.beam.framework.datamodel.VirtualBand;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
@@ -25,7 +21,7 @@ import org.esa.beam.synergy.util.SynergyConstants;
 import org.esa.beam.synergy.util.SynergyUtils;
 import org.esa.beam.util.ProductUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -197,25 +193,13 @@ public class RetrieveAerosolLandOp extends Operator {
         readWavelength(merisBandList, merisWvl);
         readWavelength(aatsrBandListNad, aatsrWvl);
 
-        if (soilSurfSpec == null) {
-            if (soilSpecName.equals(SynergyConstants.SOIL_SPEC_PARAM_DEFAULT)) {
-                soilSpecName = auxdataRoot + File.separator +
-                               SynergyConstants.SOIL_SPEC_PARAM_DEFAULT;
-            }
-            soilSurfSpec = new SurfaceSpec(soilSpecName, merisWvl).getSpec();
-        }
-        if (vegSurfSpec == null) {
-            if (vegSpecName.equals(SynergyConstants.VEG_SPEC_PARAM_DEFAULT)) {
-                vegSpecName = auxdataRoot + File.separator +
-                              SynergyConstants.VEG_SPEC_PARAM_DEFAULT;
-            }
-            vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
-        }
+        soilSurfSpec = new SurfaceSpec(soilSpecName, merisWvl).getSpec();
+        vegSurfSpec = new SurfaceSpec(vegSpecName, merisWvl).getSpec();
     }
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws
-                                                                                                             OperatorException {
+            OperatorException {
 
         pm.beginTask("aerosol retrieval", aerosolModels.size() * targetRectangle.width * targetRectangle.height + 4);
         System.out.printf("   Aerosol Retrieval @ Tile %s\n", targetRectangle.toString());
@@ -388,7 +372,7 @@ public class RetrieveAerosolLandOp extends Operator {
 
                         final double errTemp = minErr[iY - targetRectangle.y][iX - targetRectangle.x];
                         if ((Double.compare(errTemp, SynergyConstants.OUTPUT_AOTERR_BAND_NODATAVALUE) == 0
-                             || errMetric < errTemp)) {
+                                || errMetric < errTemp)) {
 
                             minErr[iY - targetRectangle.y][iX - targetRectangle.x] = errMetric;
                             aerosolTile.setSample(iX, iY, aot);

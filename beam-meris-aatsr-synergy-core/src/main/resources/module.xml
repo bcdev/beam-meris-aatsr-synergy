@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>beam-meris-aatsr-synergy-core</symbolicName>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <name>MERIS/AATSR Synergy Core</name>
 
     <description>
@@ -38,6 +38,8 @@
 
     <changelog>
         <![CDATA[
+             <p>From 1.2.3 to 1.2.6:<br/>
+             - adjusted to BEAM 5.0<br/>
              <p>From 1.2.1 to 1.2.3:<br/>
              - adjusted to BEAM 4.10<br/>
              <p>From 1.1.2 to 1.2.1:<br/>
