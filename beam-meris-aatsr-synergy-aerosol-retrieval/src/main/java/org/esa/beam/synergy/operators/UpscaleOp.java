@@ -117,9 +117,9 @@ public class UpscaleOp extends Operator {
                 || targetBand.getName().startsWith(MODEL_NAME)
                 || targetBand.isFlagBand()) {
 
-                upscaleTileCopy(srcTile, targetTile, tarRec, pm);
+                upscaleTileCopy(srcTile, targetTile, pm);
             } else {
-                upscaleTileBilinear(srcTile, targetTile, tarRec);
+                upscaleTileBilinear(srcTile, targetTile);
             }
         }
     }
@@ -171,8 +171,9 @@ public class UpscaleOp extends Operator {
         }
     }
 
-    private void upscaleTileBilinear(Tile srcTile, Tile tarTile, Rectangle tarRec) {
+    private void upscaleTileBilinear(Tile srcTile, Tile tarTile) {
 
+        final Rectangle tarRec = tarTile.getRectangle();
         final int tarX = tarRec.x;
         final int tarY = tarRec.y;
         final int tarWidth = tarRec.width;
@@ -192,9 +193,6 @@ public class UpscaleOp extends Operator {
                 float xFrac = (float) (iTarX - offset) / scalingFactor - iSrcX;
                 float erg = (1.0f - xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX, iSrcY);
                 erg += (xFrac) * (1.0f - yFac) * srcTile.getSampleFloat(iSrcX + 1, iSrcY);
-//                System.out.println("srcTile.getWidth(), srcTile.getHeight(), sourceRasterWidth, sourceRasterWidth, " +
-//                        "iSrcX, iSrcY: " + srcTile.getWidth() + "," +  srcTile.getHeight() + "," +  sourceRasterWidth  + "," +
-//                        sourceRasterHeight + "," + iSrcX + "," +  iSrcY);
                 erg += (1.0f - xFrac) * (yFac) * srcTile.getSampleFloat(iSrcX, iSrcY + 1);
                 erg += (xFrac) * (yFac) * srcTile.getSampleFloat(iSrcX + 1, iSrcY + 1);
                 tarTile.setSample(iTarX, iTarY, erg);
@@ -202,8 +200,9 @@ public class UpscaleOp extends Operator {
         }
     }
 
-    private void upscaleTileCopy(Tile srcTile, Tile tarTile, Rectangle tarRec, ProgressMonitor pm) {
+    private void upscaleTileCopy(Tile srcTile, Tile tarTile, ProgressMonitor pm) {
 
+        final Rectangle tarRec = tarTile.getRectangle();
         final int tarX = tarRec.x;
         final int tarY = tarRec.y;
         final int tarWidth = tarRec.width;
@@ -211,16 +210,16 @@ public class UpscaleOp extends Operator {
 
         for (int iTarY = tarY; iTarY < tarY + tarHeight; iTarY++) {
             int iSrcY = iTarY / scalingFactor;
-            if (iSrcY >= srcTile.getHeight()) {
-                iSrcY = srcTile.getHeight() - 1;
+            if (iSrcY >= srcTile.getHeight() - 1) {
+                iSrcY = srcTile.getHeight() - 2;
             }
             for (int iTarX = tarX; iTarX < tarX + tarWidth; iTarX++) {
                 if (pm.isCanceled()) {
                     break;
                 }
                 int iSrcX = iTarX / scalingFactor;
-                if (iSrcY >= srcTile.getWidth()) {
-                    iSrcY = srcTile.getWidth() - 1;
+                if (iSrcX >= srcTile.getWidth() - 1) {
+                    iSrcX = srcTile.getWidth() - 2;
                 }
                 float erg = srcTile.getSampleFloat(iSrcX, iSrcY);
                 tarTile.setSample(iTarX, iTarY, erg);

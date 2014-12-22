@@ -164,6 +164,8 @@ public class RetrieveAerosolOp extends Operator {
         landOceanUpscaledParams.put("scalingFactor", aveBlock);
         Product landOceanUpscaledProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(UpscaleOp.class), landOceanUpscaledParams, landOceanUpscaledInput);
 
+//        Product landOceanUpscaledProduct = landOceanAerosolProduct;
+
         Product surfaceReflectanceProduct;
         if (computeSurfaceReflectances && computeLand) {
             Map<String, Product> surfaceReflectanceInput = new HashMap<String, Product>(2);

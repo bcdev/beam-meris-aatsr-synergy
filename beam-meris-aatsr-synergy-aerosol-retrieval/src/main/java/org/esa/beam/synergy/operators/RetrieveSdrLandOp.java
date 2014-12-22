@@ -327,7 +327,7 @@ public class RetrieveSdrLandOp extends Operator {
         }
 
         createTargetProductBands();
-        targetProduct.setPreferredTileSize(128, 128);
+//        targetProduct.setPreferredTileSize(128, 128);
         setTargetProduct(targetProduct);
 
     }

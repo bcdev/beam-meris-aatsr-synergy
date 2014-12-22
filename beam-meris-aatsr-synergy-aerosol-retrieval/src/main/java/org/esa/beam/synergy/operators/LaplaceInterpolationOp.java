@@ -132,7 +132,7 @@ public class LaplaceInterpolationOp extends Operator {
 
         createTargetProductBands();
 
-        targetProduct.setPreferredTileSize(128, 128);
+//        targetProduct.setPreferredTileSize(128, 128);
         setTargetProduct(targetProduct);
     }
 

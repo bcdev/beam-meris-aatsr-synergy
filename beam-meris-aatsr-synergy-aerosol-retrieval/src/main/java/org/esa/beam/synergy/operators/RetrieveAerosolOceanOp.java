@@ -222,7 +222,7 @@ public class RetrieveAerosolOceanOp extends Operator {
         final int downscaledRasterHeight = (int) (Math.ceil((float) (sceneHeight / scalingFactor) - 0.5));
 
         targetProduct = new Product(productName, productType, downscaledRasterWidth, downscaledRasterHeight);
-        targetProduct.setPreferredTileSize(128, 128);
+//        targetProduct.setPreferredTileSize(128, 128);
 
         ProductUtils.copyGeoCoding(synergyProduct, targetProduct);
         ProductUtils.copyMetadata(synergyProduct, targetProduct);

@@ -122,7 +122,7 @@ public class MedianOp extends Operator {
 
         createTargetProductBands();
 
-        targetProduct.setPreferredTileSize(100, 100);
+//        targetProduct.setPreferredTileSize(100, 100);
 
         setTargetProduct(targetProduct);
 
